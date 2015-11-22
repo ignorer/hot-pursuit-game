@@ -9,7 +9,8 @@ namespace Core {
 
 		CGameMode() = delete;
 
-		static void Init( MovementMode movementMode, DeathPenalty deathPenalty, int lapCount, ObjectRate objectRate );
+		static void Init( MovementMode movementMode = CONCURRENT, DeathPenalty deathPenalty = STOP, 
+			int lapCount = 1, ObjectRate objectRate = NO );
 
 		static MovementMode GetMovementMode();
 		static DeathPenalty GetDeathPenalty();

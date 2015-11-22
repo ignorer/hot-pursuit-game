@@ -12,6 +12,7 @@ const wchar_t* const UI::CMainMenuWindow::className = L"CMainWindow";
 bool UI::CMainMenuWindow::RegisterClass( HINSTANCE hInst )
 {
 	WNDCLASSEX tag;
+	ZeroMemory( &tag, sizeof( WNDCLASSEX ) );
 	tag.cbSize = sizeof( WNDCLASSEX );
 	tag.style = CS_HREDRAW | CS_VREDRAW;
 	tag.lpfnWndProc = windowProc;
@@ -39,7 +40,6 @@ bool UI::CMainMenuWindow::Create()
 {
 	handle = CreateWindow( className, L"Main menu - Rock'n'Roll race", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		100, 100, 300, 300, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
-
 	newGameButton = CreateWindow( L"BUTTON", L"New game", WS_VISIBLE | WS_CHILD, 75, 100, 150, 30,
 		handle, HMENU(BUTTON_NEW_GAME), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 	exitGameButton = CreateWindow( L"BUTTON", L"Exit game", WS_VISIBLE | WS_CHILD, 75, 150, 150, 30,
@@ -59,6 +59,7 @@ void UI::CMainMenuWindow::Destroy()
 void UI::CMainMenuWindow::Show( int cmdShow )
 {
 	::ShowWindow( handle, cmdShow );
+	::SetForegroundWindow( handle );
 }
 
 void UI::CMainMenuWindow::Play()
@@ -69,6 +70,7 @@ void UI::CMainMenuWindow::Play()
 void UI::CMainMenuWindow::MakeVisible() const
 {
 	::ShowWindow( handle, SW_SHOW );
+	//::SetForegroundWindow( handle );
 }
 
 void UI::CMainMenuWindow::MakeInvisible() const
@@ -81,7 +83,7 @@ LRESULT UI::CMainMenuWindow::windowProc( HWND handle, UINT message, WPARAM wPara
 	CMainMenuWindow* wnd;
 	if( message == WM_NCCREATE ) {
 		wnd = static_cast<CMainMenuWindow*>(LPCREATESTRUCT( lParam )->lpCreateParams);
-		::SetWindowLong( handle, GWL_USERDATA, LONG( LPCREATESTRUCT( lParam )->lpCreateParams ) );
+		::SetWindowLongPtr( handle, GWLP_USERDATA, LONG( LPCREATESTRUCT( lParam )->lpCreateParams ) );
 		wnd->handle = handle;
 	}
 	wnd = reinterpret_cast<CMainMenuWindow*>(::GetWindowLong( handle, GWL_USERDATA ));
@@ -90,7 +92,6 @@ LRESULT UI::CMainMenuWindow::windowProc( HWND handle, UINT message, WPARAM wPara
 		case WM_DESTROY:
 			wnd->Destroy();
 			return 0;
-
 		case WM_COMMAND:
 			if( LOWORD( wParam ) == wnd->BUTTON_NEW_GAME ) {
 				wnd->Play();

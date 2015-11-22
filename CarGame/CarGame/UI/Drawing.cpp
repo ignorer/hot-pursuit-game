@@ -36,7 +36,7 @@ namespace UI {
 		glutDisplayFunc( display );
 		glutKeyboardFunc( keyboardFunction );
 		glutMouseFunc( mouseFunction );
-
+		
 		glutMainLoop();
 	}
 
@@ -189,6 +189,7 @@ namespace UI {
 	void CDrawing::ShowWindow()
 	{
 		glutShowWindow();
+
 	}
 
 	void CDrawing::HideWindow()

@@ -20,7 +20,8 @@ private:
 
 	bool intersect(int a, int b, int c, int d) const;
 	int orientedArea(int ax, int ay, int bx, int by, int cx, int cy) const;
-	bool wrongFinishLineIntersection(int xFirst, int yFirst, int xSecond, int ySecond) const;
+	bool isIntersects( const std::pair<int, int>& firstPoint, const std::pair<int, int>& secondPoint, 
+		const std::pair<int, int>& thirdPoint, const std::pair<int, int>& fourthPoint ) const;
 
 public:
     const int EMPTY_CELL = 0;
@@ -49,7 +50,9 @@ public:
     bool canPlayerStayOnCell(int x, int y) const;
     bool hasBarrierOnPath(int xFirst, int yFirst, int xSecond, int ySecond) const;
     bool canPlayerStayOnCellLookOnOtherPlayers(int x, int y, int playerID, const std::vector< IPlayerState > &players) const;
-	bool intersectFinishLine(int xFirst, int yFirst, int xSecond, int ySecond) const;
+	bool intersectFinishLine( int xFirst, int yFirst, int xSecond, int ySecond ) const;
+	bool IsOnTheFinishLine( int y1, int x1, int y2, int x2 );
+	bool wrongFinishLineIntersection( int xFirst, int yFirst, int xSecond, int ySecond ) const;
 
 	const std::pair< int, int >& GetLeftFinishPoint() const;
 	const std::pair< int, int >& GetRightFinishPoint() const;

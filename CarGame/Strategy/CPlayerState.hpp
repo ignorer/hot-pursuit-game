@@ -16,7 +16,6 @@ class PlayerState : public IPlayerState {
 private:
     std::pair< int, int > position;
     std::pair< int, int > velocityVector;
-
 public:    
     PlayerState();
     PlayerState(std::pair< int, int > startPosition);
@@ -26,6 +25,7 @@ public:
 
     bool operator== (const IPlayerState &other) const;
     bool operator!= (const IPlayerState &other) const;
+	bool operator< (const IPlayerState &other) const;
     
     void changePosition(std::pair< int, int > inputPosition);
     void changeVelocityVector(std::pair< int, int > inputVelocityVector);
@@ -43,6 +43,17 @@ public:
     
     std::pair< int, int > getPosition() const;
     std::pair< int, int > getVelocityVector() const;
+
+	// Возвращает новое состояния после применения вектора скорости
+	PlayerState GetNextState( int dx, int dy ) const;
+
+	struct CPlayerStateHasher {
+		std::size_t operator()( const PlayerState& state ) const
+		{
+			return std::hash<int>()(state.getPosition().first) + std::hash<int>()(state.getPosition().second) +
+				std::hash<int>()(state.getVelocityVector().first) + std::hash<int>()(state.getVelocityVector().second);
+		}
+	};
 };
 
 #endif /* CPlayerState_hpp */
