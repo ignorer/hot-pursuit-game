@@ -39,7 +39,13 @@ bool PlayerState::operator!=(const IPlayerState &other) const {
     return !(*this == other);
 }
 
-void PlayerState::changePosition(std::pair< int, int > inputPosition) {
+bool PlayerState::operator<(const IPlayerState &other) const
+{
+	return position < other.getPosition();
+}
+
+void PlayerState::changePosition( std::pair< int, int > inputPosition )
+{
     if (inputPosition.first < 0 || inputPosition.second < 0) {
         throw std::invalid_argument("inputPosition coordinates must be >= 0");
     }
@@ -84,7 +90,19 @@ std::pair< int, int > PlayerState::getVelocityVector() const {
     return velocityVector;
 }
 
-void PlayerState::SetXVelocity(int xVelocity) {
+PlayerState PlayerState::GetNextState( int dx, int dy ) const
+{
+	PlayerState temp( *this );
+	temp.changePositionUsingVelocityVector();
+	temp.position.first += dx;
+	temp.position.second += dy;
+	temp.velocityVector.first += dx;
+	temp.velocityVector.second += dy;
+	return temp;
+}
+
+void PlayerState::SetXVelocity( int xVelocity )
+{
     velocityVector.first = xVelocity;
 }
 

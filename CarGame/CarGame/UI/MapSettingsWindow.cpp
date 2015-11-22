@@ -1,6 +1,7 @@
 #include <string>
 #include <locale>
 #include <codecvt>
+#include <memory>
 
 #include "resource.h"
 
