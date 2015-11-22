@@ -20,7 +20,6 @@
     <ClInclude Include="AStar\AStarStrategy.h" />
     <ClInclude Include="CMap.hpp" />
     <ClInclude Include="CPlayerState.hpp" />
-    <ClInclude Include="DynamicProgramming\EMoveDirection.h" />
     <ClInclude Include="IMap.h" />
     <ClInclude Include="IPlayerState.h" />
     <ClInclude Include="StrategyDll.h" />

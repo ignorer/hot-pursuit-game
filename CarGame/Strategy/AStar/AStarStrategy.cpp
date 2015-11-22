@@ -135,7 +135,7 @@ void CAStarStrategy::findPath( const PlayerState& initState )
 						gScore[neighborState] = tentGScore;
 						int heuristic = calculateHeuristic( currentState, neighborState );
 						if( heuristic != std::numeric_limits<int>::max() ) {
-							fScore[neighborState] = gScore[neighborState] + heuristic / 2;
+							fScore[neighborState] = gScore[neighborState] + heuristic;
 							openSet.insert( neighborState );
 							openSetVal.insert( std::make_pair( fScore[neighborState], neighborState ) );
 						}
@@ -156,7 +156,7 @@ int CAStarStrategy::calculateHeuristic( const PlayerState& state, const PlayerSt
 	}
 	int velocity = (int) std::sqrt( nextState.GetXVelocity() * nextState.GetXVelocity() + 
 		nextState.GetYVelocity() * nextState.GetYVelocity() );
-	return distancesToFinish[nextState.GetY()][nextState.GetX()];
+	return distancesToFinish[nextState.GetY()][nextState.GetX()] / 4;
 }
 
 void CAStarStrategy::reconstructPath( std::unordered_map<PlayerState, PlayerState, PlayerState::CPlayerStateHasher>& cameFrom,

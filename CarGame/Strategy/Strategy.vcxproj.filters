@@ -42,9 +42,6 @@
     <ClInclude Include="CPlayerState.hpp">
       <Filter>StrategyDll</Filter>
     </ClInclude>
-    <ClInclude Include="DynamicProgramming\EMoveDirection.h">
-      <Filter>StrategyDll</Filter>
-    </ClInclude>
     <ClInclude Include="AStar\AStarStrategy.h">
       <Filter>AStar</Filter>
     </ClInclude>

@@ -5,9 +5,15 @@
 #include "CPlayerState.hpp"
 #include "CMap.hpp"
 #include "AStar/AStarStrategy.h"
-#include "EMoveDirection.h"
 
 #include <time.h>
+
+enum class EMovementDirection : int {
+	UP_LEFT = 7, UP = 8, UP_RIGHT = 9,
+	LEFT = 4, NOT_CHANGED = 5, RIGHT = 6,
+	DOWN_LEFT = 1, DOWN = 2, DOWN_RIGHT = 3,
+	NONE = 10
+};
 
 Map PutPlayersOnMap(const Map &_map, const std::vector< std::shared_ptr<IPlayerState> > &_playerStateList, int CurrentPlayerIndex) {
 	int xSize = _map.size().first;
@@ -73,27 +79,19 @@ IMap* GetDefaultMap() {
 	return new Map();
 }
 
-int DynamicProgrammingStrategyFunc(const Map &map, const PlayerState &currentPlayer) {
+int AStarStrategyFunc( const Map &map, const PlayerState &currentPlayer )
+{
 	static CAStarStrategy strategy( map, currentPlayer );
 	auto step = strategy.GetNextStep();
 	return (int) GetMovementDirection( step.first, step.second );
 }
 
-//int AStarStrategyFunc(const Map &map, const PlayerState &currentPlayer) {
-//	fillAStarMap(map);
-//	AStarStrategyOnYAGSBPL aStarStrategyOnYAGSBPL;
-//	SNode start(currentPlayer.GetX(), currentPlayer.GetY(), currentPlayer.GetXVelocity(), currentPlayer.GetYVelocity());
-//	SNode finish(1,1,1,1); // нужно задать финишную линюю
-//	SNode step = aStarStrategyOnYAGSBPL.searchPath(start, finish);
-//	return (int)GetMovementDirection(currentPlayer.GetX() - step.position.first, currentPlayer.GetY() - step.position.second);
-//}
-
 int StrategyFunc( const std::vector< std::vector < int > > &inputCells,
 	const std::pair< int, int > &_leftFinishPoint,
 	const std::pair< int, int > &_rightFinishPoint, 
-	const std::vector< std::shared_ptr<IPlayerState> > &_playerStates, int curPlayerPosition )
+	std::shared_ptr<IPlayerState> _playerState )
 {
 	Map map( inputCells, _leftFinishPoint, _rightFinishPoint );
-	const PlayerState currentPlayer = *(std::dynamic_pointer_cast<PlayerState>(_playerStates[curPlayerPosition]));
-	return DynamicProgrammingStrategyFunc( map, currentPlayer );
+	const PlayerState currentPlayer = *( std::dynamic_pointer_cast<PlayerState>(_playerState) );
+	return AStarStrategyFunc( map, currentPlayer );
 };

@@ -3,19 +3,6 @@
 
 #include "Core/Game.h"
 #include "Core/GameMode.h"
-#include "AI/IPlayerState.h"
-#include "AI/IMap.h"
-
-HINSTANCE hInstanceDLLLibrary = nullptr;
-
-typedef int( __cdecl *STRATEGY_PROC )(const std::vector< std::vector < int > > &inputCells,
-	const std::pair< int, int > &_leftFinishPoint,
-	const std::pair< int, int > &_rightFinishPoint, 
-	const std::vector<std::shared_ptr<IPlayerState>> &_playerStates, int curPlayerPosition);
-
-typedef IPlayerState*(__cdecl *PLAYER_STATE_FACTORY_PROC)(int x, int y, int xVelocity, int yVelocity);
-
-typedef IMap*(__cdecl *MAP_DEFAULT_FACTORY_PROC)();
 
 namespace Core {
 	namespace {
@@ -55,7 +42,11 @@ namespace Core {
 		map( newMap ),
 		players( playersInfo ),
 		manager( _manager )
-	{}
+	{
+		HINSTANCE hInstanceDLLLibrary = LoadLibrary( TEXT( "Strategy.dll" ) );
+		StrategyFunc = (STRATEGY_PROC) ::GetProcAddress( hInstanceDLLLibrary, "StrategyFunc" );
+		GetPlayerState = (PLAYER_STATE_FACTORY_PROC) ::GetProcAddress( hInstanceDLLLibrary, "GetPlayerState" );
+	}
 
 	int CGame::finishLineIntersectsWithPlayer( const CPlayer& player ) const
 	{
@@ -164,58 +155,53 @@ namespace Core {
 		}
 	}
 
+	int CGame::turnOfUser( CPlayer& player )
+	{
+		std::vector<CCoordinates> possibleMoves = player.PossibleMoves( map.GetSize( ) );
+		manager->MarkPossibleMoves( possibleMoves );
+		int direction = manager->GetDirection( possibleMoves, player.GetInertia(), player.GetPosition() );
+		manager->UnMarkPossibleMoves( possibleMoves );
+		return direction;
+	}
+
+	int CGame::turnOfAI( CPlayer& player )
+	{
+		CField field = map.GetField();
+		CSize sizemap = map.GetSize();
+		std::vector< std::vector< int > > mapForAI( sizemap.second );
+
+		for( int i = 0; i < sizemap.second; ++i ) {
+			mapForAI[i].resize( sizemap.first );
+			for( int j = 0; j < sizemap.first; ++j ) {
+				mapForAI[i][j] = field[i][j];
+			}
+		}
+		CCoordinates firstFinishPoint = map.GetFinishLine().first;
+		CCoordinates secondFinishPoint = map.GetFinishLine().second;
+
+		CCoordinates currentPosition = player.GetPosition();
+		CCoordinates previuosPosition = player.GetPreviousPosition();
+
+		int xVelocity = currentPosition.x - previuosPosition.x;
+		int yVelocity = currentPosition.y - previuosPosition.y;
+
+		std::shared_ptr<IPlayerState> playerStatePtr( GetPlayerState( currentPosition.x, currentPosition.y, xVelocity, yVelocity ) );
+		return StrategyFunc( mapForAI, std::make_pair( firstFinishPoint.x, firstFinishPoint.y ),
+			std::make_pair( secondFinishPoint.x, secondFinishPoint.y ), playerStatePtr );
+	}
+
 	void CGame::turnOfPlayer( CPlayer& player, std::set<CPlayer*>& crashedPlayers )
 	{
 		int direction;
-		std::vector<CCoordinates> possibleMoves;
 		switch ( player.GetType() )
 		{
 			case USER: 
 				//вывести возможные ходы
-				possibleMoves = player.PossibleMoves(map.GetSize());
-				manager->MarkPossibleMoves(possibleMoves);
-				//manager-->possibleMoves
-				direction = manager->GetDirection(possibleMoves, player.GetInertia(), player.GetPosition());
-				manager->UnMarkPossibleMoves(possibleMoves);
+				direction = turnOfUser( player );
 				break;
 			case AI:
 			{
-				if( !hInstanceDLLLibrary ) hInstanceDLLLibrary = LoadLibrary( TEXT( "Strategy.dll" ) );
-				STRATEGY_PROC StrategyFunc = (STRATEGY_PROC)GetProcAddress( hInstanceDLLLibrary, "StrategyFunc" );
-				PLAYER_STATE_FACTORY_PROC GetPlayerState = (PLAYER_STATE_FACTORY_PROC)GetProcAddress( hInstanceDLLLibrary, "GetPlayerState" );
-				// Map map;
-
-				CField field = map.GetField();
-				CSize sizemap = map.GetSize();
-				std::vector< std::vector< int > > mapForAI( sizemap.second );
-
-				for( int i = 0; i < sizemap.second; ++i ) {
-					mapForAI[i].resize( sizemap.first );
-					for( int j = 0; j < sizemap.first; ++j ) {
-						mapForAI[i][j] = field[i][j];
-					}
-				}
-				CCoordinates firstFinishPoint = map.GetFinishLine().first;
-				CCoordinates secondFinishPoint = map.GetFinishLine().second;
-
-				std::vector< std::shared_ptr< IPlayerState > > playerStates;
-
-				for ( int i = 0; i < players.size(); ++i )
-				{
-					if ( !players[i].IsAlive() ) continue;
-
-					CCoordinates currentPosition = players[i].GetPosition();
-					CCoordinates previuosPosition = players[i].GetPreviousPosition();
-
-					int xVelocity = currentPosition.x - previuosPosition.x;
-					int yVelocity = currentPosition.y - previuosPosition.y;
-
-					std::shared_ptr<IPlayerState> playerStatePtr( GetPlayerState( currentPosition.x, currentPosition.y, xVelocity, yVelocity ) );
-					playerStates.push_back( playerStatePtr );
-				}
-
-				direction = StrategyFunc( mapForAI, std::make_pair( firstFinishPoint.x, firstFinishPoint.y ), 
-					std::make_pair( secondFinishPoint.x, secondFinishPoint.y ), playerStates, player.GetNumber() );
+				direction = turnOfAI( player );
 				break;
 			}
 			default:

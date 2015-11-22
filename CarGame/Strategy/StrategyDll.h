@@ -10,7 +10,7 @@
 extern "C" RACE_AI_API int StrategyFunc( const std::vector< std::vector < int > > &inputCells,
 	const std::pair< int, int > &_leftFinishPoint,
 	const std::pair< int, int > &_rightFinishPoint, 
-	const std::vector<std::shared_ptr<IPlayerState>> &_playerStates, int curPlayerPosition );
+	std::shared_ptr<IPlayerState> _playerState );
 
 // Factories to export PlayerState and Map classes
 extern "C" RACE_AI_API IPlayerState* GetPlayerState(int x, int y, int xVelocity, int yVelocity);
