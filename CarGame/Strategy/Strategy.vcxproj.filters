@@ -5,9 +5,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="DynamicProgramming">
-      <UniqueIdentifier>{bae7bca3-7b7d-47e6-b825-4db53468f032}</UniqueIdentifier>
-    </Filter>
     <Filter Include="StrategyDll">
       <UniqueIdentifier>{3a52e7e2-f035-4be5-809a-0dd97fa3d9f0}</UniqueIdentifier>
     </Filter>
@@ -25,11 +22,8 @@
     <ClCompile Include="CPlayerState.cpp">
       <Filter>StrategyDll</Filter>
     </ClCompile>
-    <ClCompile Include="DynamicProgramming\CDynamicProgrammingStrategy.cpp">
-      <Filter>DynamicProgramming</Filter>
-    </ClCompile>
-    <ClCompile Include="DynamicProgramming\CStateArray.cpp">
-      <Filter>DynamicProgramming</Filter>
+    <ClCompile Include="AStar\AStarStrategy.cpp">
+      <Filter>AStar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -48,14 +42,11 @@
     <ClInclude Include="CPlayerState.hpp">
       <Filter>StrategyDll</Filter>
     </ClInclude>
-    <ClInclude Include="DynamicProgramming\CDynamicProgrammingStrategy.h">
-      <Filter>DynamicProgramming</Filter>
-    </ClInclude>
-    <ClInclude Include="DynamicProgramming\CStateArray.h">
-      <Filter>DynamicProgramming</Filter>
-    </ClInclude>
     <ClInclude Include="DynamicProgramming\EMoveDirection.h">
-      <Filter>DynamicProgramming</Filter>
+      <Filter>StrategyDll</Filter>
+    </ClInclude>
+    <ClInclude Include="AStar\AStarStrategy.h">
+      <Filter>AStar</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

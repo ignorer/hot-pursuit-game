@@ -4,7 +4,6 @@
 #define RACE_AI_API __declspec(dllimport) 
 #endif
 
-#include "DynamicProgramming/CDynamicProgrammingStrategy.h"
 #include "IPlayerState.h"
 #include "IMap.h"
 

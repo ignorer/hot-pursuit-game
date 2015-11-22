@@ -11,17 +11,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AStar\AStarStrategy.cpp" />
     <ClCompile Include="CMap.cpp" />
     <ClCompile Include="CPlayerState.cpp" />
-    <ClCompile Include="DynamicProgramming\CDynamicProgrammingStrategy.cpp" />
-    <ClCompile Include="DynamicProgramming\CStateArray.cpp" />
     <ClCompile Include="StrategyDll.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AStar\AStarStrategy.h" />
     <ClInclude Include="CMap.hpp" />
     <ClInclude Include="CPlayerState.hpp" />
-    <ClInclude Include="DynamicProgramming\CDynamicProgrammingStrategy.h" />
-    <ClInclude Include="DynamicProgramming\CStateArray.h" />
     <ClInclude Include="DynamicProgramming\EMoveDirection.h" />
     <ClInclude Include="IMap.h" />
     <ClInclude Include="IPlayerState.h" />

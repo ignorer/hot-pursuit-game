@@ -190,8 +190,9 @@ namespace Core {
 				std::vector< std::vector< int > > mapForAI( sizemap.second );
 
 				for( int i = 0; i < sizemap.second; ++i ) {
+					mapForAI[i].resize( sizemap.first );
 					for( int j = 0; j < sizemap.first; ++j ) {
-						mapForAI[i].push_back( field[i][j] );
+						mapForAI[i][j] = field[i][j];
 					}
 				}
 				CCoordinates firstFinishPoint = map.GetFinishLine().first;

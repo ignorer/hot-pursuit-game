@@ -4,7 +4,8 @@
 #include "IMap.h"
 #include "CPlayerState.hpp"
 #include "CMap.hpp"
-#include "DynamicProgramming/EMoveDirection.h"
+#include "AStar/AStarStrategy.h"
+#include "EMoveDirection.h"
 
 #include <time.h>
 
@@ -35,35 +36,33 @@ Map PutPlayersOnMap(const Map &_map, const std::vector< std::shared_ptr<IPlayerS
 }
 
 EMovementDirection GetMovementDirection(int dx, int dy) {
-	EMovementDirection direction;
 	if (dx == 0 && dy == 0) {
-		direction = EMovementDirection::NONE;
+		return EMovementDirection::NOT_CHANGED;
 	}
 	else if (dx == -1 && dy == 0) {
-		direction = EMovementDirection::UP;
+		return EMovementDirection::UP;
 	}
 	else if (dx == -1 && dy == 1) {
-		direction = EMovementDirection::UP_RIGHT;
+		return EMovementDirection::UP_RIGHT;
 	}
 	else if (dx == 0 && dy == 1) {
-		direction = EMovementDirection::RIGHT;
+		return EMovementDirection::RIGHT;
 	}
 	else if (dx == 1 && dy == 1) {
-		direction = EMovementDirection::DOWN_RIGHT;
+		return EMovementDirection::DOWN_RIGHT;
 	}
 	else if (dx == 1 && dy == 0) {
-		direction = EMovementDirection::DOWN;
+		return EMovementDirection::DOWN;
 	}
 	else if (dx == 1 && dy == -1) {
-		direction = EMovementDirection::DOWN_LEFT;
+		return EMovementDirection::DOWN_LEFT;
 	}
 	else if (dx == 0 && dy == -1) {
-		direction = EMovementDirection::LEFT;
+		return EMovementDirection::LEFT;
 	}
 	else if (dx == -1 && dy == -1) {
-		direction = EMovementDirection::UP_LEFT;
+		return EMovementDirection::UP_LEFT;
 	}
-	return direction;
 }
 
 IPlayerState* GetPlayerState(int x, int y, int xVelocity, int yVelocity) {
@@ -75,9 +74,9 @@ IMap* GetDefaultMap() {
 }
 
 int DynamicProgrammingStrategyFunc(const Map &map, const PlayerState &currentPlayer) {
-	static CDynamicProgrammingStrategy strategy(map, currentPlayer);
-	auto step = strategy.GetNextPosition();
-	return (int)GetMovementDirection(currentPlayer.GetX() - step.first, currentPlayer.GetY() - step.second);
+	static CAStarStrategy strategy( map, currentPlayer );
+	auto step = strategy.GetNextStep();
+	return (int) GetMovementDirection( step.first, step.second );
 }
 
 //int AStarStrategyFunc(const Map &map, const PlayerState &currentPlayer) {
@@ -96,9 +95,5 @@ int StrategyFunc( const std::vector< std::vector < int > > &inputCells,
 {
 	Map map( inputCells, _leftFinishPoint, _rightFinishPoint );
 	const PlayerState currentPlayer = *(std::dynamic_pointer_cast<PlayerState>(_playerStates[curPlayerPosition]));
-	/*srand(time(0));
-	if (rand() % 2)
-		return AStarStrategyFunc(map, currentPlayer);
-	else*/
 	return DynamicProgrammingStrategyFunc( map, currentPlayer );
 };
