@@ -65,6 +65,7 @@ void UI::CGameResultWindow::Destroy() const
 void UI::CGameResultWindow::MakeVisible() const
 {
 	::ShowWindow( handle, SW_SHOW );
+	//::SetForegroundWindow( handle );
 }
 
 void UI::CGameResultWindow::MakeInvisible() const
