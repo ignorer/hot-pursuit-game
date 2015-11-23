@@ -53,3 +53,7 @@ namespace Core {
 }
 
 typedef std::pair<size_t, size_t> CSize;
+
+enum PowerupType {
+	WALL, SAND, OIL, MINE, MINE_ACTIVE, LAZER, SHIELD, NONE
+};

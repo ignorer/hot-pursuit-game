@@ -72,6 +72,9 @@
     <ClCompile Include="Core\GameMode.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Core\PowerupManager.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GlobalDefinitions.h">
@@ -123,6 +126,9 @@
       <Filter>Header Files\AI</Filter>
     </ClInclude>
     <ClInclude Include="Core\GameMode.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\PowerupManager.h">
       <Filter>Source Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
