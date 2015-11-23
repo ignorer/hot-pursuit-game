@@ -26,6 +26,10 @@ namespace Core {
 		{
 			return this->x == point.x && this->y == point.y;
 		}
+		bool operator<( const CCoordinates& point ) const
+		{
+			return x < point.x ? true : y < point.y;
+		}
 
 		CCoordinates operator + ( const CCoordinates &point ) const
 		{
