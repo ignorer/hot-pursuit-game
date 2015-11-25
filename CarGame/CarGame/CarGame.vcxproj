@@ -160,7 +160,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UI\Car.cpp" />
-    <ClCompile Include="UI\Coord.cpp" />
+    <ClCompile Include="UI\Coordinates.cpp" />
     <ClCompile Include="UI\Drawing.cpp" />
     <ClCompile Include="UI\MainMenuWindow.cpp" />
     <ClCompile Include="UI\Map.cpp" />
@@ -180,7 +180,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UI\Car.h" />
-    <ClInclude Include="UI\Coord.h" />
+    <ClInclude Include="UI\Coordinates.h" />
     <ClInclude Include="UI\Drawing.h" />
     <ClInclude Include="UI\MainMenuWindow.h" />
     <ClInclude Include="UI\Map.h" />
@@ -188,10 +188,12 @@
     <ClInclude Include="UI\GameResultWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\Resources\Images\active.png" />
     <Image Include="..\..\Resources\Images\car_blue.png" />
     <Image Include="..\..\Resources\Images\car_green.png" />
     <Image Include="..\..\Resources\Images\car_orange.png" />
     <Image Include="..\..\Resources\Images\car_red.png" />
+    <Image Include="..\..\Resources\Images\finish.png" />
     <Image Include="..\..\Resources\Images\forest.png" />
     <Image Include="..\..\Resources\Images\road.png" />
     <Image Include="MainIcon.ico" />

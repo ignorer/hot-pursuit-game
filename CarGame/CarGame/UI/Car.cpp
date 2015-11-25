@@ -83,10 +83,8 @@ namespace UI {
 		float bottom = coord.y - cellSize / 4;
 		float top = coord.y - 3 * cellSize / 4;
 
-		glDepthMask( GL_FALSE );
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
 		glBegin( GL_POLYGON );
 		{
 			glColor4f( 1, 1, 1, alpha );
@@ -102,15 +100,14 @@ namespace UI {
 			float centerX = Dx - (Dx - Bx) / 2,
 				centerY = Dy - (Dy - By) / 2;
 			rotateCar( Ax, Ay, Bx, By, Cx, Cy, Dx, Dy, centerX, centerY, coords.angle );
-			glTexCoord2f( 0.0f, 0.0f ); glVertex3f( Ax, Ay, 0.0f );
-			glTexCoord2f( 1.0f, 0.0f ); glVertex3f( Bx, By, 0.0f );
-			glTexCoord2f( 1.0f, 1.0f ); glVertex3f( Cx, Cy, 0.0f );
-			glTexCoord2f( 0.0f, 1.0f ); glVertex3f( Dx, Dy, 0.0f );
+			glTexCoord2f( 0.0f, 0.0f ); glVertex2f( Ax, Ay );
+			glTexCoord2f( 1.0f, 0.0f ); glVertex2f( Bx, By );
+			glTexCoord2f( 1.0f, 1.0f ); glVertex2f( Cx, Cy );
+			glTexCoord2f( 0.0f, 1.0f ); glVertex2f( Dx, Dy );
 		}
 		glEnd();
 		glDisable( GL_BLEND );
 		glDisable( GL_TEXTURE_2D );
-		glDepthMask( GL_TRUE );
 	}
 
 	void CCar::Move( CCoordinates coordinates )

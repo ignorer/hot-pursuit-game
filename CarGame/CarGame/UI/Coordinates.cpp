@@ -1,4 +1,4 @@
-#include "UI/Coord.h"
+#include "UI/Coordinates.h"
 
 UI::CWindowCoordinates UI::transateToWcoord( float x, float y, float cellSize, CWindowCoordinates indent, CSize mapSize )
 {

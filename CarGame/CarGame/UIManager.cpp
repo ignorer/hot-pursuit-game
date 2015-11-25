@@ -70,14 +70,14 @@ void CUIManager::Move( const std::vector<Core::CPlayer>& movedPlayers ) const
 	UI::CDrawing::MoveCars( numbers, coordinates );
 }
 
-void CUIManager::MarkPossibleMoves(const std::vector<Core::CCoordinates>& possibleMoves) const
+void CUIManager::MarkPossibleMoves( const std::vector<Core::CCoordinates>& possibleMoves ) const
 {
-	UI::CDrawing::MarkPossibleMoves(possibleMoves);
+	UI::CDrawing::MarkPossibleMoves( possibleMoves );
 }
 
-void CUIManager::UnMarkPossibleMoves(const std::vector<Core::CCoordinates>& possibleMoves) const
+void CUIManager::UnMarkPossibleMoves( const std::vector<Core::CCoordinates>& possibleMoves ) const
 {
-	UI::CDrawing::UnMarkPossibleMoves(possibleMoves);
+	UI::CDrawing::UnMarkPossibleMoves( possibleMoves );
 }
 
 void CUIManager::ShowCrashesAndRespawn( const std::set<Core::CPlayer*>& collidedPlayers ) const
@@ -110,7 +110,8 @@ void CUIManager::ShowGameResult( const std::vector<Core::CPlayer>& winners ) con
 
 void CUIManager::SwitchToMainMenu() const
 {
-	mainMenuWindow->MakeVisible();
+	mainMenuWindow->MakeVisible( );
+	std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
 	mapSettingsWindow.MakeInvisible();
 	gameResultWindow.MakeInvisible();
 	UI::CDrawing::HideWindow();
@@ -118,25 +119,28 @@ void CUIManager::SwitchToMainMenu() const
 
 void CUIManager::SwitchToSettings() const
 {
+	mapSettingsWindow.MakeVisible( );
+	std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
 	mainMenuWindow->MakeInvisible();
-	mapSettingsWindow.MakeVisible();
 	gameResultWindow.MakeInvisible();
 	UI::CDrawing::HideWindow();
 }
 
 void CUIManager::SwitchToGame() const
 {
+	UI::CDrawing::ShowWindow();
+	std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
 	mainMenuWindow->MakeInvisible();
 	mapSettingsWindow.MakeInvisible();
 	gameResultWindow.MakeInvisible();
-	UI::CDrawing::ShowWindow();
 }
 
 void CUIManager::SwitchToResults() const
 {
+	gameResultWindow.MakeVisible( );
+	std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
 	mainMenuWindow->MakeInvisible();
 	mapSettingsWindow.MakeInvisible();
-	gameResultWindow.MakeVisible();
 	UI::CDrawing::HideWindow();
 }
 

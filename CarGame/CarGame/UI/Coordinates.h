@@ -14,6 +14,15 @@ namespace UI {
 			y( _y ),
 			angle( _angle )
 		{}
+
+		bool operator== (const CCoordinates &point) const
+		{
+			return this->x == point.x && this->y == point.y;
+		}
+		bool operator< (const CCoordinates& point) const
+		{
+			return std::pair<float, float>( x, y ) < std::pair<float, float>( point.x, point.y );
+		}
 	};
 
 	// координаты в окне

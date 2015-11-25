@@ -2,7 +2,7 @@
 
 #include <GL/glut.h>
 
-#include "UI/Coord.h"
+#include "UI/Coordinates.h"
 #include "GlobalDefinitions.h"
 
 namespace UI {
