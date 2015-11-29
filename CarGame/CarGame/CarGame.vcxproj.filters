@@ -66,11 +66,14 @@
     <ClCompile Include="UI\GameResultWindow.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Coord.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
     <ClCompile Include="Core\GameMode.cpp">
       <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\PowerupManager.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Coordinates.cpp">
+      <Filter>Source Files\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -93,9 +96,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="UI\Car.h">
-      <Filter>Source Files\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Coord.h">
       <Filter>Source Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\Drawing.h">
@@ -125,6 +125,12 @@
     <ClInclude Include="Core\GameMode.h">
       <Filter>Source Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\PowerupManager.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Coordinates.h">
+      <Filter>Source Files\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Resources\Images\car_blue.png">
@@ -147,6 +153,12 @@
     </Image>
     <Image Include="MainIcon.ico">
       <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\active.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\finish.png">
+      <Filter>Resource Files\Images</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

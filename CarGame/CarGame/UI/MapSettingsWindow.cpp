@@ -48,7 +48,7 @@ bool UI::CMapSettingsWindow::Create()
 {
 	handle = CreateWindow( className, L"Map settings - Rock'n'Roll race", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		200, 200, 400, 500, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
-	
+
 	CreateMapNameControl();
 
 	for( int i = 0; i < positionOwnerControls.size(); ++i ) {
@@ -60,33 +60,33 @@ bool UI::CMapSettingsWindow::Create()
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"AI" ) );
 		::SendMessage( positionOwnerControls[i], CB_SELECTSTRING, 0, LPARAM( L"None" ) );
 	}
-	
+
 	startGameButton = CreateWindow( L"BUTTON", L"Start game", WS_VISIBLE | WS_CHILD, 225, 330, 150, 30,
 		handle, HMENU( BUTTON_START_GAME ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 	settingsButton = CreateWindow( L"BUTTON", L"Settings", WS_VISIBLE | WS_CHILD, 225, 380, 150, 30,
 		handle, HMENU( BUTTON_SETTINGS ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 	backToMenuButton = CreateWindow( L"BUTTON", L"Back to main menu", WS_VISIBLE | WS_CHILD, 225, 430, 150, 30,
 		handle, HMENU( BUTTON_BACK_TO_MENU ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	
+
 	return handle != nullptr;
 }
 
-
-bool UI::CMapSettingsWindow::CreateMapNameControl( ) {
+bool UI::CMapSettingsWindow::CreateMapNameControl()
+{
 	mapNameControl = CreateWindow( L"COMBOBOX", L"M", CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 40, 50, 125, 80,
 		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 
 	WIN32_FIND_DATA findFileData;
 	HANDLE mapFile = ::FindFirstFile( L".\\Resources\\Maps\\*.txt", &findFileData );
-	if (mapFile != INVALID_HANDLE_VALUE) {
+	if( mapFile != INVALID_HANDLE_VALUE ) {
 		std::wstring mapFileName;
 		std::wstring mapName;
 		do {
 			mapFileName = std::wstring( findFileData.cFileName );
-			mapName = mapFileName.substr( 0, mapFileName.size( ) - 4 );
-			::SendMessage( mapNameControl, CB_ADDSTRING, 0, LPARAM( mapName.c_str( ) ) );
-		} while (::FindNextFile( mapFile, &findFileData ) != 0);
-		::SendMessage( mapNameControl, CB_SELECTSTRING, 0, LPARAM( mapName.c_str( ) ) );
+			mapName = mapFileName.substr( 0, mapFileName.size() - 4 );
+			::SendMessage( mapNameControl, CB_ADDSTRING, 0, LPARAM( mapName.c_str() ) );
+		} while( ::FindNextFile( mapFile, &findFileData ) != 0 );
+		::SendMessage( mapNameControl, CB_SELECTSTRING, 0, LPARAM( mapName.c_str() ) );
 		return ::FindClose( mapFile );
 	}
 	return mapNameControl != nullptr;
@@ -213,7 +213,6 @@ void UI::CSettingsDialog::Init( HWND hwndDlg ) {
 	HWND dialogEditCtrl = ::GetDlgItem( hwndDlg, IDC_EDIT1 );
 	::SetWindowText( dialogEditCtrl, std::to_wstring( Core::CGameMode::GetLapCount() ).c_str() );
 }
-
 
 void UI::CSettingsDialog::OnDialogOk( HWND hwndDlg, WPARAM wParam )
 {

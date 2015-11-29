@@ -241,8 +241,8 @@ namespace Core {
 	void CGame::Start()
 	{
 		std::vector<CPlayer> winners;
+		manager->InitMap( map, players, map.GetFinishLine( ) );
 		int deadPlayersCount = 0;
-		manager->InitMap( map, players, map.GetFinishLine() );
 		std::set<CPlayer*> crashedPlayers;
 
 		do {

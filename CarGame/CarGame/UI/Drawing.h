@@ -50,8 +50,6 @@ namespace UI {
 		static void load();
 		static void loadTexture( const char*, GLuint& texture );
 		static void timer( int value );
-		
-		static void drawFinishLine();
 
 		static bool initialized;
 		static bool started;
@@ -65,6 +63,6 @@ namespace UI {
 		static std::string windowName;
 		static int window;
 		static int key;
-		static Core::CCoordinates mouse;		
+		static Core::CCoordinates mouse;
 	};
 }

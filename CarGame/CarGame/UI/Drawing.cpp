@@ -6,7 +6,8 @@
 #include "UI/Drawing.h"
 #include "GlobalDefinitions.h"
 
-namespace UI {
+namespace UI
+{
 	CMap CDrawing::map; // static data members must be explicitly defined in exactly one translation unit
 	std::vector<CCar> CDrawing::cars;
 	bool CDrawing::initialized = false;
@@ -36,7 +37,7 @@ namespace UI {
 		glutDisplayFunc( display );
 		glutKeyboardFunc( keyboardFunction );
 		glutMouseFunc( mouseFunction );
-		
+
 		glutMainLoop();
 	}
 
@@ -94,20 +95,6 @@ namespace UI {
 		glutTimerFunc( 1, timer, 0 );
 	}
 
-	void CDrawing::drawFinishLine()
-	{
-		glLineWidth( 3 );
-		glBegin( GL_LINES );
-		{
-			glColor3b( 0, 0, 0 );
-			auto point1 = transateToWcoord( finishLine.first.x + 0.5, finishLine.first.y + 0.5, map.GetCellSize(), map.GetIndent(), map.GetSize() );
-			auto point2 = transateToWcoord( finishLine.second.x + 0.5, finishLine.second.y + 0.5, map.GetCellSize(), map.GetIndent(), map.GetSize() );
-			glVertex2f( point1.x, point1.y );
-			glVertex2f( point2.x, point2.y );
-		}
-		glEnd();
-	}
-
 	void CDrawing::display()
 	{
 		std::unique_lock<std::mutex> lock( mutex );
@@ -118,30 +105,30 @@ namespace UI {
 			load();
 			loaded = true;
 		}
-		if ( justStartedFlag ) {
-			glViewport( 0, 0, 800, 600 ); // set view block
+		if( justStartedFlag ) {
+			glViewport( 0, 0, glutGet( GLUT_WINDOW_WIDTH ), glutGet( GLUT_WINDOW_HEIGHT ) ); // set view block
 
 			glMatrixMode( GL_PROJECTION );
 			glLoadIdentity();
-			gluOrtho2D( 0, 800, 0, 600 ); // set coordinates 
+			gluOrtho2D( 0, glutGet( GLUT_WINDOW_WIDTH ), 0, glutGet( GLUT_WINDOW_HEIGHT ) );
 
 			glMatrixMode( GL_MODELVIEW );
 			glLoadIdentity();
-			map.Calculate(); // recalculate map
-			glutShowWindow();
+			map.Calculate();
 			justStartedFlag = false;
 		}
 
-		glClearColor( 1.0, 1.0, 1.0, 0.0 ); // clear background to white
-		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); // clear buffers
+		glClearColor( 1.0, 1.0, 1.0, 0.0 );
+		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 		bool mapReloaded = !map.NeedToReload();
-		map.Draw(); // Draw the map
-		drawFinishLine();
+		map.Draw();
+		map.HighlightActiveCells();
+		map.DrawFinishLine( finishLine );
 		for( size_t i = 0; i < cars.size(); i++ ) {
-			cars[i].Draw( map.GetCellSize(), map.GetIndent(), map.GetSize() ); // Draw car
+			cars[i].Draw( map.GetCellSize(), map.GetIndent(), map.GetSize() );
 		}
-		glFlush(); // flush changes
+		glFlush();
 		if( mapReloaded ) {
 			glutSwapBuffers(); // if map wasn't reloaded (and buffers weren't swapped), swap buffers
 		}
@@ -175,21 +162,19 @@ namespace UI {
 	Core::CCoordinates CDrawing::GetMouse( const std::vector<Core::CCoordinates>& possibleMoves )
 	{
 		std::unique_lock<std::mutex> lock( mutex );
-		for (auto move : possibleMoves)
-		{
-			if (mouse == move) 
-			{
+		for( auto move : possibleMoves ) {
+			if( mouse == move ) {
 				return mouse;
 			}
 		}
-		mouse = Core::CCoordinates( -1, -1 );
+		mouse.x = -1;
+		mouse.y = -1;
 		return mouse;
 	}
 
 	void CDrawing::ShowWindow()
 	{
 		glutShowWindow();
-
 	}
 
 	void CDrawing::HideWindow()
@@ -200,13 +185,13 @@ namespace UI {
 	void CDrawing::MarkPossibleMoves( const std::vector<Core::CCoordinates>& possibleMoves )
 	{
 		std::unique_lock<std::mutex> lock( mutex );
-		map.MarkPossibleMoves( possibleMoves );
+		map.MarkHighlightedCells( possibleMoves );
 	}
 
 	void CDrawing::UnMarkPossibleMoves( const std::vector<Core::CCoordinates>& possibleMoves )
 	{
 		std::unique_lock<std::mutex> lock( mutex );
-		map.UnMarkPossibleMoves( possibleMoves );
+		map.UnmarkHighlightedCells( possibleMoves );
 	}
 
 	// load image from file to texture
@@ -304,29 +289,29 @@ namespace UI {
 	void CDrawing::load()
 	{
 		//load textures for map
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\road.png").c_str(), map.textureRoad ); // road
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\forest.png").c_str(), map.textureBoard ); // board
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\roadActive.png").c_str(), map.textureActiveRoad ); // road active
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\forestActive.png").c_str(), map.textureActiveBoard ); // board active
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\road.png").c_str(), map.textureRoad );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\forest.png").c_str(), map.textureBoard );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\active.png").c_str(), map.textureActiveCell );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\finish.png").c_str(), map.textureFinish );
 
 		//load textures for cars (depends on color)
 		std::string carFilename;
 		for( size_t i = 0; i < cars.size(); i++ ) {
 			switch( cars[i].GetColor() ) {
-				case RED:
-					carFilename = RESOURCE_DIRECTORY + "Images\\car_red.png";
-					break;
-				case BLUE:
-					carFilename = RESOURCE_DIRECTORY + "Images\\car_blue.png";
-					break;
-				case GREEN:
-					carFilename = RESOURCE_DIRECTORY + "Images\\car_green.png";
-					break;
-				case ORANGE:
-					carFilename = RESOURCE_DIRECTORY + "Images\\car_orange.png";
-					break;
-				default:
-					carFilename = RESOURCE_DIRECTORY + "Images\\car_red.png";
+			case RED:
+				carFilename = RESOURCE_DIRECTORY + "Images\\car_red.png";
+				break;
+			case BLUE:
+				carFilename = RESOURCE_DIRECTORY + "Images\\car_blue.png";
+				break;
+			case GREEN:
+				carFilename = RESOURCE_DIRECTORY + "Images\\car_green.png";
+				break;
+			case ORANGE:
+				carFilename = RESOURCE_DIRECTORY + "Images\\car_orange.png";
+				break;
+			default:
+				carFilename = RESOURCE_DIRECTORY + "Images\\car_red.png";
 			}
 			loadTexture( carFilename.c_str(), cars[i].texture );
 		}
@@ -334,59 +319,33 @@ namespace UI {
 
 	void CDrawing::keyboardFunction( unsigned char pressedKey, int x, int y )
 	{
-		switch( pressedKey ) {
-			case '1':
-				key = 1;
-				break;
-			case '2':
-				key = 2;
-				break;
-			case '3':
-				key = 3;
-				break;
-			case '4':
-				key = 4;
-				break;
-			case '5':
-				key = 5;
-				break;
-			case '6':
-				key = 6;
-				break;
-			case '7':
-				key = 7;
-				break;
-			case '8':
-				key = 8;
-				break;
-			case '9':
-				key = 9;
-				break;
-			default:
-				key = -1;
+		std::unique_lock<std::mutex> lock( mutex );
+		if( pressedKey >= '1' && pressedKey <= '9' ) {
+			key = pressedKey - '0';
+		} else {
+			key = -1;
 		}
 	}
 
 	Core::CCoordinates CDrawing::translateToCoord( int x, int y, float cellSize )
 	{
-		int newx = (int)x / cellSize;
-		int newy = (int)y / cellSize;
+		int newx = int( x ) / cellSize;
+		int newy = int( y ) / cellSize;
 		return Core::CCoordinates( newx, newy );
 	}
-	
+
 	void CDrawing::mouseFunction( int button, int state, int x, int y )
 	{
-		if ( button == GLUT_LEFT_BUTTON ) {
+		std::unique_lock<std::mutex> lock( mutex );
+		if( button == GLUT_LEFT_BUTTON && state == GLUT_DOWN ) {
 			UI::CWindowCoordinates indent = map.GetIndent();
 			CSize s = map.GetSize();
-			if ((x < indent.x) || (x > s.first * map.GetCellSize()) || (y < indent.y) || (x > s.second * map.GetCellSize())) {
+			if( (x < indent.x) || (x > s.first * map.GetCellSize() + indent.x) || (y < indent.y) || (y > s.second * map.GetCellSize() + indent.y) ) {
 				mouse = Core::CCoordinates( -1, -1 );
-			}
-			else {
+			} else {
 				mouse = translateToCoord( x - indent.x, y - indent.y, map.GetCellSize() );
 			}
-		}
-		else {
+		} else {
 			mouse = Core::CCoordinates( -1, 1 );
 		}
 	}
