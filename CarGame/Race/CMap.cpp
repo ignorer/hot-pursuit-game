@@ -42,6 +42,7 @@ void CMap::ClickCell( int i, int j, BType bType )
         case BRoad:  numbers[i][j] = 1; break;
         case BStart: numbers[i][j] = 2; break;
         case BWall:  numbers[i][j] = 3; break;
+		case BFinish: numbers[i][j] = 4; break;
     }
 }
 

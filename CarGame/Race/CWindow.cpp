@@ -46,6 +46,8 @@ CWindow::CWindow():
     brushes.push_back( ::CreatePatternBrush( start ) );
 	HBITMAP wall = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_WALL ) );
 	brushes.push_back( ::CreatePatternBrush( wall ) );
+	HBITMAP finish = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_FINISH ) );
+	brushes.push_back( ::CreatePatternBrush( finish ) );
 }
 
 CWindow::~CWindow()

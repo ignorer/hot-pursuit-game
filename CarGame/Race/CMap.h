@@ -13,7 +13,8 @@ enum BType {
     BRoad,
     BTree,
     BWall,
-    BStart
+    BStart,
+	BFinish
 };
 
 

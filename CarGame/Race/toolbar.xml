@@ -61,6 +61,13 @@
         <Image Source="Start32.bmp"/>
       </Command.LargeImages>
     </Command>
+    <Command Name="Finish" Symbol="cmdFinish" Id="30106" LabelTitle="Финиш">
+      <Command.TooltipTitle>Нарисовать линию старта</Command.TooltipTitle>
+      <Command.TooltipDescription>Нарисовать линию старта. Автомобиль  прекратит движение на этой линии</Command.TooltipDescription>
+      <Command.LargeImages>
+        <Image Source="Start32.bmp"/>
+      </Command.LargeImages>
+    </Command>
     <Command Name="ZoomIn" Symbol="cmdZoomIn" Id="30202" LabelTitle="Приблизить">
       <Command.TooltipTitle>Увеличить карту</Command.TooltipTitle>
       <Command.LargeImages>
@@ -105,11 +112,12 @@
             <Button CommandName="LoadMap"/>
             <Button CommandName="SaveMap"/>
           </Group>
-          <Group CommandName="GroupDraw" SizeDefinition ="FourButtons">
+          <Group CommandName="GroupDraw" SizeDefinition ="FiveButtons">
             <Button CommandName="Road" />
             <Button CommandName="Tree" />
             <Button CommandName="Wall" />
             <Button CommandName="Start" />
+            <Button CommandName="Finish" />
           </Group>
           <Group CommandName="GroupZoom" SizeDefinition ="TwoButtons">
             <Button CommandName="ZoomIn" />

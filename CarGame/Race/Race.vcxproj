@@ -106,9 +106,12 @@ cmd /c "("$(DevEnvDir)..\..\VC\bin\vcvars32.bat") &amp;&amp; ("$(DevEnvDir)..\..
     <Image Include="..\..\Pictures\Road.bmp" />
     <Image Include="..\..\Pictures\Start.bmp" />
     <Image Include="..\..\Pictures\Tree.bmp" />
-    <Image Include="bitmap1.bmp" />
     <Image Include="Exit16.bmp" />
     <Image Include="Exit32.bmp" />
+    <Image Include="finish.bmp" />
+    <Image Include="Finish32.bmp">
+      <DeploymentContent>false</DeploymentContent>
+    </Image>
     <Image Include="icon.ico" />
     <Image Include="New16.bmp" />
     <Image Include="New32.bmp" />
