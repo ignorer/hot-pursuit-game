@@ -320,7 +320,7 @@ namespace UI
 	void CDrawing::keyboardFunction( unsigned char pressedKey, int x, int y )
 	{
 		std::unique_lock<std::mutex> lock( mutex );
-		if( key >= '1' && key <= '9' ) {
+		if( pressedKey >= '1' && pressedKey <= '9' ) {
 			key = pressedKey - '0';
 		} else {
 			key = -1;

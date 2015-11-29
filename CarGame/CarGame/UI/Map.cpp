@@ -43,7 +43,7 @@ namespace UI {
 		needReload = true;
 	}
 
-	void CMap::saveTexture()
+	void CMap::saveTexture() const
 	{
 		// write window to array of pixels
 		unsigned long imageSize;
@@ -89,10 +89,10 @@ namespace UI {
 				//Draw a cell with texture (board or road)
 				glBegin( GL_POLYGON );
 				{
-					glTexCoord2f( 0.0f, 0.0f ); glVertex3f( left, bottom, 0.0f );
-					glTexCoord2f( 1.0f, 0.0f ); glVertex3f( right, bottom, 0.0f );
-					glTexCoord2f( 1.0f, 1.0f ); glVertex3f( right, top, 0.0f );
-					glTexCoord2f( 0.0f, 1.0f ); glVertex3f( left, top, 0.0f );
+					glTexCoord2f( 0, 0 ); glVertex2f( left, bottom );
+					glTexCoord2f( 1, 0 ); glVertex2f( right, bottom );
+					glTexCoord2f( 1, 1 ); glVertex2f( right, top );
+					glTexCoord2f( 0, 1 ); glVertex2f( left, top );
 				}
 				glEnd();
 			}
@@ -156,10 +156,10 @@ namespace UI {
 		// Draw a polygon of window size with texture
 		glBegin( GL_POLYGON );
 		{
-			glTexCoord2f( 0.0f, 0.0f ); glVertex2f( 0, 0 );
-			glTexCoord2f( 1.0f, 0.0f ); glVertex2f( width, 0 );
-			glTexCoord2f( 1.0f, 1.0f ); glVertex2f( width, height );
-			glTexCoord2f( 0.0f, 1.0f ); glVertex2f( 0, height );
+			glTexCoord2f( 0, 0 ); glVertex2f( 0, 0 );
+			glTexCoord2f( 1, 0 ); glVertex2f( width, 0 );
+			glTexCoord2f( 1, 1 ); glVertex2f( width, height );
+			glTexCoord2f( 0, 1 ); glVertex2f( 0, height );
 		}
 		glEnd();
 		glDisable( GL_TEXTURE_2D );
@@ -180,10 +180,10 @@ namespace UI {
 			auto bottom = center.y + 0.5 * cellSize;
 			glBegin( GL_POLYGON );
 			{
-				glTexCoord2f( 0.0f, 0.0f ); glVertex2f( left, top );
-				glTexCoord2f( 1.0f, 0.0f ); glVertex2f( right, top );
-				glTexCoord2f( 1.0f, 1.0f ); glVertex2f( right, bottom );
-				glTexCoord2f( 0.0f, 1.0f ); glVertex2f( left, bottom );
+				glTexCoord2f( 0, 1 ); glVertex2f( left, top );
+				glTexCoord2f( 1, 1 ); glVertex2f( right, top );
+				glTexCoord2f( 1, 0 ); glVertex2f( right, bottom );
+				glTexCoord2f( 0, 0 ); glVertex2f( left, bottom );
 			}
 			glEnd();
 		}

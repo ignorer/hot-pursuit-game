@@ -214,7 +214,6 @@ void UI::CSettingsDialog::Init( HWND hwndDlg ) {
 	::SetWindowText( dialogEditCtrl, std::to_wstring( Core::CGameMode::GetLapCount() ).c_str() );
 }
 
-
 void UI::CSettingsDialog::OnDialogOk( HWND hwndDlg, WPARAM wParam )
 {
 	Core::CGameMode::MovementMode moveStatus = ( IsDlgButtonChecked ( hwndDlg, IDC_SEQUENTIAL_MOV ) == BST_CHECKED ) ?

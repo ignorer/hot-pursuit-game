@@ -38,7 +38,7 @@ namespace UI
 		CWindowCoordinates indent;
 		bool needReload;
 
-		void saveTexture();
+		void saveTexture() const;
 		void reload();
 	};
 }

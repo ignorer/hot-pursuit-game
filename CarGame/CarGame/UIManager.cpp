@@ -28,11 +28,11 @@ int CUIManager::GetDirection( const std::vector<Core::CCoordinates>& possibleMov
 
 	UI::CDrawing::DropMouse();
 	Core::CCoordinates mouse;
-	while( ((key = UI::CDrawing::GetKey()) == -1 ) && ((mouse = UI::CDrawing::GetMouse(possibleMoves)) == Core::CCoordinates(-1, -1)) ) {
+	while( ((key = UI::CDrawing::GetKey()) == -1) && ((mouse = UI::CDrawing::GetMouse( possibleMoves )) == Core::CCoordinates( -1, -1 )) ) {
 		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 	}
-	if (key == -1) {
-		Core::CCoordinates direction = mouse - inertia - position;
+	if( key == -1 ) {
+		auto direction = mouse - inertia - position;
 		key = 5 + direction.x + 3 * (-direction.y);
 	}
 	return key;
