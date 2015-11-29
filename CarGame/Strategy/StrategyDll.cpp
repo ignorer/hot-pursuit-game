@@ -8,13 +8,6 @@
 
 #include <time.h>
 
-enum class EMovementDirection : int {
-	UP_LEFT = 7, UP = 8, UP_RIGHT = 9,
-	LEFT = 4, NOT_CHANGED = 5, RIGHT = 6,
-	DOWN_LEFT = 1, DOWN = 2, DOWN_RIGHT = 3,
-	NONE = 10
-};
-
 Map PutPlayersOnMap(const Map &_map, const std::vector< std::shared_ptr<IPlayerState> > &_playerStateList, int CurrentPlayerIndex) {
 	int xSize = _map.size().first;
 	int ySize = _map.size().second;
@@ -41,57 +34,18 @@ Map PutPlayersOnMap(const Map &_map, const std::vector< std::shared_ptr<IPlayerS
 	return res;
 }
 
-EMovementDirection GetMovementDirection(int dx, int dy) {
-	if (dx == 0 && dy == 0) {
-		return EMovementDirection::NOT_CHANGED;
-	}
-	else if (dx == -1 && dy == 0) {
-		return EMovementDirection::UP;
-	}
-	else if (dx == -1 && dy == 1) {
-		return EMovementDirection::UP_RIGHT;
-	}
-	else if (dx == 0 && dy == 1) {
-		return EMovementDirection::RIGHT;
-	}
-	else if (dx == 1 && dy == 1) {
-		return EMovementDirection::DOWN_RIGHT;
-	}
-	else if (dx == 1 && dy == 0) {
-		return EMovementDirection::DOWN;
-	}
-	else if (dx == 1 && dy == -1) {
-		return EMovementDirection::DOWN_LEFT;
-	}
-	else if (dx == 0 && dy == -1) {
-		return EMovementDirection::LEFT;
-	}
-	else if (dx == -1 && dy == -1) {
-		return EMovementDirection::UP_LEFT;
-	}
-}
-
 IPlayerState* GetPlayerState(int x, int y, int xVelocity, int yVelocity) {
 	return new PlayerState(x, y, xVelocity, yVelocity);
 }
 
-IMap* GetDefaultMap() {
-	return new Map();
-}
-
-int AStarStrategyFunc( const Map &map, const PlayerState &currentPlayer )
-{
-	static CAStarStrategy strategy( map, currentPlayer );
-	auto step = strategy.GetNextStep();
-	return (int) GetMovementDirection( step.first, step.second );
-}
-
-int StrategyFunc( const std::vector< std::vector < int > > &inputCells,
+IStrategy* GetNewStrategy(
+	const std::vector< std::vector < int > > &inputCells,
 	const std::pair< int, int > &_leftFinishPoint,
-	const std::pair< int, int > &_rightFinishPoint, 
-	std::shared_ptr<IPlayerState> _playerState )
+	const std::pair< int, int > &_rightFinishPoint,
+	std::shared_ptr<IPlayerState> playerState )
 {
 	Map map( inputCells, _leftFinishPoint, _rightFinishPoint );
-	const PlayerState currentPlayer = *( std::dynamic_pointer_cast<PlayerState>(_playerState) );
-	return AStarStrategyFunc( map, currentPlayer );
-};
+	const PlayerState currentPlayer = *(std::dynamic_pointer_cast<PlayerState>(playerState));
+
+	return new CAStarStrategy( map, currentPlayer );
+}
