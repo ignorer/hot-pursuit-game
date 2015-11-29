@@ -5,13 +5,14 @@
 
 #include "../CMap.hpp"
 #include "../CPlayerState.hpp"
+#include "../IStrategy.h"
 
-class CAStarStrategy {
+class CAStarStrategy : public IStrategy {
 public:
 	CAStarStrategy( const Map& map, const PlayerState& initState );
 
 	// Возвращает, в каком направлении нужно сдвинуться по оптимальному маршруту
-	std::pair<int, int> GetNextStep();
+	int GetNextStep();
 
 private:
 	// Предподсчет расстояний до финиша по чебышевской метрике
@@ -23,6 +24,9 @@ private:
 
 	void reconstructPath( std::unordered_map<PlayerState, PlayerState, PlayerState::CPlayerStateHasher>& cameFrom, 
 		const PlayerState& goal );
+
+	// Перевод пары координат в цифры на клавиатуре, соответствующую этому направлению
+	int getMovementDirection( int dx, int dy );
 	
 	// Расстояние до финиша из клетки
 	std::vector<std::vector<int>> distancesToFinish;

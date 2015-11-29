@@ -42,11 +42,7 @@ namespace Core {
 		map( newMap ),
 		players( playersInfo ),
 		manager( _manager )
-	{
-		HINSTANCE hInstanceDLLLibrary = LoadLibrary( TEXT( "Strategy.dll" ) );
-		StrategyFunc = (STRATEGY_PROC) ::GetProcAddress( hInstanceDLLLibrary, "StrategyFunc" );
-		GetPlayerState = (PLAYER_STATE_FACTORY_PROC) ::GetProcAddress( hInstanceDLLLibrary, "GetPlayerState" );
-	}
+	{}
 
 	int CGame::finishLineIntersectsWithPlayer( const CPlayer& player ) const
 	{
@@ -164,8 +160,14 @@ namespace Core {
 		return direction;
 	}
 
-	int CGame::turnOfAI( CPlayer& player )
+	void CGame::initAI( CPlayer* player )
 	{
+		if( hInstanceDLLLibrary == 0 ) {
+			hInstanceDLLLibrary = ::LoadLibrary( TEXT( "Strategy.dll" ) );
+			StrategyBuilderFunc = (STRATEGY_PROC) ::GetProcAddress( hInstanceDLLLibrary, "GetNewStrategy" );
+			GetPlayerStateFunc = (PLAYER_STATE_FACTORY_PROC) ::GetProcAddress( hInstanceDLLLibrary, "GetPlayerState" );
+		}
+
 		CField field = map.GetField();
 		CSize sizemap = map.GetSize();
 		std::vector< std::vector< int > > mapForAI( sizemap.second );
@@ -179,14 +181,14 @@ namespace Core {
 		CCoordinates firstFinishPoint = map.GetFinishLine().first;
 		CCoordinates secondFinishPoint = map.GetFinishLine().second;
 
-		CCoordinates currentPosition = player.GetPosition();
-		CCoordinates previuosPosition = player.GetPreviousPosition();
+		CCoordinates currentPosition = player->GetPosition();
+		CCoordinates previuosPosition = player->GetPreviousPosition();
 
 		int xVelocity = currentPosition.x - previuosPosition.x;
 		int yVelocity = currentPosition.y - previuosPosition.y;
 
-		std::shared_ptr<IPlayerState> playerStatePtr( GetPlayerState( currentPosition.x, currentPosition.y, xVelocity, yVelocity ) );
-		return StrategyFunc( mapForAI, std::make_pair( firstFinishPoint.x, firstFinishPoint.y ),
+		std::shared_ptr<IPlayerState> playerStatePtr( GetPlayerStateFunc( currentPosition.x, currentPosition.y, xVelocity, yVelocity ) );
+		AIStrategies[player->GetNumber()] = StrategyBuilderFunc( mapForAI, std::make_pair( firstFinishPoint.x, firstFinishPoint.y ),
 			std::make_pair( secondFinishPoint.x, secondFinishPoint.y ), playerStatePtr );
 	}
 
@@ -201,7 +203,7 @@ namespace Core {
 				break;
 			case AI:
 			{
-				direction = turnOfAI( player );
+				direction = AIStrategies[player.GetNumber()]->GetNextStep();
 				break;
 			}
 			default:
@@ -244,6 +246,12 @@ namespace Core {
 		manager->InitMap( map, players, map.GetFinishLine( ) );
 		int deadPlayersCount = 0;
 		std::set<CPlayer*> crashedPlayers;
+
+		for( CPlayer player : players ) {
+			if( player.GetType() == AI ) {
+				initAI( &player );
+			}
+		}
 
 		do {
 			if( CGameMode::GetMovementMode() == CGameMode::CONCURRENT ) {

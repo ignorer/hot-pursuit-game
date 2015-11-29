@@ -2,18 +2,20 @@
 
 #include <set>
 #include <memory>
+#include <map>
 
 #include "Core/Map.h"
 #include "Core/Player.h"
 #include "UIManager.h"
 #include "AI/IPlayerState.h"
-#include "AI/IMap.h"
+#include "AI/IStrategy.h"
 
 namespace Core {
-	typedef int( __cdecl *STRATEGY_PROC )(const std::vector< std::vector < int > > &inputCells,
+	typedef IStrategy*(__cdecl *STRATEGY_PROC)(
+		const std::vector< std::vector < int > > &inputCells,
 		const std::pair< int, int > &_leftFinishPoint,
 		const std::pair< int, int > &_rightFinishPoint,
-		std::shared_ptr<IPlayerState> _playerState );
+		std::shared_ptr<IPlayerState> playerState );
 
 	typedef IPlayerState*(__cdecl *PLAYER_STATE_FACTORY_PROC)(int x, int y, int xVelocity, int yVelocity);
 
@@ -27,9 +29,11 @@ namespace Core {
 		CMap map;
 		std::vector<CPlayer> players;
 		const CUIManager* manager;
+		std::map<int, IStrategy*> AIStrategies;
 
-		STRATEGY_PROC StrategyFunc;
-		PLAYER_STATE_FACTORY_PROC GetPlayerState;
+		HINSTANCE hInstanceDLLLibrary;
+		STRATEGY_PROC StrategyBuilderFunc;
+		PLAYER_STATE_FACTORY_PROC GetPlayerStateFunc;
 
 		void handleFinishLineIntersections();
 		// требование к возвращаемому значению:
@@ -49,6 +53,6 @@ namespace Core {
 
 		void turnOfPlayer( CPlayer& player, std::set<CPlayer*>& crashedPlayers );
 		int turnOfUser(CPlayer& player);
-		int turnOfAI( CPlayer& player );
+		void initAI( CPlayer* player );
 	};
 }

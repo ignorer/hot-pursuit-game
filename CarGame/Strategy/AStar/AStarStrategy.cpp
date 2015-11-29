@@ -9,6 +9,13 @@
 
 const int CAStarStrategy::maxPathLenght = std::numeric_limits<int>::max();
 
+enum EMovementDirection {
+	UP_LEFT = 7, UP = 8, UP_RIGHT = 9,
+	LEFT = 4, NOT_CHANGED = 5, RIGHT = 6,
+	DOWN_LEFT = 1, DOWN = 2, DOWN_RIGHT = 3,
+	NONE = 10
+};
+
 CAStarStrategy::CAStarStrategy( const Map& _map, const PlayerState& currentPlayer ) :
 	map( _map )
 {
@@ -16,11 +23,34 @@ CAStarStrategy::CAStarStrategy( const Map& _map, const PlayerState& currentPlaye
 	findPath( currentPlayer );
 }
 
-std::pair<int, int> CAStarStrategy::GetNextStep()
+int CAStarStrategy::getMovementDirection( int dx, int dy )
+{
+	if( dx == 0 && dy == 0 ) {
+		return EMovementDirection::NOT_CHANGED;
+	} else if( dx == -1 && dy == 0 ) {
+		return EMovementDirection::UP;
+	} else if( dx == -1 && dy == 1 ) {
+		return EMovementDirection::UP_RIGHT;
+	} else if( dx == 0 && dy == 1 ) {
+		return EMovementDirection::RIGHT;
+	} else if( dx == 1 && dy == 1 ) {
+		return EMovementDirection::DOWN_RIGHT;
+	} else if( dx == 1 && dy == 0 ) {
+		return EMovementDirection::DOWN;
+	} else if( dx == 1 && dy == -1 ) {
+		return EMovementDirection::DOWN_LEFT;
+	} else if( dx == 0 && dy == -1 ) {
+		return EMovementDirection::LEFT;
+	} else if( dx == -1 && dy == -1 ) {
+		return EMovementDirection::UP_LEFT;
+	}
+}
+
+int CAStarStrategy::GetNextStep()
 {
 	std::pair<int, int> top = optimalPath.top();
 	optimalPath.pop();
-	return top;
+	return getMovementDirection( top.first, top.second );
 }
 
 void CAStarStrategy::calculateDistancesToFinish()
