@@ -65,7 +65,7 @@
       <Command.TooltipTitle>Нарисовать линию старта</Command.TooltipTitle>
       <Command.TooltipDescription>Нарисовать линию старта. Автомобиль  прекратит движение на этой линии</Command.TooltipDescription>
       <Command.LargeImages>
-        <Image Source="Start32.bmp"/>
+        <Image Source="Finish32.bmp"/>
       </Command.LargeImages>
     </Command>
     <Command Name="ZoomIn" Symbol="cmdZoomIn" Id="30202" LabelTitle="Приблизить">

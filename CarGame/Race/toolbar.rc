@@ -168,7 +168,7 @@ BEGIN
     cmdFinish_TooltipDescription_RESID L"\x041d\x0430\x0440\x0438\x0441\x043e\x0432\x0430\x0442\x044c \x043b\x0438\x043d\x0438\x044e \x0441\x0442\x0430\x0440\x0442\x0430. \x0410\x0432\x0442\x043e\x043c\x043e\x0431\x0438\x043b\x044c  \x043f\x0440\x0435\x043a\x0440\x0430\x0442\x0438\x0442 \x0434\x0432\x0438\x0436\x0435\x043d\x0438\x0435 \x043d\x0430 \x044d\x0442\x043e\x0439 \x043b\x0438\x043d\x0438\x0438" /* TooltipDescription cmdFinish_TooltipDescription_RESID: (null) */
 END
 
-cmdFinish_LargeImages_RESID    BITMAP    "Start32.bmp" /* LargeImages cmdFinish_LargeImages_RESID: (null) */
+cmdFinish_LargeImages_RESID    BITMAP    "Finish32.bmp" /* LargeImages cmdFinish_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
     cmdZoomIn_LabelTitle_RESID L"\x041f\x0440\x0438\x0431\x043b\x0438\x0437\x0438\x0442\x044c" /* LabelTitle cmdZoomIn_LabelTitle_RESID: (null) */

@@ -72,6 +72,7 @@ void CMap::SaveMapToFile( std::ofstream & fout )
                 case 1: fout << 0 << " "; break;
                 case 2: fout << 2 << " "; break;
                 case 3: fout << 3 << " "; break;
+				case 4: fout << 4 << " "; break;
             }
         }
         fout << std::endl;
