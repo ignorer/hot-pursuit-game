@@ -15,7 +15,6 @@
 #include "UI/Drawing.h"
 #include "Core/GameMode.h"
 #include "SettingsDialog.h"
-#include "PlayerSettingsDialog.h"
 
 
 const wchar_t* const UI::CMapSettingsWindow::className = L"CMapSettingsWindow";
@@ -47,13 +46,14 @@ UI::CMapSettingsWindow::CMapSettingsWindow( CUIManager* _manager ) :
 	settingsButton( nullptr ), 
 	mapNameControl( nullptr ),
 	positionOwnerControls( std::vector<HWND>( 12, nullptr ) ),
-	manager( _manager )
+	manager( _manager ),
+	nameControls( std::vector<HWND> (12, nullptr) )
 {}
 
 bool UI::CMapSettingsWindow::Create()
 {
 	handle = CreateWindow( className, L"Map settings - Rock'n'Roll race", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-		200, 200, 400, 500, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
+		200, 200, 550, 500, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
 
 	CreateMapNameControl();
 	
@@ -66,13 +66,16 @@ bool UI::CMapSettingsWindow::Create()
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"Player" ) );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"AI" ) );
 		::SendMessage( positionOwnerControls[i], CB_SELECTSTRING, 0, LPARAM( L"None" ) );
+		nameControls[i] = CreateWindow( L"EDIT", (std::wstring( L"Name " ) + std::to_wstring( i + 1 )).c_str(),
+		 WS_VISIBLE | WS_CHILD, 175, 100 + 30 * i, 125, 24,
+			handle, 0, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 	}
 
-	startGameButton = CreateWindow( L"BUTTON", L"Start game", WS_VISIBLE | WS_CHILD, 225, 330, 150, 30,
+	startGameButton = CreateWindow( L"BUTTON", L"Start game", WS_VISIBLE | WS_CHILD, 350, 330, 150, 30,
 		handle, HMENU( BUTTON_START_GAME ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	settingsButton = CreateWindow( L"BUTTON", L"Settings", WS_VISIBLE | WS_CHILD, 225, 380, 150, 30,
+	settingsButton = CreateWindow( L"BUTTON", L"Settings", WS_VISIBLE | WS_CHILD, 350, 380, 150, 30,
 		handle, HMENU( BUTTON_SETTINGS ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	backToMenuButton = CreateWindow( L"BUTTON", L"Back to main menu", WS_VISIBLE | WS_CHILD, 225, 430, 150, 30,
+	backToMenuButton = CreateWindow( L"BUTTON", L"Back to main menu", WS_VISIBLE | WS_CHILD, 350, 430, 150, 30,
 		handle, HMENU( BUTTON_BACK_TO_MENU ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 
 	return handle != nullptr;
@@ -125,7 +128,11 @@ void UI::CMapSettingsWindow::StartGame()
 	} catch( std::exception& e ) {
 		if( std::string( "Can't open file" ) == e.what() ) {
 			::MessageBox( handle, L"Map not found", L"You're doing it wrong", MB_ICONHAND );
-		} else {
+		}
+		else if ( std::string( "Empty Player Name" ) == e.what() ) {
+			::MessageBox( handle, L"Please, enter player name", L"Empty Player Name", MB_ICONHAND );
+		} 
+		else {
 			::MessageBeep( SOUND_SYSTEM_BEEP );
 			::PostQuitMessage( 1 );
 		}
@@ -141,20 +148,6 @@ void UI::CMapSettingsWindow::ChangeSettings()
 {
 	::DialogBox( ::GetModuleHandle( NULL ), MAKEINTRESOURCE( IDD_DIALOG1 ),
 		handle, static_cast<DLGPROC>( CSettingsDialog::DialogSettingsProc) );
-}
-
-void UI::CMapSettingsWindow::SetPlayer( HWND posOwnerHandle )
-{
-	const size_t MAX_LENGTH = 1024;
-	std::shared_ptr<wchar_t> text = std::shared_ptr<wchar_t>( new wchar_t[MAX_LENGTH] );
-	::GetWindowText( posOwnerHandle, text.get(), MAX_LENGTH );
-	std::wstring textString( text.get() );
-	if (textString == L"Player") {
-		CPlayerSettingsDialog::posOwner = posOwnerHandle;
-		::DialogBox( ::GetModuleHandle( NULL ), MAKEINTRESOURCE( IDD_DIALOG2 ),
-			handle, static_cast<DLGPROC>(CPlayerSettingsDialog::PlayerSettingsProc) );
-		
-	}
 }
 
 std::string UI::CMapSettingsWindow::GetMapName() const
@@ -175,11 +168,20 @@ std::vector<Core::CPlayer> UI::CMapSettingsWindow::GetPlayersInfo( const std::ve
 	for( int i = 0; i < min(12, coordinates.size()); ++i ) {
 		::GetWindowText( positionOwnerControls[i], text.get(), MAX_LENGTH );
 		std::wstring textString( text.get() );
-		if( textString == L"AI" ) {
-			result.push_back( Core::CPlayer( coordinates[i], playerNumber++, AI, L"AI" ) );
+		std::shared_ptr<wchar_t> name = std::shared_ptr<wchar_t>( new wchar_t[MAX_LENGTH] );
+		int symbCount = ::GetWindowText( nameControls[i], name.get(), MAX_LENGTH );
+		std::wstring nameString;
+		if ( symbCount == 0 ) {
+			throw std::invalid_argument( "Empty Player Name" );
 		}
-		else if ( textString != L"None" ) {
-			result.push_back( Core::CPlayer( coordinates[i], playerNumber++, USER, textString ) );
+		else {
+			nameString = name.get();
+		}
+		if( textString == L"AI" ) {
+			result.push_back( Core::CPlayer( coordinates[i], playerNumber++, AI, std::wstring( name.get() ) ) );
+		}
+		else if ( textString == L"Player" ) {
+			result.push_back( Core::CPlayer( coordinates[i], playerNumber++, USER, std::wstring( name.get() ) ) );
 		}
 	}
 	return result;
@@ -213,9 +215,7 @@ LRESULT UI::CMapSettingsWindow::windowProc( HWND handle, UINT message, WPARAM wP
 			wnd->Destroy();
 			return 0;
 		case WM_COMMAND:
-			if ( HIWORD( wParam ) == CBN_SELCHANGE ) {
-				wnd->SetPlayer( reinterpret_cast<HWND>( lParam ) );
-			} else if ( wParam == wnd->BUTTON_START_GAME ) {
+			if ( wParam == wnd->BUTTON_START_GAME ) {
 				wnd->StartGame();
 			} else if ( wParam == wnd->BUTTON_BACK_TO_MENU ) {
 				wnd->BackToMenu();

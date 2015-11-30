@@ -19,14 +19,13 @@ namespace UI {
 		void StartGame();
 		void BackToMenu() const;
 		void ChangeSettings();
-		void SetPlayer( HWND posOwnerHandle );
 
 		std::string GetMapName() const;
 		std::vector<Core::CPlayer> GetPlayersInfo( const std::vector<Core::CCoordinates>& coordinates );
 		
 		void MakeVisible() const;
 		void MakeInvisible() const;
-		std::vector<HWND> positionOwnerControls;
+		
 	protected:
 		bool CreateMapNameControl();
 		int GetPositionOwnersNumber();
@@ -37,7 +36,8 @@ namespace UI {
 		HWND backToMenuButton;
 		HWND settingsButton;
 		HWND mapNameControl;
-		
+		std::vector<HWND> positionOwnerControls;
+		std::vector<HWND> nameControls;
 
 		CUIManager* manager;
 

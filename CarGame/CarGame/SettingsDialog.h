@@ -12,6 +12,7 @@ namespace UI {
 		static void OnDialogVscroll( HWND hwndDlg );
 		static int GetLapsNumber( HWND hwndDlg, int editId );
 		static BOOL CALLBACK DialogSettingsProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam );
+		//специальный флаг, определ€ющий, посылаетс€ ли EN_CHANGE из UI-окна
 		static bool sent;
 	};
 

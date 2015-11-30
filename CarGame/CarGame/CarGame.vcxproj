@@ -160,7 +160,6 @@
     <ClCompile Include="Core\PowerupManager.cpp" />
     <ClCompile Include="Core\Reader.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PlayerSettingsDialog.cpp" />
     <ClCompile Include="SettingsDialog.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UI\Car.cpp" />
@@ -181,7 +180,6 @@
     <ClInclude Include="GlobalDefinitions.h" />
     <ClInclude Include="IMap.h" />
     <ClInclude Include="IPlayerState.h" />
-    <ClInclude Include="PlayerSettingsDialog.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SettingsDialog.h" />
     <ClInclude Include="UIManager.h" />
