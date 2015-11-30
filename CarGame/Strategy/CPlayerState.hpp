@@ -32,6 +32,8 @@ public:
     void changePositionUsingVelocityVector();
     void dropVelocityVector();
 
+	void Move( int dx, int dy );
+
     int GetXVelocity() const;
     int GetYVelocity() const;
     int GetX() const;
