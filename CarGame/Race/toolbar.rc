@@ -155,20 +155,36 @@ END
 cmdStart_LargeImages_RESID    BITMAP    "Start32.bmp" /* LargeImages cmdStart_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
-    cmdFinish_LabelTitle_RESID L"\x0424\x0438\x043d\x0438\x0448" /* LabelTitle cmdFinish_LabelTitle_RESID: (null) */
+    cmdFinishFirstPoint_LabelTitle_RESID L"\x0424\x0438\x043d\x0438\x0448 - 1 \x0442\x043e\x0447\x043a\x0430" /* LabelTitle cmdFinishFirstPoint_LabelTitle_RESID: (null) */
 END
 
 STRINGTABLE 
 BEGIN
-    cmdFinish_TooltipTitle_RESID L"\x041d\x0430\x0440\x0438\x0441\x043e\x0432\x0430\x0442\x044c \x043b\x0438\x043d\x0438\x044e \x0441\x0442\x0430\x0440\x0442\x0430" /* TooltipTitle cmdFinish_TooltipTitle_RESID: (null) */
+    cmdFinishFirstPoint_TooltipTitle_RESID L"\x041d\x0430\x0440\x0438\x0441\x043e\x0432\x0430\x0442\x044c \x043b\x0438\x043d\x0438\x044e \x0441\x0442\x0430\x0440\x0442\x0430" /* TooltipTitle cmdFinishFirstPoint_TooltipTitle_RESID: (null) */
 END
 
 STRINGTABLE 
 BEGIN
-    cmdFinish_TooltipDescription_RESID L"\x041d\x0430\x0440\x0438\x0441\x043e\x0432\x0430\x0442\x044c \x043b\x0438\x043d\x0438\x044e \x0441\x0442\x0430\x0440\x0442\x0430. \x0410\x0432\x0442\x043e\x043c\x043e\x0431\x0438\x043b\x044c  \x043f\x0440\x0435\x043a\x0440\x0430\x0442\x0438\x0442 \x0434\x0432\x0438\x0436\x0435\x043d\x0438\x0435 \x043d\x0430 \x044d\x0442\x043e\x0439 \x043b\x0438\x043d\x0438\x0438" /* TooltipDescription cmdFinish_TooltipDescription_RESID: (null) */
+    cmdFinishFirstPoint_TooltipDescription_RESID L"\x041d\x0430\x0440\x0438\x0441\x043e\x0432\x0430\x0442\x044c \x043f\x0435\x0440\x0432\x0443\x044f\x044e \x0442\x043e\x0447\x043a\x0443 \x043b\x0438\x043d\x0438\x0438 \x0441\x0442\x0430\x0440\x0442\x0430. \x0410\x0432\x0442\x043e\x043c\x043e\x0431\x0438\x043b\x044c  \x043f\x0440\x0435\x043a\x0440\x0430\x0442\x0438\x0442 \x0434\x0432\x0438\x0436\x0435\x043d\x0438\x0435 \x043d\x0430 \x044d\x0442\x043e\x0439 \x043b\x0438\x043d\x0438\x0438" /* TooltipDescription cmdFinishFirstPoint_TooltipDescription_RESID: (null) */
 END
 
-cmdFinish_LargeImages_RESID    BITMAP    "Finish32.bmp" /* LargeImages cmdFinish_LargeImages_RESID: (null) */
+cmdFinishFirstPoint_LargeImages_RESID    BITMAP    "Finish32.bmp" /* LargeImages cmdFinishFirstPoint_LargeImages_RESID: (null) */
+STRINGTABLE 
+BEGIN
+    cmdFinishSecondPoint_LabelTitle_RESID L"\x0424\x0438\x043d\x0438\x0448 - 2 \x0442\x043e\x0447\x043a\x0430" /* LabelTitle cmdFinishSecondPoint_LabelTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    cmdFinishSecondPoint_TooltipTitle_RESID L"\x041d\x0430\x0440\x0438\x0441\x043e\x0432\x0430\x0442\x044c \x043b\x0438\x043d\x0438\x044e \x0441\x0442\x0430\x0440\x0442\x0430" /* TooltipTitle cmdFinishSecondPoint_TooltipTitle_RESID: (null) */
+END
+
+STRINGTABLE 
+BEGIN
+    cmdFinishSecondPoint_TooltipDescription_RESID L"\x041d\x0430\x0440\x0438\x0441\x043e\x0432\x0430\x0442\x044c \x0432\x0442\x043e\x0440\x0443\x044e \x0442\x043e\x0447\x043a\x0443 \x043b\x0438\x043d\x0438\x0438 \x0441\x0442\x0430\x0440\x0442\x0430. \x0410\x0432\x0442\x043e\x043c\x043e\x0431\x0438\x043b\x044c  \x043f\x0440\x0435\x043a\x0440\x0430\x0442\x0438\x0442 \x0434\x0432\x0438\x0436\x0435\x043d\x0438\x0435 \x043d\x0430 \x044d\x0442\x043e\x0439 \x043b\x0438\x043d\x0438\x0438" /* TooltipDescription cmdFinishSecondPoint_TooltipDescription_RESID: (null) */
+END
+
+cmdFinishSecondPoint_LargeImages_RESID    BITMAP    "Finish32.bmp" /* LargeImages cmdFinishSecondPoint_LargeImages_RESID: (null) */
 STRINGTABLE 
 BEGIN
     cmdZoomIn_LabelTitle_RESID L"\x041f\x0440\x0438\x0431\x043b\x0438\x0437\x0438\x0442\x044c" /* LabelTitle cmdZoomIn_LabelTitle_RESID: (null) */

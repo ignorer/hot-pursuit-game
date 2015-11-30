@@ -61,13 +61,21 @@
         <Image Source="Start32.bmp"/>
       </Command.LargeImages>
     </Command>
-    <Command Name="Finish" Symbol="cmdFinish" Id="30106" LabelTitle="Финиш">
+    <Command Name="FinishFirstPoint" Symbol="cmdFinishFirstPoint" Id="30106" LabelTitle="Финиш - 1 точка">
       <Command.TooltipTitle>Нарисовать линию старта</Command.TooltipTitle>
-      <Command.TooltipDescription>Нарисовать линию старта. Автомобиль  прекратит движение на этой линии</Command.TooltipDescription>
+      <Command.TooltipDescription>Нарисовать первуяю точку линии старта. Автомобиль  прекратит движение на этой линии</Command.TooltipDescription>
       <Command.LargeImages>
         <Image Source="Finish32.bmp"/>
       </Command.LargeImages>
     </Command>
+    <Command Name="FinishSecondPoint" Symbol="cmdFinishSecondPoint" Id="30107" LabelTitle="Финиш - 2 точка">
+      <Command.TooltipTitle>Нарисовать линию старта</Command.TooltipTitle>
+      <Command.TooltipDescription>Нарисовать вторую точку линии старта. Автомобиль  прекратит движение на этой линии</Command.TooltipDescription>
+      <Command.LargeImages>
+        <Image Source="Finish32.bmp"/>
+      </Command.LargeImages>
+    </Command>    
+    
     <Command Name="ZoomIn" Symbol="cmdZoomIn" Id="30202" LabelTitle="Приблизить">
       <Command.TooltipTitle>Увеличить карту</Command.TooltipTitle>
       <Command.LargeImages>
@@ -112,12 +120,13 @@
             <Button CommandName="LoadMap"/>
             <Button CommandName="SaveMap"/>
           </Group>
-          <Group CommandName="GroupDraw" SizeDefinition ="FiveButtons">
+          <Group CommandName="GroupDraw" SizeDefinition ="SixButtons">
             <Button CommandName="Road" />
             <Button CommandName="Tree" />
             <Button CommandName="Wall" />
             <Button CommandName="Start" />
-            <Button CommandName="Finish" />
+            <Button CommandName="FinishFirstPoint" />
+            <Button CommandName="FinishSecondPoint" />
           </Group>
           <Group CommandName="GroupZoom" SizeDefinition ="TwoButtons">
             <Button CommandName="ZoomIn" />

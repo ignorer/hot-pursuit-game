@@ -3,7 +3,12 @@
 
 
 CMap::CMap() : sizeX( DEFAULT_SIZE_X ), sizeY( DEFAULT_SIZE_Y ), colorsNumber( DEFAULT_COLORS_NUMBER )
-{}
+{
+	finishFirstCoord = DEFAULT_FINISH_POINT;
+	finishSecondCoord = DEFAULT_FINISH_POINT;
+	prevTexture1 = 0;
+	prevTexture2 = 0;
+}
 
 
 CMap::~CMap()
@@ -36,13 +41,55 @@ void CMap::ClickCell( int i, int j )
 
 void CMap::ClickCell( int i, int j, BType bType )
 {
-    switch (bType) {
+    
+	switch (bType) {
         case BNone:  ClickCell( i, j ); break;
         case BTree:  numbers[i][j] = 0; break;
         case BRoad:  numbers[i][j] = 1; break;
         case BStart: numbers[i][j] = 2; break;
         case BWall:  numbers[i][j] = 3; break;
-		case BFinish: numbers[i][j] = 4; break;
+		case BFinish1: 
+			if( finishFirstCoord.first != -1 ) {
+				numbers[finishFirstCoord.first][finishFirstCoord.second] = prevTexture1;
+				if( finishFirstCoord.first == i && finishFirstCoord.second == j ) {
+					finishFirstCoord.first = -1;
+					finishFirstCoord.second = -1;
+				}
+				else {
+					prevTexture1 = numbers[i][j];
+					finishFirstCoord.first = i;
+					finishFirstCoord.second = j;
+					numbers[i][j] = 4;
+				}
+			}
+			else {
+				prevTexture1 = numbers[i][j];
+				finishFirstCoord.first = i;
+				finishFirstCoord.second = j;
+				numbers[i][j] = 4;
+			}
+			break;
+		case BFinish2:
+			if( finishSecondCoord.first != -1 ) {
+				numbers[finishSecondCoord.first][finishSecondCoord.second] = prevTexture1;
+				if( finishSecondCoord.first == i && finishSecondCoord.second == j ) {
+					finishSecondCoord.first = -1;
+					finishSecondCoord.second = -1;
+				}
+				else {
+					prevTexture1 = numbers[i][j];
+					finishSecondCoord.first = i;
+					finishSecondCoord.second = j;
+					numbers[i][j] = 4;
+				}
+			}
+			else {
+				prevTexture1 = numbers[i][j];
+				finishSecondCoord.first = i;
+				finishSecondCoord.second = j;
+				numbers[i][j] = 4;
+			}
+
     }
 }
 
@@ -73,6 +120,8 @@ void CMap::SaveMapToFile( std::ofstream & fout )
                 case 2: fout << 2 << " "; break;
                 case 3: fout << 3 << " "; break;
 				case 4: fout << 4 << " "; break;
+				case 5: fout << 5 << " "; break;
+				case 6: fout << 6 << " "; break;
             }
         }
         fout << std::endl;
@@ -150,6 +199,45 @@ void CMap::RestartMap()
 	}
 }
 
+void CMap::SetFinishCoord( int pointNum, int x, int y, int prevTexture ) {
+	if( pointNum == 1 ) {
+		finishFirstCoord.first = x;
+		finishFirstCoord.second = y;
+		prevTexture1 = prevTexture;
+	}
+	else {
+		finishSecondCoord.first = x;
+		finishSecondCoord.second = y;
+		prevTexture2 = prevTexture;
+	}
+};
+
+std::pair<int,int> CMap::GetFinishCoord( int pointNum ) {
+	if( pointNum == 1 ) {
+		return std::pair<int,int>(finishFirstCoord.first, finishFirstCoord.second);
+	}
+	else {
+		return std::pair<int, int>( finishSecondCoord.first, finishSecondCoord.second );
+	}
+}
+
+int CMap::GetPrevTexture( int num ) {
+	if( num == 1 ) {
+		return prevTexture1;
+	}
+	else {
+		return prevTexture2;
+	}
+}
+
+void CMap::SetPrevTexture( int num ) {
+	if( num == 1 ) {
+		prevTexture1 = num;
+	}
+	else {
+		prevTexture2 = num;
+	}
+}
 
 void CMap::SetSize( int x, int y )
 {

@@ -110,8 +110,11 @@ STDMETHODIMP CCommandHandler::Execute(
     case cmdStart:
         MainWindow.SetBrush( MainWindow.GetBrush() == BStart ? BNone : BStart );
         break;
-	case cmdFinish:
-		MainWindow.SetBrush( MainWindow.GetBrush() == BFinish ? BNone : BFinish );
+	case cmdFinishFirstPoint:
+		MainWindow.SetBrush( MainWindow.GetBrush() == BFinish1 ? BNone : BFinish1 );
+		break;
+	case cmdFinishSecondPoint:
+		MainWindow.SetBrush( MainWindow.GetBrush() == BFinish2?BNone:BFinish2 );
 		break;
 	default:
 		break;
