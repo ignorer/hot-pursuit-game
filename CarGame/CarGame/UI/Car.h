@@ -28,6 +28,10 @@ namespace UI {
 		// поворачивает машину для движения из координат (x1,y1) в (x2,y2)
 		void Rotate( float x1, float y1, float x2, float y2 );
 		GLuint texture;
+		GLuint explosion;
+		GLuint shield;
+		int explosionFrameNumber;
+
 
 	private:
 		void rotate( float &x, float &y, float angle ) const;
@@ -37,5 +41,6 @@ namespace UI {
 		Color color;
 		float alpha;
 		bool crashed;
+		bool shielded;
 	};
 }

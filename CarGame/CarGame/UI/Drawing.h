@@ -24,6 +24,7 @@ namespace UI {
 		static void MoveCars( const std::vector<int>& numbers, const std::vector<CCoordinates>& newCoordinates );
 		static void MoveCarsToStart( const std::vector<int>& numbers, const std::vector<CCoordinates>& newCoordinates );
 		static void DeleteCars( const std::vector<int>& numbers );
+		static void ExplodeCars( const std::vector<int>& numbers );
 
 		static void Start();
 		static void Stop();

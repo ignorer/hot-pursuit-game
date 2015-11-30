@@ -268,6 +268,23 @@ namespace UI
 		}
 	}
 
+	void CDrawing::ExplodeCars( const std::vector<int>& numbers )
+	{
+		const int numOfFrames = 6;		// number of frames in animation
+		const int animationSpeed = 50;	// speed of animation (lower is faster, 50 - 80 recommended)
+		const int multiplicator = 1;	// how many times show explosion
+		for( int j = 0; j < numOfFrames * multiplicator; ++j ) {
+			for( int i : numbers ) {
+				cars[i].explosionFrameNumber++;
+				cars[i].SetOpacity( 0.0f );
+			}
+			std::this_thread::sleep_for( std::chrono::milliseconds( animationSpeed ) );
+		}
+		for( int i : numbers ) {
+			cars[i].Crash();
+		}
+	}
+
 	void CDrawing::Start()
 	{
 		std::unique_lock<std::mutex> lock( mutex );
@@ -293,6 +310,13 @@ namespace UI
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\forest.png").c_str(), map.textureBoard );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\active.png").c_str(), map.textureActiveCell );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\finish.png").c_str(), map.textureFinish );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\oil.png").c_str(), map.textureOil );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\sand.png").c_str(), map.textureSand );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\wall.png").c_str(), map.textureWall );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\shieldToPickUp.png").c_str(), map.textureShieldToPickUp );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombActive.png").c_str(), map.textureBombActive );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombInactive.png").c_str(), map.textureBombInactive );
+		
 
 		//load textures for cars (depends on color)
 		std::string carFilename;
@@ -314,13 +338,15 @@ namespace UI
 				carFilename = RESOURCE_DIRECTORY + "Images\\car_red.png";
 			}
 			loadTexture( carFilename.c_str(), cars[i].texture );
+			loadTexture( (RESOURCE_DIRECTORY + "Images\\explosionAnimation.png").c_str(), cars[i].explosion );
+			loadTexture( (RESOURCE_DIRECTORY + "Images\\shieldActive.png").c_str(), cars[i].shield );
 		}
 	}
 
 	void CDrawing::keyboardFunction( unsigned char pressedKey, int x, int y )
 	{
 		std::unique_lock<std::mutex> lock( mutex );
-		if( pressedKey >= '1' && pressedKey <= '9' ) {
+		if( key >= '1' && key <= '9' ) {
 			key = pressedKey - '0';
 		} else {
 			key = -1;

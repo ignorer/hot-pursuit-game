@@ -19,7 +19,9 @@ namespace UI {
 		coords( startCoordinates ),
 		color( carColor ),
 		alpha( 1.0f ),
-		crashed( false )
+		crashed( false ),
+		shielded( false ),
+		explosionFrameNumber( 0 )
 	{}
 
 	Color CCar::GetColor() const
@@ -75,36 +77,75 @@ namespace UI {
 		}
 		glEnable( GL_TEXTURE_2D );
 		glBindTexture( GL_TEXTURE_2D, texture );
+		glTexEnvf( GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
 		CWindowCoordinates coord = transateToWcoord( coords.x, coords.y, cellSize, indent, mapSize );
 		float left = coord.x;
 		float right = coord.x + cellSize;
 		float bottom = coord.y - cellSize / 4;
 		float top = coord.y - 3 * cellSize / 4;
-		float Ax = left,
-			Ay = bottom,
-			Bx = right,
-			By = bottom,
-			Cx = right,
-			Cy = top,
-			Dx = left,
-			Dy = top;
-
-		float centerX = Dx - (Dx - Bx) / 2,
-			centerY = Dy - (Dy - By) / 2;
-		rotateCar( Ax, Ay, Bx, By, Cx, Cy, Dx, Dy, centerX, centerY, coords.angle );
 
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glBegin( GL_POLYGON );
 		{
 			glColor4f( 1, 1, 1, alpha );
-			glTexCoord2f( 0, 0 ); glVertex2f( Ax, Ay );
-			glTexCoord2f( 1, 0 ); glVertex2f( Bx, By );
-			glTexCoord2f( 1, 1 ); glVertex2f( Cx, Cy );
-			glTexCoord2f( 0, 1 ); glVertex2f( Dx, Dy );
+			float Ax = left,
+				Ay = bottom,
+				Bx = right,
+				By = bottom,
+				Cx = right,
+				Cy = top,
+				Dx = left,
+				Dy = top;
+
+			float centerX = Dx - (Dx - Bx) / 2,
+				centerY = Dy - (Dy - By) / 2;
+			rotateCar( Ax, Ay, Bx, By, Cx, Cy, Dx, Dy, centerX, centerY, coords.angle );
+			glTexCoord2f( 0.0f, 0.0f ); glVertex2f( Ax, Ay );
+			glTexCoord2f( 1.0f, 0.0f ); glVertex2f( Bx, By );
+			glTexCoord2f( 1.0f, 1.0f ); glVertex2f( Cx, Cy );
+			glTexCoord2f( 0.0f, 1.0f ); glVertex2f( Dx, Dy );
 		}
 		glEnd();
+
+		float carCenterX = coord.x + cellSize / 2;
+		float carCenterY = coord.y - cellSize / 2;
+		float delta = 2 * cellSize / 3;
+		left = carCenterX - delta,
+		bottom = carCenterY - delta,
+		right = carCenterX + delta,
+		top = carCenterY + delta;
+
+		if( explosionFrameNumber > 0 ) {
+			glBindTexture( GL_TEXTURE_2D, explosion );
+			glTexEnvf( GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+			glBegin( GL_POLYGON );
+			{
+				glColor4f( 1, 1, 1, 1 );
+				glTexCoord2f( ( explosionFrameNumber - 1.0f ) / 6, 1.0f ); glVertex2f( left, bottom );
+				glTexCoord2f( ( explosionFrameNumber - 1.0f ) / 6, 0.0f ); glVertex2f( right, bottom );
+				glTexCoord2f( explosionFrameNumber * 1.0f / 6, 0.0f ); glVertex2f( right, top );
+				glTexCoord2f( explosionFrameNumber * 1.0f / 6, 1.0f ); glVertex2f( left, top );
+			}
+			glEnd();
+		}
+
+		// shielded = true; for test
+		if( shielded ) {
+			glBindTexture( GL_TEXTURE_2D, shield );
+			glTexEnvf( GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+			glBegin( GL_POLYGON );
+			{
+				glColor4f( 1, 1, 1, 0.25 );	// shield is half-transparent
+				glTexCoord2f( 0.0f, 1.0f ); glVertex2f( left, bottom );
+				glTexCoord2f( 0.0f, 0.0f ); glVertex2f( right, bottom );
+				glTexCoord2f( 1.0f, 0.0f ); glVertex2f( right, top );
+				glTexCoord2f( 1.0f, 1.0f ); glVertex2f( left, top );
+			}
+			glEnd();
+		}
+
 		glDisable( GL_BLEND );
 		glDisable( GL_TEXTURE_2D );
 	}
