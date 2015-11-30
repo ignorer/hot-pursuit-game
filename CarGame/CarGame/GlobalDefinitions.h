@@ -9,8 +9,7 @@ enum PlayersTypes {
 	USER = 1, AI = 2
 };
 
-namespace Core
-{
+namespace Core {
 
 	enum Cell {
 		ROAD = 0, FOREST = 1, CAR = 2

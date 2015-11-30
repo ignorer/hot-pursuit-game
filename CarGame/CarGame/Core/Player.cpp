@@ -92,7 +92,7 @@ namespace Core {
 
 	void CPlayer::DecreaseShield()
 	{
-		--shieldLeft;
+		shieldLeft = shieldLeft > 0 ? --shieldLeft : 0;
 	}
 
 	void CPlayer::DropShield()

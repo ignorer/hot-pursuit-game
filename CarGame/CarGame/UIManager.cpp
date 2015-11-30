@@ -100,6 +100,11 @@ void CUIManager::ShowCrashes( const std::set<Core::CPlayer*>& crashedPlayers ) c
 	UI::CDrawing::DeleteCars( numbers );
 }
 
+void CUIManager::ShowPowerups( const std::map<Core::CCoordinates, PowerupType>& powerups ) const
+{
+	
+}
+
 void CUIManager::ShowGameResult( const std::vector<Core::CPlayer>& winners ) const
 {
 	gameResultWindow.SetWinners( winners );

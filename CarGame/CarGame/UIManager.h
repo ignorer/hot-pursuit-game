@@ -3,6 +3,7 @@
 #include <set>
 #include <vector>
 #include <thread>
+#include <map>
 #include <Windows.h>
 
 #include "UI/MapSettingsWindow.h"
@@ -27,6 +28,7 @@ public:
 	void Move( const std::vector<Core::CPlayer>& movedPlayers ) const;
 	void ShowCrashesAndRespawn( const std::set<Core::CPlayer*>& collidedPlayers ) const;
 	void ShowCrashes( const std::set<Core::CPlayer*>& crashedPlayers ) const;
+	void ShowPowerups( const std::map<Core::CCoordinates, PowerupType>& powerups ) const;
 	void ShowGameResult( const std::vector<Core::CPlayer>& winners ) const;
 	void SwitchToMainMenu() const;
 	void SwitchToSettings() const;

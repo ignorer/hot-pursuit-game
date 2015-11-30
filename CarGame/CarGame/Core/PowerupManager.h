@@ -17,6 +17,6 @@ namespace Core {
 		void HandleStep( std::vector<Core::CPlayer>& players );
 
 	private:
-		std::map<Core::CCoordinates, PowerupType> powerups;
+		std::map<CCoordinates, PowerupType> powerups;
 	};
 }
