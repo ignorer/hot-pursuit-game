@@ -26,13 +26,8 @@ namespace UI
 		GLuint textureRoad;
 		GLuint textureActiveCell;
 		GLuint textureFinish;
-		GLuint textureOil;
-		GLuint textureSand;
-		GLuint textureWall;
-		GLuint textureBombActive;
-		GLuint textureBombInactive;
-		GLuint textureShieldToPickUp;
 		GLuint textureMap;
+
 		void MarkHighlightedCells( const std::vector<Core::CCoordinates>& possibleMoves );
 		void UnmarkHighlightedCells( const std::vector<Core::CCoordinates>& possibleMoves );
 

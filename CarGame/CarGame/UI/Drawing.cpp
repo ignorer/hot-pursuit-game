@@ -10,6 +10,7 @@ namespace UI
 {
 	CMap CDrawing::map; // static data members must be explicitly defined in exactly one translation unit
 	std::vector<CCar> CDrawing::cars;
+	std::vector<CPowerup> CDrawing::powerups;
 	bool CDrawing::initialized = false;
 	bool CDrawing::started = false;
 	bool CDrawing::finished = false;
@@ -21,6 +22,13 @@ namespace UI
 	int CDrawing::window;
 	int CDrawing::key;
 	Core::CCoordinates CDrawing::mouse;
+	GLuint CDrawing::textureOil = 0;
+	GLuint CDrawing::textureSand = 0;
+	GLuint CDrawing::textureWall = 0;
+	GLuint CDrawing::textureLazer = 0;
+	GLuint CDrawing::textureBombActive = 0;
+	GLuint CDrawing::textureBombInactive = 0;
+	GLuint CDrawing::textureShieldToPickUp = 0;
 
 	void CDrawing::Init( int argc, char** argv )
 	{
@@ -125,6 +133,9 @@ namespace UI
 		map.Draw();
 		map.HighlightActiveCells();
 		map.DrawFinishLine( finishLine );
+		for( auto& powerup : powerups ) {
+			powerup.Draw( map.GetCellSize(), map.GetIndent(), map.GetSize() );
+		}
 		for( size_t i = 0; i < cars.size(); i++ ) {
 			cars[i].Draw( map.GetCellSize(), map.GetIndent(), map.GetSize() );
 		}
@@ -285,6 +296,27 @@ namespace UI
 		}
 	}
 
+	void CDrawing::SetPowerups( const std::map<Core::CCoordinates, PowerupType> powerupsInfo )
+	{
+		std::unique_lock<std::mutex> lock( mutex );
+		powerups.clear();
+		for( auto& info : powerupsInfo ) {
+			GLuint texture;
+			switch( info.second ) {
+				case WALL: texture = textureWall; break;
+				case SAND: texture = textureSand; break;
+				case OIL: texture = textureOil; break;
+				case MINE: texture = textureBombInactive; break;
+				case MINE_ACTIVE: texture = textureBombActive; break;
+				case LAZER: texture = textureLazer; break;
+				case SHIELD: texture = textureShieldToPickUp; break;
+				case NONE:
+				default: texture = -1; break;
+			}
+			powerups.push_back( CPowerup( info.second, UI::CCoordinates(info.first.x, info.first.y), texture ) );
+		}
+	}
+
 	void CDrawing::Start()
 	{
 		std::unique_lock<std::mutex> lock( mutex );
@@ -310,12 +342,13 @@ namespace UI
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\forest.png").c_str(), map.textureBoard );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\active.png").c_str(), map.textureActiveCell );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\finish.png").c_str(), map.textureFinish );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\oil.png").c_str(), map.textureOil );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\sand.png").c_str(), map.textureSand );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\wall.png").c_str(), map.textureWall );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\shieldToPickUp.png").c_str(), map.textureShieldToPickUp );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombActive.png").c_str(), map.textureBombActive );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombInactive.png").c_str(), map.textureBombInactive );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\oil.png").c_str(), textureOil );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\sand.png").c_str(), textureSand );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\wall.png").c_str(), textureWall );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\shieldToPickUp.png").c_str(), textureShieldToPickUp );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombActive.png").c_str(), textureBombActive );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombInactive.png").c_str(), textureBombInactive );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\lazer.png").c_str(), textureLazer );
 		
 
 		//load textures for cars (depends on color)
@@ -346,7 +379,7 @@ namespace UI
 	void CDrawing::keyboardFunction( unsigned char pressedKey, int x, int y )
 	{
 		std::unique_lock<std::mutex> lock( mutex );
-		if( key >= '1' && key <= '9' ) {
+		if( pressedKey >= '1' && pressedKey <= '9' ) {
 			key = pressedKey - '0';
 		} else {
 			key = -1;

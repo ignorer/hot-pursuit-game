@@ -1,6 +1,8 @@
-#include <Windows.h>
-#include "Core\GameMode.h"
+#pragma once
 
+#include <Windows.h>
+
+#include "Core\GameMode.h"
 
 namespace UI {
 	class CSettingsDialog {

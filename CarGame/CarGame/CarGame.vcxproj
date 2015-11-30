@@ -169,6 +169,7 @@
     <ClCompile Include="UI\Map.cpp" />
     <ClCompile Include="UI\MapSettingsWindow.cpp" />
     <ClCompile Include="UI\GameResultWindow.cpp" />
+    <ClCompile Include="UI\Powerup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Game.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="UI\Map.h" />
     <ClInclude Include="UI\MapSettingsWindow.h" />
     <ClInclude Include="UI\GameResultWindow.h" />
+    <ClInclude Include="UI\Powerup.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Resources\Images\active.png" />

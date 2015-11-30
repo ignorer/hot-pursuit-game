@@ -131,7 +131,7 @@ namespace UI {
 			glEnd();
 		}
 
-		// shielded = true; for test
+//		 shielded = true;// for test
 		if( shielded ) {
 			glBindTexture( GL_TEXTURE_2D, shield );
 			glTexEnvf( GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE );

@@ -7,6 +7,7 @@
 #include "UI/Map.h"
 #include "UI/Car.h"
 #include "UI/MainMenuWindow.h"
+#include "UI/Powerup.h"
 
 CUIManager::CUIManager( UI::CMainMenuWindow* _mainMenuWindow, HINSTANCE hInst ) :
 	mainMenuWindow( _mainMenuWindow ),
@@ -100,9 +101,9 @@ void CUIManager::ShowCrashes( const std::set<Core::CPlayer*>& crashedPlayers ) c
 	UI::CDrawing::DeleteCars( numbers );
 }
 
-void CUIManager::ShowPowerups( const std::map<Core::CCoordinates, PowerupType>& powerups ) const
+void CUIManager::ShowPowerups( const std::map<Core::CCoordinates, PowerupType>& powerupsInfo ) const
 {
-	
+	UI::CDrawing::SetPowerups( powerupsInfo );
 }
 
 void CUIManager::ShowGameResult( const std::vector<Core::CPlayer>& winners ) const
