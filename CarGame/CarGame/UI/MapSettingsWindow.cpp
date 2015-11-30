@@ -2,7 +2,9 @@
 #include <locale>
 #include <codecvt>
 #include <memory>
+#include <Windows.h>
 
+#include <CommCtrl.h>
 #include "resource.h"
 
 #include "UIManager.h"
@@ -12,8 +14,12 @@
 #include "UI/MapSettingsWindow.h"
 #include "UI/Drawing.h"
 #include "Core/GameMode.h"
+#include "SettingsDialog.h"
+#include "PlayerSettingsDialog.h"
+
 
 const wchar_t* const UI::CMapSettingsWindow::className = L"CMapSettingsWindow";
+bool UI::CSettingsDialog::sent = 0;
 
 bool UI::CMapSettingsWindow::RegisterClass( HINSTANCE hInst )
 {
@@ -50,11 +56,12 @@ bool UI::CMapSettingsWindow::Create()
 		200, 200, 400, 500, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
 
 	CreateMapNameControl();
+	
 
 	for( int i = 0; i < positionOwnerControls.size(); ++i ) {
 		positionOwnerControls[i] = CreateWindow( L"COMBOBOX", (std::wstring( L"Position " ) + std::to_wstring( i + 1 )).c_str(),
 			CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 40, 100 + 30 * i, 125, 80,
-			handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+			handle, HMENU( FIRST_POSITION_OWNER + i ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"None" ) );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"Player" ) );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"AI" ) );
@@ -100,6 +107,11 @@ void UI::CMapSettingsWindow::Destroy() const
 	::PostQuitMessage( 0 );
 }
 
+
+int UI::CMapSettingsWindow::GetPositionOwnersNumber() {
+	return positionOwnerControls.size();
+}
+
 void UI::CMapSettingsWindow::StartGame()
 {
 	try {
@@ -131,6 +143,20 @@ void UI::CMapSettingsWindow::ChangeSettings()
 		handle, static_cast<DLGPROC>( CSettingsDialog::DialogSettingsProc) );
 }
 
+void UI::CMapSettingsWindow::SetPlayer( HWND posOwnerHandle )
+{
+	const size_t MAX_LENGTH = 1024;
+	std::shared_ptr<wchar_t> text = std::shared_ptr<wchar_t>( new wchar_t[MAX_LENGTH] );
+	::GetWindowText( posOwnerHandle, text.get(), MAX_LENGTH );
+	std::wstring textString( text.get() );
+	if (textString == L"Player") {
+		CPlayerSettingsDialog::posOwner = posOwnerHandle;
+		::DialogBox( ::GetModuleHandle( NULL ), MAKEINTRESOURCE( IDD_DIALOG2 ),
+			handle, static_cast<DLGPROC>(CPlayerSettingsDialog::PlayerSettingsProc) );
+		
+	}
+}
+
 std::string UI::CMapSettingsWindow::GetMapName() const
 {
 	const size_t MAX_LENGTH = 1024;
@@ -149,10 +175,11 @@ std::vector<Core::CPlayer> UI::CMapSettingsWindow::GetPlayersInfo( const std::ve
 	for( int i = 0; i < min(12, coordinates.size()); ++i ) {
 		::GetWindowText( positionOwnerControls[i], text.get(), MAX_LENGTH );
 		std::wstring textString( text.get() );
-		if( textString == L"Player" ) {
-			result.push_back( Core::CPlayer( coordinates[i], playerNumber++, USER ) );
-		} else if( textString == L"AI" ) {
-			result.push_back( Core::CPlayer( coordinates[i], playerNumber++, AI ) );
+		if( textString == L"AI" ) {
+			result.push_back( Core::CPlayer( coordinates[i], playerNumber++, AI, L"AI" ) );
+		}
+		else if ( textString != L"None" ) {
+			result.push_back( Core::CPlayer( coordinates[i], playerNumber++, USER, textString ) );
 		}
 	}
 	return result;
@@ -186,7 +213,9 @@ LRESULT UI::CMapSettingsWindow::windowProc( HWND handle, UINT message, WPARAM wP
 			wnd->Destroy();
 			return 0;
 		case WM_COMMAND:
-			if ( wParam == wnd->BUTTON_START_GAME ) {
+			if ( HIWORD( wParam ) == CBN_SELCHANGE ) {
+				wnd->SetPlayer( reinterpret_cast<HWND>( lParam ) );
+			} else if ( wParam == wnd->BUTTON_START_GAME ) {
 				wnd->StartGame();
 			} else if ( wParam == wnd->BUTTON_BACK_TO_MENU ) {
 				wnd->BackToMenu();
@@ -198,133 +227,4 @@ LRESULT UI::CMapSettingsWindow::windowProc( HWND handle, UINT message, WPARAM wP
 	}
 
 	return ::DefWindowProc( handle, message, wParam, lParam );
-}
-
-
-void UI::CSettingsDialog::Init( HWND hwndDlg ) {
-	Core::CGameMode::MovementMode initMovState = Core::CGameMode::GetMovementMode();
-	Core::CGameMode::DeathPenalty initDeathPenalty = Core::CGameMode::GetDeathPenalty();
-	Core::CGameMode::ObjectRate initBarrierRate = Core::CGameMode::GetObjectRate();
-
-	::CheckRadioButton( hwndDlg, IDC_SEQUENTIAL_MOV, IDC_CONCURRENT_MOV, CModeToItemIdConverter::getMoveItemId( initMovState ) );
-	::CheckRadioButton( hwndDlg, IDC_DESTROY_CRASH, IDC_STOP_CRASH, CModeToItemIdConverter::getCrashItemId( initDeathPenalty ) );
-	::CheckRadioButton( hwndDlg, IDC_NO_BARRIERS, IDC_MANY_BARRIERS, CModeToItemIdConverter::getBarrierItemId( initBarrierRate ) );
-	
-	HWND dialogEditCtrl = ::GetDlgItem( hwndDlg, IDC_EDIT1 );
-	::SetWindowText( dialogEditCtrl, std::to_wstring( Core::CGameMode::GetLapCount() ).c_str() );
-}
-
-void UI::CSettingsDialog::OnDialogOk( HWND hwndDlg, WPARAM wParam )
-{
-	Core::CGameMode::MovementMode moveStatus = ( IsDlgButtonChecked ( hwndDlg, IDC_SEQUENTIAL_MOV ) == BST_CHECKED ) ?
-												Core::CGameMode::SEQUENTIAL : Core::CGameMode::CONCURRENT;
-	Core::CGameMode::DeathPenalty crashStatus;
-	if ( IsDlgButtonChecked ( hwndDlg, IDC_DESTROY_CRASH ) == BST_CHECKED ) {
-		crashStatus = Core::CGameMode::DESTROY;
-	}
-	else if ( IsDlgButtonChecked ( hwndDlg, IDC_START_CRASH ) == BST_CHECKED ) {
-		crashStatus = Core::CGameMode::TO_START;
-	}
-	else {
-		crashStatus = Core::CGameMode::STOP;
-	}
-	
-	Core::CGameMode::ObjectRate barriersRate;
-	if ( IsDlgButtonChecked ( hwndDlg, IDC_NO_BARRIERS ) == BST_CHECKED ) {
-		barriersRate = Core::CGameMode::NO;
-	}
-	else if ( IsDlgButtonChecked ( hwndDlg, IDC_NORMAL_BARRIERS ) == BST_CHECKED ) {
-		barriersRate = Core::CGameMode::NORMAL;
-	}
-	else if ( IsDlgButtonChecked ( hwndDlg, IDC_FEW_BARRIERS ) == BST_CHECKED ) {
-		barriersRate = Core::CGameMode::FEW;
-	}
-	else {
-		barriersRate = Core::CGameMode::MANY;
-	}
-
-	int lapCount = GetLapsNumber( hwndDlg, IDC_EDIT1 );
-	Core::CGameMode::Init ( moveStatus, crashStatus, lapCount, barriersRate );
-	::EndDialog( hwndDlg, wParam );
-}
-
-void UI::CSettingsDialog::OnDialogCancel( HWND hwndDlg, WPARAM wParam )
-{
-	::EndDialog( hwndDlg, wParam );
-}
-
-int UI::CSettingsDialog::GetLapsNumber( HWND hwndDlg, int editId )
-{
-	const size_t MAX_LENGTH = 1024;
-	std::shared_ptr<wchar_t> text = std::shared_ptr<wchar_t>( new wchar_t[MAX_LENGTH] );
-	::GetDlgItemText( hwndDlg, editId, text.get(), MAX_LENGTH );
-	return std::stoi( text.get() );
-}
-
-BOOL CALLBACK UI::CSettingsDialog::DialogSettingsProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam )
-{
-	switch (message)
-	{
-	case WM_INITDIALOG:
-		CSettingsDialog::Init( hwndDlg );
-		return TRUE;
-	case WM_COMMAND:
-		switch (LOWORD( wParam ))
-		{
-			case IDOK:
-				CSettingsDialog::OnDialogOk( hwndDlg, wParam );
-				return TRUE;
-			case IDCANCEL:
-				CSettingsDialog::OnDialogCancel( hwndDlg, wParam );
-				return TRUE;
-			default:
-				return FALSE;
-		}
-	}
-	return FALSE;
-}
-
-int UI::CModeToItemIdConverter::getMoveItemId( Core::CGameMode::MovementMode mode ) {
-	return ( mode == Core::CGameMode::SEQUENTIAL )? IDC_SEQUENTIAL_MOV : IDC_CONCURRENT_MOV;
-}
-
-int UI::CModeToItemIdConverter::getCrashItemId( Core::CGameMode::DeathPenalty mode ) {
-	int crashItemId = -1;
-	switch (mode)
-	{
-	case Core::CGameMode::DESTROY:
-		crashItemId = IDC_DESTROY_CRASH;
-		break;
-	case Core::CGameMode::TO_START:
-		crashItemId = IDC_START_CRASH;
-		break;
-	case Core::CGameMode::STOP:
-		crashItemId = IDC_STOP_CRASH;
-		break;
-	default:
-		break;
-	}
-	return crashItemId;
-}
-
-int UI::CModeToItemIdConverter::getBarrierItemId( Core::CGameMode::ObjectRate mode ) {
-	int barrierRateId = -1;
-	switch (mode)
-	{
-		case Core::CGameMode::NO:
-			barrierRateId = IDC_NO_BARRIERS;
-			break;
-		case Core::CGameMode::FEW:
-			barrierRateId = IDC_FEW_BARRIERS;
-			break;
-		case Core::CGameMode::NORMAL:
-			barrierRateId = IDC_NORMAL_BARRIERS;
-			break;
-		case Core::CGameMode::MANY:
-			barrierRateId = IDC_MANY_BARRIERS;
-			break;
-		default:
-			break;
-	}
-	return barrierRateId;
 }

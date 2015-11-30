@@ -33,9 +33,6 @@
     <ClInclude Include="IPlayerState.h">
       <Filter>StrategyDll</Filter>
     </ClInclude>
-    <ClInclude Include="StrategyDll.h">
-      <Filter>StrategyDll</Filter>
-    </ClInclude>
     <ClInclude Include="CMap.hpp">
       <Filter>StrategyDll</Filter>
     </ClInclude>
@@ -44,6 +41,12 @@
     </ClInclude>
     <ClInclude Include="AStar\AStarStrategy.h">
       <Filter>AStar</Filter>
+    </ClInclude>
+    <ClInclude Include="StrategyDll.h">
+      <Filter>StrategyDll</Filter>
+    </ClInclude>
+    <ClInclude Include="IStrategy.h">
+      <Filter>StrategyDll</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

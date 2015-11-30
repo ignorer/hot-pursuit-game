@@ -1,7 +1,7 @@
 ﻿#include "Core/Player.h"
 
 namespace Core {
-	CPlayer::CPlayer( const CCoordinates& coordinates, size_t playerNumber, PlayersTypes playerType ) :
+	CPlayer::CPlayer( const CCoordinates& coordinates, size_t playerNumber, PlayersTypes playerType, std::wstring playerName ) :
 		position( coordinates ),
 		inertia( 0, 0 ),
 		initialPosition( coordinates ),
@@ -11,7 +11,8 @@ namespace Core {
 		number( playerNumber ),
 		type( playerType ),
 		penalty( 0 ),
-		shieldLeft( 0 )
+		shieldLeft( 0 ),
+		name( playerName )
 	{}
 
 	void CPlayer::GoToStart()
@@ -27,14 +28,14 @@ namespace Core {
 		IncreaseLaps( -count );
 	}
 
-	void CPlayer::IncreaseLaps( int count)
+	void CPlayer::IncreaseLaps( int count )
 	{
 		lapCount += count;
 	}
 
 	CCoordinates CPlayer::convertFromDirectionCode( Direction directionCode ) const
 	{
-		switch( directionCode ) {
+		switch (directionCode) {
 			case SW:
 				return CCoordinates( -1, 1 );
 			case S:
@@ -58,16 +59,16 @@ namespace Core {
 		}
 	}
 
-	std::vector<CCoordinates>  CPlayer::PossibleMoves(const CSize& size)
+	std::vector<CCoordinates>  CPlayer::PossibleMoves( const CSize& size )
 	{
 		std::vector<CCoordinates> moves;
 		for (int i = -1; i <= 1; ++i) {
 			for (int j = -1; j <= 1; ++j) {
-				CCoordinates direction(i, j);
-				if (DirectionIsValid(direction, size))
+				CCoordinates direction( i, j );
+				if (DirectionIsValid( direction, size ))
 				{
-					CCoordinates coord(position.x + inertia.x + direction.x, position.y + inertia.y + direction.y);
-					moves.push_back(coord);
+					CCoordinates coord( position.x + inertia.x + direction.x, position.y + inertia.y + direction.y );
+					moves.push_back( coord );
 				}
 			}
 		}
@@ -133,6 +134,11 @@ namespace Core {
 	size_t CPlayer::GetNumber() const
 	{
 		return number;
+	}
+
+	std::wstring CPlayer::GetName() const
+	{
+		return name;
 	}
 
 	PlayersTypes CPlayer::GetType() const

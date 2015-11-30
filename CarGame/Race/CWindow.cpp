@@ -46,6 +46,10 @@ CWindow::CWindow():
     brushes.push_back( ::CreatePatternBrush( start ) );
 	HBITMAP wall = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_WALL ) );
 	brushes.push_back( ::CreatePatternBrush( wall ) );
+	HBITMAP finish1 = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_FINISH ) );
+	brushes.push_back( ::CreatePatternBrush( finish1 ) );
+	HBITMAP finish2 = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_FINISH ) );
+	brushes.push_back( ::CreatePatternBrush( finish2 ) );
 }
 
 CWindow::~CWindow()
@@ -172,11 +176,22 @@ void CWindow::OnPaint()
             ::Rectangle( backbuffDC, rect.left, rect.top, rect.right, rect.bottom );
         }
     }
+	std::pair<int, int> fc = map.GetFinishCoord( 1 );
+	std::pair<int, int> sc = map.GetFinishCoord( 2 );
+	if( fc.first != -1 && sc.first != -1 ) {
+	
+		HBRUSH brushForLine =  CreateHatchBrush( HS_HORIZONTAL, RGB( 122, 122, 122 ) );
+		::SelectObject( backbuffDC, brushForLine );
+		::MoveToEx( backbuffDC,( fc.second + 0.5 ) * cellSize + leftMargin, ribbonHeight + (fc.first + 0.5 ) * cellSize,  NULL );
+		::LineTo( backbuffDC, (sc.second + 0.5 ) * cellSize + leftMargin,ribbonHeight  + (sc.first + 0.5 ) * cellSize );
+		::DeleteBrush( brushForLine );
+	}
+	
     ::BitBlt( hdc, 0, 0, width, height + ribbonHeight, backbuffDC, 0, 0, SRCCOPY );
 
     ::SelectObject( backbuffDC, oldBitmap );
     ::DeleteObject( backbuffer );
-    ::DeleteDC( backbuffDC );
+	::DeleteDC( backbuffDC );
     ::ReleaseDC( handle, hdc );
 
     ::EndPaint( handle, &ps );

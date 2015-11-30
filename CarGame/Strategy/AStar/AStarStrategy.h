@@ -1,32 +1,40 @@
-#pragma once
+п»ї#pragma once
 #include <utility>
 #include <stack>
 #include <unordered_map>
 
 #include "../CMap.hpp"
 #include "../CPlayerState.hpp"
+#include "../IStrategy.h"
 
-class CAStarStrategy {
+class CAStarStrategy : public IStrategy {
 public:
 	CAStarStrategy( const Map& map, const PlayerState& initState );
 
-	// Возвращает, в каком направлении нужно сдвинуться по оптимальному маршруту
-	std::pair<int, int> GetNextStep();
+	// Р’РѕР·РІСЂР°С‰Р°РµС‚, РІ РєР°РєРѕРј РЅР°РїСЂР°РІР»РµРЅРёРё РЅСѓР¶РЅРѕ СЃРґРІРёРЅСѓС‚СЊСЃСЏ РїРѕ РѕРїС‚РёРјР°Р»СЊРЅРѕРјСѓ РјР°СЂС€СЂСѓС‚Сѓ
+	int GetNextStep();
 
 private:
-	// Предподсчет расстояний до финиша по чебышевской метрике
+	// РџСЂРµРґРїРѕРґСЃС‡РµС‚ СЂР°СЃСЃС‚РѕСЏРЅРёР№ РґРѕ С„РёРЅРёС€Р° РїРѕ С‡РµР±С‹С€РµРІСЃРєРѕР№ РјРµС‚СЂРёРєРµ
 	void calculateDistancesToFinish();
-	// Ищет пусть A*
+	// РС‰РµС‚ РїСѓСЃС‚СЊ A*
 	void findPath( const PlayerState& initState );
-	// Подсчет эвристики
+	// РџРѕРґСЃС‡РµС‚ СЌРІСЂРёСЃС‚РёРєРё
 	int calculateHeuristic( const PlayerState& state, const PlayerState& nextState );
 
 	void reconstructPath( std::unordered_map<PlayerState, PlayerState, PlayerState::CPlayerStateHasher>& cameFrom, 
 		const PlayerState& goal );
+
+	// РџРµСЂРµРІРѕРґ РїР°СЂС‹ РєРѕРѕСЂРґРёРЅР°С‚ РІ С†РёС„СЂС‹ РЅР° РєР»Р°РІРёР°С‚СѓСЂРµ, СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ СЌС‚РѕРјСѓ РЅР°РїСЂР°РІР»РµРЅРёСЋ
+	int getMovementDirection( int dx, int dy );
 	
-	// Расстояние до финиша из клетки
+	// Р Р°СЃСЃС‚РѕСЏРЅРёРµ РґРѕ С„РёРЅРёС€Р° РёР· РєР»РµС‚РєРё
 	std::vector<std::vector<int>> distancesToFinish;
-	std::stack<std::pair<int, int>> optimalPath;
+	std::vector<std::pair<int, int>> optimalPath;
+	int pathPosition = 0;
+
+	PlayerState finalState;
+	std::unordered_map<PlayerState, int, PlayerState::CPlayerStateHasher> fScore; // Р¤СѓРЅРєС†РёСЏ С‚РµРєСѓС‰РµР№ СЃС‚РѕРёРјРѕСЃС‚Рё + СЌРІСЂРёСЃС‚РёРєР°
 
 	Map map;
 

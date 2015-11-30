@@ -66,7 +66,17 @@ void PlayerState::dropVelocityVector() {
     velocityVector.second = 0;
 }
 
-int PlayerState::GetXVelocity() const {
+void PlayerState::Move( int dx, int dy )
+{
+	changePositionUsingVelocityVector();
+	velocityVector.first += dx;
+	velocityVector.second += dy;
+	position.first += dx;
+	position.second += dy;
+}
+
+int PlayerState::GetXVelocity() const
+{
     return velocityVector.first;
 }
 

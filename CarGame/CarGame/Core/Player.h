@@ -12,7 +12,7 @@ namespace Core {
 
 	class CPlayer {
 	public:
-		CPlayer( const CCoordinates& coordinates, size_t playerNumber, PlayersTypes playerType );
+		CPlayer( const CCoordinates& coordinates, size_t playerNumber, PlayersTypes playerType, std::wstring playerName );
 
 		void Die();
 		void GoToStart();
@@ -28,6 +28,7 @@ namespace Core {
 		CCoordinates GetPreviousPosition() const;
 		CCoordinates GetInitialPosition() const;
 		size_t GetNumber() const;
+		std::wstring GetName() const;
 		PlayersTypes GetType() const;
 		bool IsAlive() const;
 		int GetLaps() const;
@@ -51,6 +52,7 @@ namespace Core {
 		bool isAlive;
 		int lapCount;
 		size_t number;
+		std::wstring name;
 		PlayersTypes type;
 		int shieldLeft;
 		int penalty;
