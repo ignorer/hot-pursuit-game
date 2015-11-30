@@ -1,5 +1,4 @@
 ﻿#include <vector>
-#include <algorithm>
 
 #include "Core/Game.h"
 #include "Core/GameMode.h"
@@ -270,6 +269,7 @@ namespace Core {
 					player.DecreaseShield();
 				}
 				powerupManager.HandleStep( players );
+				manager->ShowPowerups( powerupManager.GetPowerups() );
 
 				findCollisions( crashedPlayers );
 				findCrashes( crashedPlayers );

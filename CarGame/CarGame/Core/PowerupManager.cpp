@@ -1,7 +1,14 @@
+#include <ctime>
+
 #include "Core/PowerupManager.h"
 #include "Core/Map.h"
 
 namespace Core {
+	CPowerupManager::CPowerupManager()
+	{
+		std::srand( std::time( nullptr ) );
+	}
+
 	PowerupType CPowerupManager::GetPowerup( const Core::CCoordinates& coordinates ) const
 	{
 		return GetPowerup( coordinates.x, coordinates.y );
@@ -13,6 +20,11 @@ namespace Core {
 			return NONE;
 		}
 		return powerups.at( CCoordinates( x, y ) );
+	}
+
+	const std::map<CCoordinates, PowerupType>& CPowerupManager::GetPowerups() const
+	{
+		return powerups;
 	}
 
 	void CPowerupManager::GeneratePowerup( const Core::CMap& map )
@@ -67,7 +79,7 @@ namespace Core {
 					powerups.erase( player.GetPosition() );
 					break;
 				case LAZER:
-					// to do
+					// TODO
 					powerups.erase( player.GetPosition() );
 					break;
 				case SHIELD:

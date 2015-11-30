@@ -2,11 +2,13 @@
 
 #include <vector>
 #include <mutex>
+#include <map>
 
 #include <GL/glut.h>
 
 #include "UI/Map.h"
 #include "UI/Car.h"
+#include "UI/Powerup.h"
 
 /* OpenGL needs static functions and command line arguments for drawing*/
 
@@ -25,6 +27,7 @@ namespace UI {
 		static void MoveCarsToStart( const std::vector<int>& numbers, const std::vector<CCoordinates>& newCoordinates );
 		static void DeleteCars( const std::vector<int>& numbers );
 		static void ExplodeCars( const std::vector<int>& numbers );
+		static void SetPowerups( const std::map<Core::CCoordinates, PowerupType> powerupsInfo );
 
 		static void Start();
 		static void Stop();
@@ -43,14 +46,22 @@ namespace UI {
 		static void MarkPossibleMoves( const std::vector<Core::CCoordinates>& possibleMoves );
 		static void UnMarkPossibleMoves( const std::vector<Core::CCoordinates>& possibleMoves );
 
-		static Core::CCoordinates translateToCoord( int x, int y, float cellSize );
+		static GLuint textureOil;
+		static GLuint textureSand;
+		static GLuint textureWall;
+		static GLuint textureBombActive;
+		static GLuint textureBombInactive;
+		static GLuint textureShieldToPickUp;
+		static GLuint textureLazer;
 
 	private:
 		static void display();
 		static void reshape( int width, int height );
+		static void timer( int value );
+
 		static void load();
 		static void loadTexture( const char*, GLuint& texture );
-		static void timer( int value );
+		static Core::CCoordinates translateToCoord( int x, int y, float cellSize );
 
 		static bool initialized;
 		static bool started;
@@ -59,6 +70,7 @@ namespace UI {
 		static bool justStartedFlag;
 		static CMap map;
 		static std::vector<CCar> cars;
+		static std::vector<CPowerup> powerups;
 		static std::pair<CCoordinates, CCoordinates> finishLine;
 		static std::mutex mutex;
 		static std::string windowName;

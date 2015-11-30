@@ -7,12 +7,12 @@
 namespace UI {
 	class CPowerup {
 	public:
-		CPowerup( PowerupType type, const CCoordinates& coordinates, GLuint texture )
-			: type( type ),
-			coordinates( coordinates ),
-			texture( texture )
-		{
-		}
+		CPowerup( PowerupType type, const CCoordinates& coordinates, GLuint texture );
+
+		PowerupType GetType() const;
+		CCoordinates GetCoordinates() const;
+
+		void Draw( float cellSize, CWindowCoordinates indent, CSize mapSize ) const;
 
 	private:
 		PowerupType type;

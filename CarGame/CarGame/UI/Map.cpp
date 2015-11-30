@@ -17,9 +17,9 @@ namespace UI {
 	CMap::CMap( const std::vector<std::vector<int>>& map_data ) :
 		textureBoard( 0 ),
 		textureRoad( 0 ),
-		textureMap( 0 ),
 		textureActiveCell( 0 ),
 		textureFinish( 0 ),
+		textureMap( 0 ),
 		map( map_data ),
 		cellSize( 0 ),
 		indent( 0, 0 ),
