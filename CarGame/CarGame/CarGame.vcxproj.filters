@@ -78,9 +78,6 @@
     <ClCompile Include="SettingsDialog.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerSettingsDialog.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\Powerup.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
@@ -141,9 +138,6 @@
       <Filter>Source Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="SettingsDialog.h">
-      <Filter>Source Files\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerSettingsDialog.h">
       <Filter>Source Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\Powerup.h">
