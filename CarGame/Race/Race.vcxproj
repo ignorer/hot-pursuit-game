@@ -47,6 +47,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <ExecutablePath>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Bin;$(ExecutablePath)</ExecutablePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -95,7 +97,9 @@ cmd /c "("$(DevEnvDir)..\..\VC\bin\vcvars32.bat") &amp;&amp; ("$(DevEnvDir)..\..
     <ClCompile Include="CMap.cpp" />
     <ClCompile Include="CWindow.cpp" />
     <ClCompile Include="Race.cpp" />
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Ribbon.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -106,9 +110,12 @@ cmd /c "("$(DevEnvDir)..\..\VC\bin\vcvars32.bat") &amp;&amp; ("$(DevEnvDir)..\..
     <Image Include="..\..\Pictures\Road.bmp" />
     <Image Include="..\..\Pictures\Start.bmp" />
     <Image Include="..\..\Pictures\Tree.bmp" />
-    <Image Include="bitmap1.bmp" />
     <Image Include="Exit16.bmp" />
     <Image Include="Exit32.bmp" />
+    <Image Include="finish.bmp" />
+    <Image Include="Finish32.bmp">
+      <DeploymentContent>false</DeploymentContent>
+    </Image>
     <Image Include="icon.ico" />
     <Image Include="New16.bmp" />
     <Image Include="New32.bmp" />
@@ -118,6 +125,7 @@ cmd /c "("$(DevEnvDir)..\..\VC\bin\vcvars32.bat") &amp;&amp; ("$(DevEnvDir)..\..
     <Image Include="Save16.bmp" />
     <Image Include="Save32.bmp" />
     <Image Include="Start.bmp" />
+    <Image Include="Start32.bmp" />
     <Image Include="Tree.bmp" />
     <Image Include="wall.bmp" />
   </ItemGroup>
