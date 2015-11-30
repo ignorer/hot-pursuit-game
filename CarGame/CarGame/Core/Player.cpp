@@ -9,7 +9,9 @@ namespace Core {
 		isAlive( true ),
 		lapCount( 0 ),
 		number( playerNumber ),
-		type( playerType )
+		type( playerType ),
+		penalty( 0 ),
+		shieldLeft( 0 )
 	{}
 
 	void CPlayer::GoToStart()
@@ -75,6 +77,26 @@ namespace Core {
 	void CPlayer::SetInertia( CCoordinates newInertia )
 	{
 		inertia = newInertia;
+	}
+
+	void CPlayer::SetPenalty( int newPenalty )
+	{
+		penalty = newPenalty;
+	}
+
+	void CPlayer::ActivateShield()
+	{
+		shieldLeft = 5;
+	}
+
+	void CPlayer::DecreaseShield()
+	{
+		--shieldLeft;
+	}
+
+	void CPlayer::DropShield()
+	{
+		shieldLeft = 0;
 	}
 
 	void CPlayer::Move( Direction direction_code )
@@ -143,6 +165,16 @@ namespace Core {
 	int CPlayer::GetLaps() const
 	{
 		return lapCount;
+	}
+
+	int CPlayer::GetPenalty() const
+	{
+		return penalty;
+	}
+
+	int CPlayer::GetShield() const
+	{
+		return shieldLeft;
 	}
 
 	bool CPlayer::operator< ( const CPlayer& player ) const

@@ -31,11 +31,17 @@ namespace Core {
 		PlayersTypes GetType() const;
 		bool IsAlive() const;
 		int GetLaps() const;
+		int GetPenalty() const;
+		int GetShield() const;
 
 		bool operator< ( const CPlayer& player ) const;
 
 		std::vector<CCoordinates> PossibleMoves( const CSize& size );
 		void SetInertia( CCoordinates newInertia );
+		void SetPenalty( int newPenalty );
+		void ActivateShield();
+		void DecreaseShield();
+		void DropShield();
 
 	private:
 		CCoordinates position;
@@ -46,6 +52,8 @@ namespace Core {
 		int lapCount;
 		size_t number;
 		PlayersTypes type;
+		int shieldLeft;
+		int penalty;
 
 		CCoordinates convertFromDirectionCode( Direction directionCode ) const;
 	};

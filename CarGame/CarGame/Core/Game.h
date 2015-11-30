@@ -5,6 +5,7 @@
 
 #include "Core/Map.h"
 #include "Core/Player.h"
+#include "Core/PowerupManager.h"
 #include "UIManager.h"
 #include "AI/IPlayerState.h"
 #include "AI/IMap.h"
@@ -27,6 +28,7 @@ namespace Core {
 		CMap map;
 		std::vector<CPlayer> players;
 		const CUIManager* manager;
+		CPowerupManager powerupManager;
 
 		STRATEGY_PROC StrategyFunc;
 		PLAYER_STATE_FACTORY_PROC GetPlayerState;

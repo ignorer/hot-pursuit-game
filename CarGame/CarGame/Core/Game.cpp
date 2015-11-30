@@ -233,7 +233,7 @@ namespace Core {
 		} else if( penalty == CGameMode::STOP ) {
 			for( auto player : crashedPlayers ) {
 				player->SetInertia( CCoordinates() );
-				// здесь вкрутить пропуск хода
+				player->SetPenalty( 1 );
 			}
 		}
 	}
@@ -246,13 +246,22 @@ namespace Core {
 		std::set<CPlayer*> crashedPlayers;
 
 		do {
+			powerupManager.GeneratePowerup( map );
 			if( CGameMode::GetMovementMode() == CGameMode::CONCURRENT ) {
 				for( size_t i = 0; i < players.size(); ++i ) {
 					if( players[i].IsAlive() ) {
-						turnOfPlayer( players[i], crashedPlayers );
+						if( players[i].GetPenalty() > 0 ) {
+							players[i].SetPenalty( players[i].GetPenalty() - 1 );
+						} else {
+							turnOfPlayer( players[i], crashedPlayers );
+						}
 					}
 				}
 				manager->Move( players );
+				for( auto& player : players ) {
+					player.DecreaseShield();
+				}
+				powerupManager.HandleStep( players );
 
 				findCollisions( crashedPlayers );
 				findCrashes( crashedPlayers );
@@ -260,8 +269,13 @@ namespace Core {
 				crashedPlayers.clear();
 			} else if( CGameMode::GetMovementMode() == CGameMode::SEQUENTIAL ) {
 				for( size_t i = 0; i < players.size(); ++i ) {
-					if( players[i].IsAlive() ) {
-						turnOfPlayer( players[i], crashedPlayers );
+					if( players[i].IsAlive( ) ) {
+						if( players[i].GetPenalty( ) > 0 ) {
+							players[i].SetPenalty( players[i].GetPenalty( ) - 1 );
+						} else {
+							turnOfPlayer( players[i], crashedPlayers );
+							players[i].DecreaseShield();
+						}
 						manager->Move( {players[i]} );
 					}
 

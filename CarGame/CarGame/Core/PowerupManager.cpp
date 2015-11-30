@@ -12,7 +12,7 @@ namespace Core {
 		if( powerups.find( CCoordinates( x, y ) ) == powerups.end() ) {
 			return NONE;
 		}
-		return powerups.at(CCoordinates( x, y ));
+		return powerups.at( CCoordinates( x, y ) );
 	}
 
 	void CPowerupManager::GeneratePowerup( const Core::CMap& map )
@@ -25,7 +25,7 @@ namespace Core {
 			int x = std::rand() % map.GetSize().second;
 			if( map.GetField()[y][x] == ROAD && powerups.find( CCoordinates( x, y ) ) == powerups.end() ) {
 				int type = std::rand() % 8;
-				if( type != MINE_ACTIVE && type != NONE ) {
+				if( type != NONE ) {
 					powerups[Core::CCoordinates( x, y )] = PowerupType( type );
 					return;
 				}
@@ -35,6 +35,47 @@ namespace Core {
 
 	void CPowerupManager::HandleStep( std::vector<Core::CPlayer>& players )
 	{
-		// тут будет много кода
+		for( auto& player : players ) {
+			if( GetPowerup( player.GetPosition().x, player.GetPosition().y ) == NONE ) {
+				continue;
+			}
+			switch( powerups[player.GetPosition()] ) {
+				case WALL:
+					// to do
+					break;
+				case SAND:
+					player.SetInertia( { 0, 0 } );
+					powerups.erase( player.GetPosition() );
+					break;
+				case OIL:
+					player.SetInertia( { 0, 0 } );
+					while( true ) {
+						int direction = std::rand() % 9 + 1;
+						if( direction != 5 ) {
+							player.Move( Direction( direction ) );
+							break;
+						}
+					}
+					player.SetInertia( { 0, 0 } );
+					powerups.erase( player.GetPosition() );
+					break;
+				case MINE:
+					powerups[player.GetPosition()] = MINE_ACTIVE;
+					break;
+				case MINE_ACTIVE:
+					player.Die( );
+					powerups.erase( player.GetPosition() );
+					break;
+				case LAZER:
+					// to do
+					powerups.erase( player.GetPosition() );
+					break;
+				case SHIELD:
+					player.ActivateShield();
+					powerups.erase( player.GetPosition() );
+					break;
+				default: break;
+			}
+		}
 	}
 }
