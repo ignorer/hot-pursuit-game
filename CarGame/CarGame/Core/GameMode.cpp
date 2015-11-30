@@ -5,13 +5,16 @@ namespace Core {
 	CGameMode::DeathPenalty CGameMode::deathPenalty = DESTROY;
 	int CGameMode::lapCount = 1;
 	CGameMode::ObjectRate CGameMode::objectRate = NO;
+	CGameMode::ObjectChangeModel CGameMode::objectChangeModel = NO_CHANGE;
 
-	void CGameMode::Init( MovementMode _movementMode, DeathPenalty _deathPenalty, int _lapCount, ObjectRate _objectRate )
+	void CGameMode::Init( MovementMode _movementMode, DeathPenalty _deathPenalty, int _lapCount, 
+		ObjectRate _objectRate, ObjectChangeModel _objectChangeModel )
 	{
 		movementMode = _movementMode;
 		deathPenalty = _deathPenalty;
 		lapCount = _lapCount;
 		objectRate = _objectRate;
+		objectChangeModel = _objectChangeModel;
 	}
 
 	CGameMode::MovementMode CGameMode::GetMovementMode()
@@ -29,8 +32,19 @@ namespace Core {
 		return lapCount;
 	}
 
+	int CGameMode::GetMaxLapsCount()
+	{
+		return maxLapsCount;
+	}
+
 	CGameMode::ObjectRate CGameMode::GetObjectRate()
 	{
 		return objectRate;
 	}
+
+	CGameMode::ObjectChangeModel CGameMode::GetObjectChangeModel()
+	{
+		return objectChangeModel;
+	}
+
 }

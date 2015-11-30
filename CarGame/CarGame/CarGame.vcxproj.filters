@@ -75,6 +75,12 @@
     <ClCompile Include="UI\Coordinates.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
+    <ClCompile Include="SettingsDialog.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerSettingsDialog.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GlobalDefinitions.h">
@@ -129,6 +135,12 @@
       <Filter>Source Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="UI\Coordinates.h">
+      <Filter>Source Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsDialog.h">
+      <Filter>Source Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerSettingsDialog.h">
       <Filter>Source Files\UI</Filter>
     </ClInclude>
   </ItemGroup>

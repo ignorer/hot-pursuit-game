@@ -72,11 +72,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(SolutionDir)\..\Externals\FreeGlut\include;$(SolutionDir)\..\Externals\SOIL\src;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\..\Externals\FreeGLUT\lib;$(SolutionDir)\..\Externals\SOIL\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)\$(Configuration)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(SolutionDir)\..\Externals\FreeGLUT\include;$(SolutionDir)\..\Externals\SOIL\src;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\..\Externals\FreeGLUT\lib;$(SolutionDir)\..\Externals\SOIL\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
+    <OutDir>$(SolutionDir)\$(Configuration)</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -88,7 +90,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>freeglut.lib;soil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut.lib;soil.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
       <SubSystem>Windows</SubSystem>
@@ -126,7 +128,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EntryPointSymbol>
       </EntryPointSymbol>
-      <AdditionalDependencies>freeglut.lib;soil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut.lib;soil.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -158,6 +160,8 @@
     <ClCompile Include="Core\PowerupManager.cpp" />
     <ClCompile Include="Core\Reader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PlayerSettingsDialog.cpp" />
+    <ClCompile Include="SettingsDialog.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UI\Car.cpp" />
     <ClCompile Include="UI\Coordinates.cpp" />
@@ -177,7 +181,9 @@
     <ClInclude Include="GlobalDefinitions.h" />
     <ClInclude Include="IMap.h" />
     <ClInclude Include="IPlayerState.h" />
+    <ClInclude Include="PlayerSettingsDialog.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SettingsDialog.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UI\Car.h" />
     <ClInclude Include="UI\Coordinates.h" />
