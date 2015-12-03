@@ -34,7 +34,7 @@ namespace Core {
 
 	int CGameMode::GetMaxLapsCount()
 	{
-		return maxLapsCount;
+		return MAX_LAPS_COUNT;
 	}
 
 	CGameMode::ObjectRate CGameMode::GetObjectRate()

@@ -140,6 +140,7 @@ namespace UI
 			cars[i].Draw( map.GetCellSize(), map.GetIndent(), map.GetSize() );
 		}
 		glFlush();
+		std::this_thread::sleep_for( std::chrono::milliseconds( 30 ) );
 		if( mapReloaded ) {
 			glutSwapBuffers(); // if map wasn't reloaded (and buffers weren't swapped), swap buffers
 		}
@@ -223,7 +224,7 @@ namespace UI
 		glBindTexture( GL_TEXTURE_2D, 0 );
 	}
 
-	void CDrawing::MoveCars( const std::vector<int>& numbers, const std::vector<CCoordinates>& newCoordinates )
+	void CDrawing::MoveCars( const std::vector<int>& numbers, const std::vector<CCoordinates>& newCoordinates, const std::vector<bool>& shields )
 	{
 		std::unique_lock<std::mutex> lock( mutex );
 		std::vector<CCoordinates> oldCoordinates;
@@ -233,6 +234,7 @@ namespace UI
 		lock.unlock();
 		const int fps = 100;
 		for( int i = 0; i < numbers.size(); ++i ) {
+			cars[numbers[i]].SetShieldMode( shields[i] );
 			cars[numbers[i]].Rotate( oldCoordinates[i].x, oldCoordinates[i].y, newCoordinates[i].x, newCoordinates[i].y );
 		}
 		for( int j = 0; j <= fps; ++j ) {
@@ -267,29 +269,14 @@ namespace UI
 
 	void CDrawing::DeleteCars( const std::vector<int>& numbers )
 	{
-		const int framesPerStep = 100;
-		for( int j = 0; j <= framesPerStep; ++j ) {
-			for( int i : numbers ) {
-				cars[i].SetOpacity( 1.0f - float( j ) / framesPerStep );
-			}
-			std::this_thread::sleep_for( std::chrono::milliseconds( 500 / framesPerStep ) );
-		}
-		for( int i : numbers ) {
-			cars[i].Crash();
-		}
-	}
-
-	void CDrawing::ExplodeCars( const std::vector<int>& numbers )
-	{
 		const int numOfFrames = 6;		// number of frames in animation
-		const int animationSpeed = 50;	// speed of animation (lower is faster, 50 - 80 recommended)
-		const int multiplicator = 1;	// how many times show explosion
-		for( int j = 0; j < numOfFrames * multiplicator; ++j ) {
+//		const int multiplicator = 1;	// how many times show explosion
+		for( int j = 0; j <= numOfFrames; ++j ) {
 			for( int i : numbers ) {
-				cars[i].explosionFrameNumber++;
-				cars[i].SetOpacity( 0.0f );
+				cars[i].SetOpacity( 1.0f - float( j ) / numOfFrames );
+				++cars[i].explosionFrameNumber;
 			}
-			std::this_thread::sleep_for( std::chrono::milliseconds( animationSpeed ) );
+			std::this_thread::sleep_for( std::chrono::milliseconds( 500 / numOfFrames ) );
 		}
 		for( int i : numbers ) {
 			cars[i].Crash();

@@ -64,11 +64,13 @@ void CUIManager::Move( const std::vector<Core::CPlayer>& movedPlayers ) const
 {
 	std::vector<int> numbers;
 	std::vector<UI::CCoordinates> coordinates;
+	std::vector<bool> shields;
 	for( auto player : movedPlayers ) {
 		numbers.push_back( player.GetNumber() );
 		coordinates.push_back( UI::CCoordinates( player.GetPosition().x, player.GetPosition().y ) );
+		shields.push_back( player.GetShield() > 0 );
 	}
-	UI::CDrawing::MoveCars( numbers, coordinates );
+	UI::CDrawing::MoveCars( numbers, coordinates, shields );
 }
 
 void CUIManager::MarkPossibleMoves( const std::vector<Core::CCoordinates>& possibleMoves ) const

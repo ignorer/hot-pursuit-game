@@ -51,7 +51,7 @@ namespace UI {
 		glGetIntegerv( GL_VIEWPORT, viewPort );
 		GLint width = viewPort[2];
 		GLint height = viewPort[3];
-		imageSize = ((width + ((4 - (width % 4)) % 4)) * height * 3);
+		imageSize = (width + 4 - width % 4) * height * 3;
 		std::shared_ptr<GLbyte> data = std::shared_ptr<GLbyte>( new GLbyte[imageSize] );
 		glReadBuffer( GL_BACK );
 		glReadPixels( 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data.get() );
@@ -66,7 +66,6 @@ namespace UI {
 	{
 		int n = map.size(), m = map[0].size();
 		glEnable( GL_TEXTURE_2D );
-
 		glEnable( GL_BLEND );
 		glColor3f( 1, 1, 1 );
 		for( int i = 0; i < n; i++ ) {
@@ -79,7 +78,7 @@ namespace UI {
 						glBindTexture( GL_TEXTURE_2D, textureRoad ); // load a texture of road
 						break;
 					default:
-						throw std::runtime_error( "Wrong nuber of texture" );
+						throw std::invalid_argument( "Wrong nuber of texture" );
 				}
 				//calculate coordinates
 				float left = j * cellSize + indent.x;
@@ -98,8 +97,8 @@ namespace UI {
 			}
 		}
 		glDisable( GL_BLEND );
-		glDisable( GL_TEXTURE_2D );
 		saveTexture(); // save the whole window with map to texture
+		glDisable( GL_TEXTURE_2D );
 		needReload = false;
 	}
 
@@ -154,7 +153,7 @@ namespace UI {
 		// choose texture
 		glBindTexture( GL_TEXTURE_2D, textureMap );
 		// Draw a polygon of window size with texture
-		glBegin( GL_POLYGON );
+		glBegin( GL_QUADS );
 		{
 			glTexCoord2f( 0, 0 ); glVertex2f( 0, 0 );
 			glTexCoord2f( 1, 0 ); glVertex2f( width, 0 );

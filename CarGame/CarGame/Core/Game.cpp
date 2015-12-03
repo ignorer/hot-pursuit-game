@@ -77,6 +77,12 @@ namespace Core {
 
 	bool CGame::playerOutOfTrack( const CPlayer& player ) const
 	{
+		if( player.GetPosition().x < 0 ||
+			player.GetPosition().y < 0 ||
+			player.GetPosition().x >= map.GetSize().second ||
+			player.GetPosition().y >= map.GetSize().first ) {
+			return true;
+		}
 		CCoordinates playersPreviousCoordinates = player.GetPreviousPosition();
 		CCoordinates playersCoordinates = player.GetPosition();
 
@@ -120,8 +126,12 @@ namespace Core {
 	{
 		for( size_t j = playerId + 1; j < players.size(); ++j ) {
 			if( players[playerId].GetPosition() == players[j].GetPosition() && players[playerId].IsAlive() && players[j].IsAlive() ) {
-				crashedPlayers.insert( &players[playerId] );
-				crashedPlayers.insert( &players[j] );
+				if( players[playerId].GetShield() == 0 ) {
+					crashedPlayers.insert( &players[playerId] );
+				}
+				if( players[j].GetShield() == 0 ) {
+					crashedPlayers.insert( &players[j] );
+				}
 			}
 		}
 	}
@@ -135,7 +145,7 @@ namespace Core {
 
 	void CGame::findCrashesForPlayer( CPlayer& player, std::set<CPlayer*>& crashedPlayers ) const
 	{
-		if( player.IsAlive() && playerOutOfTrack( player ) ) {
+		if( player.IsAlive() && playerOutOfTrack( player ) && player.GetShield() == 0 ) {
 			crashedPlayers.insert( &player );
 		}
 	}
@@ -161,7 +171,7 @@ namespace Core {
 
 	void CGame::initAI( CPlayer* player )
 	{
-		if( hInstanceDLLLibrary == 0 ) {
+		if( hInstanceDLLLibrary == nullptr ) {
 			hInstanceDLLLibrary = ::LoadLibrary( TEXT( "Strategy.dll" ) );
 			StrategyBuilderFunc = (STRATEGY_PROC) ::GetProcAddress( hInstanceDLLLibrary, "GetNewStrategy" );
 			GetPlayerStateFunc = (PLAYER_STATE_FACTORY_PROC) ::GetProcAddress( hInstanceDLLLibrary, "GetPlayerState" );
@@ -169,7 +179,7 @@ namespace Core {
 
 		CField field = map.GetField();
 		CSize sizemap = map.GetSize();
-		std::vector< std::vector< int > > mapForAI( sizemap.second );
+		std::vector<std::vector<int>> mapForAI( sizemap.second );
 
 		for( int i = 0; i < sizemap.second; ++i ) {
 			mapForAI[i].resize( sizemap.first );
@@ -197,7 +207,6 @@ namespace Core {
 		switch ( player.GetType() )
 		{
 			case USER: 
-				//вывести возможные ходы
 				direction = turnOfUser( player );
 				break;
 			case AI:
@@ -213,7 +222,9 @@ namespace Core {
 			return;
 		}
 		player.Move( Direction( direction ) );
-		player.Die();
+		if( CGameMode::GetDeathPenalty() == CGameMode::DESTROY ) {
+			player.Die();
+		}
 		crashedPlayers.insert( &player );
 	}
 
@@ -233,8 +244,12 @@ namespace Core {
 			manager->ShowCrashesAndRespawn( crashedPlayers );
 		} else if( penalty == CGameMode::STOP ) {
 			for( auto player : crashedPlayers ) {
-				player->SetInertia( CCoordinates() );
-				player->SetPenalty( 1 );
+				if( player->GetPenalty() == 1 ) {
+					player->SetPenalty( 0 );
+				} else {
+					player->SetInertia( CCoordinates() );
+					player->SetPenalty( 1 );
+				}
 			}
 		}
 	}
@@ -253,13 +268,12 @@ namespace Core {
 		}
 
 		do {
-			powerupManager.GeneratePowerup( map );
 			if( CGameMode::GetMovementMode() == CGameMode::CONCURRENT ) {
+				powerupManager.UpdatePowerups( map, players );
+				manager->ShowPowerups( powerupManager.GetPowerups() );
 				for( size_t i = 0; i < players.size(); ++i ) {
 					if( players[i].IsAlive() ) {
-						if( players[i].GetPenalty() > 0 ) {
-							players[i].SetPenalty( players[i].GetPenalty() - 1 );
-						} else {
+						if( players[i].GetPenalty() == 0 ) {
 							turnOfPlayer( players[i], crashedPlayers );
 						}
 					}
@@ -268,30 +282,31 @@ namespace Core {
 				for( auto& player : players ) {
 					player.DecreaseShield();
 				}
-				powerupManager.HandleStep( players );
+				powerupManager.HandleStep( players, crashedPlayers );
 				manager->ShowPowerups( powerupManager.GetPowerups() );
+				manager->Move( players );
 
 				findCollisions( crashedPlayers );
 				findCrashes( crashedPlayers );
 				handleCrashes( crashedPlayers, deadPlayersCount );
 				crashedPlayers.clear();
 			} else if( CGameMode::GetMovementMode() == CGameMode::SEQUENTIAL ) {
-				for( size_t i = 0; i < players.size(); ++i ) {
-					if( players[i].IsAlive( ) ) {
-						if( players[i].GetPenalty( ) > 0 ) {
-							players[i].SetPenalty( players[i].GetPenalty( ) - 1 );
-						} else {
-							turnOfPlayer( players[i], crashedPlayers );
-							players[i].DecreaseShield();
-						}
-						manager->Move( {players[i]} );
-					}
-
-					findCollisionsForPlayer( i, crashedPlayers );
-					findCrashesForPlayer( players[i], crashedPlayers );
-					handleCrashes( crashedPlayers, deadPlayersCount );
-					crashedPlayers.clear();
-				}
+//				for( size_t i = 0; i < players.size(); ++i ) {
+//					if( players[i].IsAlive() ) {
+//						if( players[i].GetPenalty() > 0 ) {
+//							players[i].SetPenalty( players[i].GetPenalty() - 1 );
+//						} else {
+//							turnOfPlayer( players[i], crashedPlayers );
+//							players[i].DecreaseShield();
+//						}
+//						manager->Move( { players[i] } );
+//					}
+//
+//					findCollisionsForPlayer( i, crashedPlayers );
+//					findCrashesForPlayer( players[i], crashedPlayers );
+//					handleCrashes( crashedPlayers, deadPlayersCount );
+//					crashedPlayers.clear();
+//				}
 			}
 
 			handleFinishLineIntersections();

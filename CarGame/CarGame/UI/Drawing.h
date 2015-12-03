@@ -23,10 +23,9 @@ namespace UI {
 		static void keyboardFunction( unsigned char key, int x, int y );
 		static void mouseFunction( int button, int state, int x, int y );
 
-		static void MoveCars( const std::vector<int>& numbers, const std::vector<CCoordinates>& newCoordinates );
+		static void MoveCars( const std::vector<int>& numbers, const std::vector<CCoordinates>& newCoordinates, const std::vector<bool>& shields );
 		static void MoveCarsToStart( const std::vector<int>& numbers, const std::vector<CCoordinates>& newCoordinates );
 		static void DeleteCars( const std::vector<int>& numbers );
-		static void ExplodeCars( const std::vector<int>& numbers );
 		static void SetPowerups( const std::map<Core::CCoordinates, PowerupType> powerupsInfo );
 
 		static void Start();

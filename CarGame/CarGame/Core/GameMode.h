@@ -17,8 +17,9 @@ namespace Core {
 		static DeathPenalty GetDeathPenalty();
 		static int GetLapCount();
 		static ObjectRate GetObjectRate();
-		static int GetMaxLapsCount();
 		static ObjectChangeModel GetObjectChangeModel();
+		// не использовать эту функцию в ядре. это для диалогового окна с выбором режима игры
+		static int GetMaxLapsCount();
 
 	private:
 		static MovementMode movementMode;
@@ -26,6 +27,6 @@ namespace Core {
 		static int lapCount;
 		static ObjectRate objectRate;
 		static ObjectChangeModel objectChangeModel;
-		static const int maxLapsCount = 10;
+		static const int MAX_LAPS_COUNT = 10;
 	};
 }

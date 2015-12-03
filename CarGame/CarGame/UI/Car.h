@@ -4,6 +4,7 @@
 
 #include "UI/Coordinates.h"
 #include "GlobalDefinitions.h"
+#include <mutex>
 
 namespace UI {
 	enum Color { RED, GREEN, BLUE, ORANGE };
@@ -17,7 +18,7 @@ namespace UI {
 		Color GetColor() const;
 		CCoordinates GetCoordinates() const;
 
-		void Draw( float cellSize, CWindowCoordinates indent, CSize mapSize );
+		void Draw( float cellSize, CWindowCoordinates indent, CSize mapSize ) const;
 
 		// переносит машину на новые координаты, НЕ изменяя угол
 		void Move( CCoordinates coordinates );
@@ -27,11 +28,13 @@ namespace UI {
 		void SetOpacity( float opacity );
 		// поворачивает машину для движения из координат (x1,y1) в (x2,y2)
 		void Rotate( float x1, float y1, float x2, float y2 );
+		// включить/выключить щит. true - включить, false - выключить
+		void SetShieldMode( bool mode );
+
 		GLuint texture;
 		GLuint explosion;
 		GLuint shield;
 		int explosionFrameNumber;
-
 
 	private:
 		void rotate( float &x, float &y, float angle ) const;

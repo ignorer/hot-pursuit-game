@@ -16,12 +16,12 @@ namespace UI {
 	}
 
 	CCar::CCar( CCoordinates startCoordinates, Color carColor ) :
+		explosionFrameNumber( 0 ),
 		coords( startCoordinates ),
 		color( carColor ),
 		alpha( 1.0f ),
 		crashed( false ),
-		shielded( false ),
-		explosionFrameNumber( 0 )
+		shielded( false )
 	{}
 
 	Color CCar::GetColor() const
@@ -70,7 +70,7 @@ namespace UI {
 		Dy += centerY;
 	}
 
-	void CCar::Draw( float cellSize, CWindowCoordinates indent, CSize mapSize )
+	void CCar::Draw( float cellSize, CWindowCoordinates indent, CSize mapSize ) const
 	{
 		if( crashed ) {
 			return;
@@ -131,7 +131,6 @@ namespace UI {
 			glEnd();
 		}
 
-//		 shielded = true;// for test
 		if( shielded ) {
 			glBindTexture( GL_TEXTURE_2D, shield );
 			glTexEnvf( GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE );
@@ -182,5 +181,10 @@ namespace UI {
 		} else {
 			coords.angle = std::acos( cos );
 		}
+	}
+
+	void CCar::SetShieldMode( bool mode )
+	{
+		shielded = mode;
 	}
 }
