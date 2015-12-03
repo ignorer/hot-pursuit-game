@@ -170,18 +170,20 @@ std::vector<Core::CPlayer> UI::CMapSettingsWindow::GetPlayersInfo( const std::ve
 		std::wstring textString( text.get() );
 		std::shared_ptr<wchar_t> name = std::shared_ptr<wchar_t>( new wchar_t[MAX_LENGTH] );
 		int symbCount = ::GetWindowText( nameControls[i], name.get(), MAX_LENGTH );
-		std::wstring nameString;
-		if ( symbCount == 0 ) {
-			throw std::invalid_argument( "Empty Player Name" );
-		}
-		else {
-			nameString = name.get();
-		}
-		if( textString == L"AI" ) {
-			result.push_back( Core::CPlayer( coordinates[i], playerNumber++, AI, std::wstring( name.get() ) ) );
-		}
-		else if ( textString == L"Player" ) {
-			result.push_back( Core::CPlayer( coordinates[i], playerNumber++, USER, std::wstring( name.get() ) ) );
+		if ( textString != L"None" ) {
+			std::wstring nameString;
+			if (symbCount == 0) {
+				throw std::invalid_argument( "Empty Player Name" );
+			}
+			else {
+				nameString = name.get();
+			}
+			if (textString == L"AI") {
+				result.push_back( Core::CPlayer( coordinates[i], playerNumber++, AI, nameString ) );
+			}
+			else if (textString == L"Player") {
+				result.push_back( Core::CPlayer( coordinates[i], playerNumber++, USER, nameString ) );
+			}
 		}
 	}
 	return result;

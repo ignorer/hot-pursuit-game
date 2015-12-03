@@ -82,9 +82,9 @@ void UI::CGameResultWindow::SetWinners( const std::vector<Core::CPlayer>& winner
 	} else {
 		std::wstring text( L"Players " );
 		for( int i = 0; i < winners.size() - 1; ++i ) {
-			text += std::to_wstring( winners[i].GetNumber() + 1 ) + L", ";
+			text += winners[i].GetName() + L", ";
 		}
-		text += std::to_wstring( winners.back().GetNumber() + 1 );
+		text += winners.back().GetName();
 		text += L" are winners! Congratulations!!!";
 		::SetWindowText( resultMessage, text.c_str() );
 	}
