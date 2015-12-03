@@ -235,7 +235,7 @@ namespace UI
 		
 		bool changed = false; // правда ли, что хотя бы одна машинка сдвинулась? по умолчанию считаем, что нет
 		for( int i = 0; i < oldCoordinates.size(); ++i ) {
-			if( oldCoordinates[i] != newCoordinates[i] ) {
+			if( oldCoordinates[i] != newCoordinates[i] || cars[i].GetShieldMode() != shields[i] ) {
 				changed = true;
 			}
 		}

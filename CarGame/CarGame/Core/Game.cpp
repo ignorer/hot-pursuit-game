@@ -136,9 +136,13 @@ namespace Core {
 			if( j != playerId && players[playerId].GetPosition() == players[j].GetPosition() && players[playerId].IsAlive() && players[j].IsAlive() ) {
 				if( players[playerId].GetShield() == 0 ) {
 					crashedPlayers.insert( &players[playerId] );
+				} else {
+					players[playerId].DropShield();
 				}
 				if( players[j].GetShield() == 0 ) {
 					crashedPlayers.insert( &players[j] );
+				} else {
+					players[playerId].DropShield();
 				}
 			}
 		}
@@ -153,8 +157,12 @@ namespace Core {
 
 	void CGame::findCrashesForPlayer( CPlayer& player, std::set<CPlayer*>& crashedPlayers ) const
 	{
-		if( player.IsAlive() && playerOutOfTrack( player ) && player.GetShield() == 0 ) {
-			crashedPlayers.insert( &player );
+		if( player.IsAlive() && playerOutOfTrack( player ) ) {
+			if( player.GetShield() > 0 ) {
+				player.DropShield();
+			} else {
+				crashedPlayers.insert( &player );
+			}
 		}
 	}
 
@@ -286,10 +294,10 @@ namespace Core {
 						}
 					}
 				}
-				manager->Move( players );
+				manager->UpdatePlayersInfo( players );
 				powerupManager.HandleStep( players, crashedPlayers );
 				manager->ShowPowerups( powerupManager.GetPowerups() );
-				manager->Move( players );
+				manager->UpdatePlayersInfo( players );
 
 				findCollisions( crashedPlayers );
 				findCrashes( crashedPlayers );
@@ -298,6 +306,7 @@ namespace Core {
 				for( auto& player : players ) {
 					player.DecreaseShield();
 				}
+				manager->UpdatePlayersInfo( players );
 				handleFinishLineIntersections();
 				findWinners( winners );
 			} else if( CGameMode::GetMovementMode() == CGameMode::SEQUENTIAL ) {
@@ -310,10 +319,10 @@ namespace Core {
 						} else {
 							turnOfPlayer( players[i], crashedPlayers );
 						}
-						manager->Move( { players[i] } );
+						manager->UpdatePlayersInfo( players );
 						powerupManager.HandleStepForPlayer( players[i], players, crashedPlayers );
 						manager->ShowPowerups( powerupManager.GetPowerups() );
-						manager->Move( { players[i] } );
+						manager->UpdatePlayersInfo( players );
 					}
 
 					findCollisionsForPlayer( i, crashedPlayers );
@@ -321,6 +330,7 @@ namespace Core {
 					handleCrashes( crashedPlayers, deadPlayersCount );
 					crashedPlayers.clear();
 					players[i].DecreaseShield();
+					manager->UpdatePlayersInfo( players );
 					handleFinishLineIntersectionsForPlayer( i );
 					findWinners( winners );
 				}

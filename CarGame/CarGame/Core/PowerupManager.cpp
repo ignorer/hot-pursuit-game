@@ -52,22 +52,22 @@ namespace Core {
 
 	void CPowerupManager::HandleStepForPlayer( CPlayer& activePlayer, std::vector<CPlayer>& players, std::set<CPlayer*>& crashedPlayers )
 	{
-		if( GetPowerup( activePlayer.GetPosition( ).x, activePlayer.GetPosition( ).y ) == NONE ) {
+		if( GetPowerup( activePlayer.GetPosition().x, activePlayer.GetPosition().y ) == NONE ) {
 			return;
 		}
-		switch( powerups[activePlayer.GetPosition( )] ) {
+		switch( powerups[activePlayer.GetPosition()] ) {
 			case WALL:
 				// to do
 				break;
 			case SAND:
-				powerups.erase( activePlayer.GetPosition( ) );
+				powerups.erase( activePlayer.GetPosition() );
 				activePlayer.SetInertia( { 0, 0 } );
 				break;
 			case OIL:
-				powerups.erase( activePlayer.GetPosition( ) );
+				powerups.erase( activePlayer.GetPosition() );
 				activePlayer.SetInertia( { 0, 0 } );
 				while( true ) {
-					int direction = std::rand( ) % 9 + 1;
+					int direction = std::rand() % 9 + 1;
 					if( direction != 5 ) {
 						activePlayer.Move( Direction( direction ) );
 						break;
@@ -76,21 +76,23 @@ namespace Core {
 				activePlayer.SetInertia( { 0, 0 } );
 				break;
 			case MINE:
-				powerups[activePlayer.GetPosition( )] = MINE_ACTIVE;
+				powerups[activePlayer.GetPosition()] = MINE_ACTIVE;
 				break;
 			case MINE_ACTIVE:
-				powerups.erase( activePlayer.GetPosition( ) );
-				if( activePlayer.GetShield( ) == 0 ) {
+				powerups.erase( activePlayer.GetPosition() );
+				if( activePlayer.GetShield() == 0 ) {
 					crashedPlayers.insert( &activePlayer );
+				} else {
+					activePlayer.DropShield();
 				}
 				break;
 			case LAZER:
 				// TODO
-				powerups.erase( activePlayer.GetPosition( ) );
+				powerups.erase( activePlayer.GetPosition() );
 				break;
 			case SHIELD:
-				powerups.erase( activePlayer.GetPosition( ) );
-				activePlayer.ActivateShield( );
+				powerups.erase( activePlayer.GetPosition() );
+				activePlayer.ActivateShield();
 				break;
 			default: break;
 		}

@@ -17,6 +17,7 @@ namespace UI {
 
 		Color GetColor() const;
 		CCoordinates GetCoordinates() const;
+		bool GetShieldMode() const;
 
 		void Draw( float cellSize, CWindowCoordinates indent, CSize mapSize ) const;
 

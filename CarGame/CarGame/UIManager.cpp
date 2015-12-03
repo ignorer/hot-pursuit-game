@@ -60,7 +60,7 @@ void CUIManager::InitMap( const Core::CMap& map, const std::vector<Core::CPlayer
 	UI::CDrawing::Start();
 }
 
-void CUIManager::Move( const std::vector<Core::CPlayer>& movedPlayers ) const
+void CUIManager::UpdatePlayersInfo( const std::vector<Core::CPlayer>& movedPlayers ) const
 {
 	std::vector<int> numbers;
 	std::vector<UI::CCoordinates> coordinates;

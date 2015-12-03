@@ -34,6 +34,11 @@ namespace UI {
 		return coords;
 	}
 
+	bool CCar::GetShieldMode() const
+	{
+		return shielded;
+	}
+
 	void CCar::rotate( float &x, float &y, float angle ) const
 	{
 		float tx = x;
