@@ -46,48 +46,55 @@ namespace Core {
 	void CPowerupManager::HandleStep( std::vector<Core::CPlayer>& players, std::set<CPlayer*>& crashedPlayers )
 	{
 		for( auto& player : players ) {
-			if( GetPowerup( player.GetPosition().x, player.GetPosition().y ) == NONE ) {
-				continue;
-			}
-			switch( powerups[player.GetPosition()] ) {
-				case WALL:
-					// to do
-					break;
-				case SAND:
-					powerups.erase( player.GetPosition() );
-					player.SetInertia( { 0, 0 } );
-					break;
-				case OIL:
-					powerups.erase( player.GetPosition() );
-					player.SetInertia( { 0, 0 } );
-					while( true ) {
-						int direction = std::rand() % 9 + 1;
-						if( direction != 5 ) {
-							player.Move( Direction( direction ) );
-							break;
-						}
+			HandleStepForPlayer( player, players, crashedPlayers );
+		}
+	}
+
+	void CPowerupManager::HandleStepForPlayer( CPlayer& activePlayer, std::vector<CPlayer>& players, std::set<CPlayer*>& crashedPlayers )
+	{
+		if( GetPowerup( activePlayer.GetPosition().x, activePlayer.GetPosition().y ) == NONE ) {
+			return;
+		}
+		switch( powerups[activePlayer.GetPosition()] ) {
+			case WALL:
+				// to do
+				break;
+			case SAND:
+				powerups.erase( activePlayer.GetPosition() );
+				activePlayer.SetInertia( { 0, 0 } );
+				break;
+			case OIL:
+				powerups.erase( activePlayer.GetPosition() );
+				activePlayer.SetInertia( { 0, 0 } );
+				while( true ) {
+					int direction = std::rand() % 9 + 1;
+					if( direction != 5 ) {
+						activePlayer.Move( Direction( direction ) );
+						break;
 					}
-					player.SetInertia( { 0, 0 } );
-					break;
-				case MINE:
-					powerups[player.GetPosition()] = MINE_ACTIVE;
-					break;
-				case MINE_ACTIVE:
-					powerups.erase( player.GetPosition() );
-					if( player.GetShield() == 0 ) {
-						crashedPlayers.insert( &player );
-					}
-					break;
-				case LAZER:
-					// TODO
-					powerups.erase( player.GetPosition() );
-					break;
-				case SHIELD:
-					powerups.erase( player.GetPosition() );
-					player.ActivateShield();
-					break;
-				default: break;
-			}
+				}
+				activePlayer.SetInertia( { 0, 0 } );
+				break;
+			case MINE:
+				powerups[activePlayer.GetPosition()] = MINE_ACTIVE;
+				break;
+			case MINE_ACTIVE:
+				powerups.erase( activePlayer.GetPosition() );
+				if( activePlayer.GetShield() == 0 ) {
+					crashedPlayers.insert( &activePlayer );
+				} else {
+					activePlayer.DropShield();
+				}
+				break;
+			case LAZER:
+				// TODO
+				powerups.erase( activePlayer.GetPosition() );
+				break;
+			case SHIELD:
+				powerups.erase( activePlayer.GetPosition() );
+				activePlayer.ActivateShield();
+				break;
+			default: break;
 		}
 	}
 
@@ -130,6 +137,6 @@ namespace Core {
 				}
 			}
 		}
-		lastLap = max;
+		lastLap = players[max].GetLaps();
 	}
 }

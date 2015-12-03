@@ -60,7 +60,7 @@ void CUIManager::InitMap( const Core::CMap& map, const std::vector<Core::CPlayer
 	UI::CDrawing::Start();
 }
 
-void CUIManager::Move( const std::vector<Core::CPlayer>& movedPlayers ) const
+void CUIManager::UpdatePlayersInfo( const std::vector<Core::CPlayer>& movedPlayers ) const
 {
 	std::vector<int> numbers;
 	std::vector<UI::CCoordinates> coordinates;
@@ -91,7 +91,9 @@ void CUIManager::ShowCrashesAndRespawn( const std::set<Core::CPlayer*>& collided
 		numbers.push_back( player->GetNumber() );
 		coordinates.push_back( UI::CCoordinates( player->GetInitialPosition().x, player->GetInitialPosition().y, PI / 2 ) );
 	}
-	UI::CDrawing::MoveCarsToStart( numbers, coordinates );
+	if( !numbers.empty() ) {
+		UI::CDrawing::MoveCarsToStart( numbers, coordinates );
+	}
 }
 
 void CUIManager::ShowCrashes( const std::set<Core::CPlayer*>& crashedPlayers ) const
@@ -100,7 +102,9 @@ void CUIManager::ShowCrashes( const std::set<Core::CPlayer*>& crashedPlayers ) c
 	for( auto player : crashedPlayers ) {
 		numbers.push_back( player->GetNumber() );
 	}
-	UI::CDrawing::DeleteCars( numbers );
+	if( !numbers.empty() ) {
+		UI::CDrawing::DeleteCars( numbers );
+	}
 }
 
 void CUIManager::ShowPowerups( const std::map<Core::CCoordinates, PowerupType>& powerupsInfo ) const

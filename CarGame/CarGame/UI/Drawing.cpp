@@ -232,6 +232,17 @@ namespace UI
 			oldCoordinates.push_back( cars[i].GetCoordinates() );
 		}
 		lock.unlock();
+		
+		bool changed = false; // правда ли, что хотя бы одна машинка сдвинулась? по умолчанию считаем, что нет
+		for( int i = 0; i < oldCoordinates.size(); ++i ) {
+			if( oldCoordinates[i] != newCoordinates[i] || cars[i].GetShieldMode() != shields[i] ) {
+				changed = true;
+			}
+		}
+		if( !changed ) {
+			return;
+		}
+		
 		const int fps = 100;
 		for( int i = 0; i < numbers.size(); ++i ) {
 			cars[numbers[i]].SetShieldMode( shields[i] );
@@ -239,9 +250,9 @@ namespace UI
 		}
 		for( int j = 0; j <= fps; ++j ) {
 			for( int i = 0; i < numbers.size(); ++i ) {
-				cars[i].Move( UI::CCoordinates(
-					float( oldCoordinates[numbers[i]].x * (fps - j) + newCoordinates[i].x * j ) / fps,
-					float( oldCoordinates[numbers[i]].y * (fps - j) + newCoordinates[i].y * j ) / fps ) );
+				cars[numbers[i]].Move( UI::CCoordinates(
+					float( oldCoordinates[i].x * (fps - j) + newCoordinates[i].x * j ) / fps,
+					float( oldCoordinates[i].y * (fps - j) + newCoordinates[i].y * j ) / fps ) );
 			}
 			std::this_thread::sleep_for( std::chrono::milliseconds( 500 / fps ) );
 		}

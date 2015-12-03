@@ -19,6 +19,10 @@ namespace UI {
 		{
 			return this->x == point.x && this->y == point.y;
 		}
+		bool operator!= (const CCoordinates &point) const
+		{
+			return !(*this == point);
+		}
 		bool operator< (const CCoordinates& point) const
 		{
 			return std::pair<float, float>( x, y ) < std::pair<float, float>( point.x, point.y );
