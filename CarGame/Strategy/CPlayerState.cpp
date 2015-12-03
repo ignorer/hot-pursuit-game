@@ -13,6 +13,7 @@
 PlayerState::PlayerState() {
     position = std::make_pair(0, 0);
     velocityVector = std::make_pair(0, 0);
+	curLap = 0;
 }
 
 PlayerState::PlayerState(std::pair< int, int > startPosition) {
@@ -31,17 +32,19 @@ PlayerState::PlayerState(int x, int y, int xVelocity, int yVelocity) {
 PlayerState::~PlayerState() {
 }
 
-bool PlayerState::operator==(const IPlayerState &other) const {
-    return position == other.getPosition() && velocityVector == other.getVelocityVector();
+bool PlayerState::operator==(const PlayerState &other) const {
+
+    return position == other.getPosition() && velocityVector == other.getVelocityVector() && curLap == other.GetCurLap();
 }
 
-bool PlayerState::operator!=(const IPlayerState &other) const {
+bool PlayerState::operator!=(const PlayerState &other) const {
     return !(*this == other);
 }
 
-bool PlayerState::operator<(const IPlayerState &other) const
+bool PlayerState::operator<(const PlayerState &other) const
 {
-	return position < other.getPosition();
+	return position < other.getPosition() || position == other.getPosition() && velocityVector < other.getVelocityVector() ||
+		position == other.getPosition() && velocityVector == other.getVelocityVector() && curLap < other.GetCurLap();
 }
 
 void PlayerState::changePosition( std::pair< int, int > inputPosition )
@@ -109,6 +112,16 @@ PlayerState PlayerState::GetNextState( int dx, int dy ) const
 	temp.velocityVector.first += dx;
 	temp.velocityVector.second += dy;
 	return temp;
+}
+
+void PlayerState::IncreaseLapsCount()
+{
+	++curLap;
+}
+
+int PlayerState::GetCurLap() const
+{
+	return curLap;
 }
 
 void PlayerState::SetXVelocity( int xVelocity )
