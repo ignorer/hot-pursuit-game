@@ -40,7 +40,10 @@ namespace Core {
 	CGame::CGame( const CMap& newMap, const std::vector<CPlayer>& playersInfo, const CUIManager* _manager ) :
 		map( newMap ),
 		players( playersInfo ),
-		manager( _manager )
+		manager( _manager ),
+		hInstanceDLLLibrary( nullptr ),
+		StrategyBuilderFunc( nullptr ),
+		GetPlayerStateFunc( nullptr )
 	{}
 
 	int CGame::finishLineIntersectsWithPlayer( const CPlayer& player ) const
@@ -71,8 +74,13 @@ namespace Core {
 	void CGame::handleFinishLineIntersections()
 	{
 		for( int i = 0; i < players.size(); ++i ) {
-			players[i].IncreaseLaps( finishLineIntersectsWithPlayer( players[i] ) );
+			handleFinishLineIntersectionsForPlayer( i );
 		}
+	}
+
+	void CGame::handleFinishLineIntersectionsForPlayer( int i )
+	{
+		players[i].IncreaseLaps( finishLineIntersectsWithPlayer( players[i] ) );
 	}
 
 	bool CGame::playerOutOfTrack( const CPlayer& player ) const
@@ -124,8 +132,8 @@ namespace Core {
 
 	void CGame::findCollisionsForPlayer( int playerId, std::set<CPlayer*>& crashedPlayers )
 	{
-		for( size_t j = playerId + 1; j < players.size(); ++j ) {
-			if( players[playerId].GetPosition() == players[j].GetPosition() && players[playerId].IsAlive() && players[j].IsAlive() ) {
+		for( size_t j = 0; j < players.size(); ++j ) {
+			if( j != playerId && players[playerId].GetPosition() == players[j].GetPosition() && players[playerId].IsAlive() && players[j].IsAlive() ) {
 				if( players[playerId].GetShield() == 0 ) {
 					crashedPlayers.insert( &players[playerId] );
 				}
@@ -173,8 +181,8 @@ namespace Core {
 	{
 		if( hInstanceDLLLibrary == nullptr ) {
 			hInstanceDLLLibrary = ::LoadLibrary( TEXT( "Strategy.dll" ) );
-			StrategyBuilderFunc = (STRATEGY_PROC) ::GetProcAddress( hInstanceDLLLibrary, "GetNewStrategy" );
-			GetPlayerStateFunc = (PLAYER_STATE_FACTORY_PROC) ::GetProcAddress( hInstanceDLLLibrary, "GetPlayerState" );
+			StrategyBuilderFunc = STRATEGY_PROC(::GetProcAddress( hInstanceDLLLibrary, "GetNewStrategy" ));
+			GetPlayerStateFunc = PLAYER_STATE_FACTORY_PROC(::GetProcAddress( hInstanceDLLLibrary, "GetPlayerState" ));
 		}
 
 		CField field = map.GetField();
@@ -279,9 +287,6 @@ namespace Core {
 					}
 				}
 				manager->Move( players );
-				for( auto& player : players ) {
-					player.DecreaseShield();
-				}
 				powerupManager.HandleStep( players, crashedPlayers );
 				manager->ShowPowerups( powerupManager.GetPowerups() );
 				manager->Move( players );
@@ -290,27 +295,36 @@ namespace Core {
 				findCrashes( crashedPlayers );
 				handleCrashes( crashedPlayers, deadPlayersCount );
 				crashedPlayers.clear();
+				for( auto& player : players ) {
+					player.DecreaseShield();
+				}
+				handleFinishLineIntersections();
+				findWinners( winners );
 			} else if( CGameMode::GetMovementMode() == CGameMode::SEQUENTIAL ) {
-//				for( size_t i = 0; i < players.size(); ++i ) {
-//					if( players[i].IsAlive() ) {
-//						if( players[i].GetPenalty() > 0 ) {
-//							players[i].SetPenalty( players[i].GetPenalty() - 1 );
-//						} else {
-//							turnOfPlayer( players[i], crashedPlayers );
-//							players[i].DecreaseShield();
-//						}
-//						manager->Move( { players[i] } );
-//					}
-//
-//					findCollisionsForPlayer( i, crashedPlayers );
-//					findCrashesForPlayer( players[i], crashedPlayers );
-//					handleCrashes( crashedPlayers, deadPlayersCount );
-//					crashedPlayers.clear();
-//				}
-			}
+				for( size_t i = 0; i < players.size(); ++i ) {
+					powerupManager.UpdatePowerups( map, players );
+					manager->ShowPowerups( powerupManager.GetPowerups() );
+					if( players[i].IsAlive() ) {
+						if( players[i].GetPenalty() > 0 ) {
+							players[i].SetPenalty( players[i].GetPenalty() - 1 );
+						} else {
+							turnOfPlayer( players[i], crashedPlayers );
+						}
+						manager->Move( { players[i] } );
+						powerupManager.HandleStepForPlayer( players[i], players, crashedPlayers );
+						manager->ShowPowerups( powerupManager.GetPowerups() );
+						manager->Move( { players[i] } );
+					}
 
-			handleFinishLineIntersections();
-			findWinners( winners );
+					findCollisionsForPlayer( i, crashedPlayers );
+					findCrashesForPlayer( players[i], crashedPlayers );
+					handleCrashes( crashedPlayers, deadPlayersCount );
+					crashedPlayers.clear();
+					players[i].DecreaseShield();
+					handleFinishLineIntersectionsForPlayer( i );
+					findWinners( winners );
+				}
+			}
 		} while( winners.size() == 0 && deadPlayersCount < players.size() );
 
 		finish( winners );

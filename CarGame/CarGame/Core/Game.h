@@ -38,6 +38,7 @@ namespace Core {
 		PLAYER_STATE_FACTORY_PROC GetPlayerStateFunc;
 
 		void handleFinishLineIntersections();
+		void handleFinishLineIntersectionsForPlayer( int i );
 		// требование к возвращаемому значению:
 		//	-1 - если пересекли финишную черту в неправильную сторону
 		//	0 - не пересекли
