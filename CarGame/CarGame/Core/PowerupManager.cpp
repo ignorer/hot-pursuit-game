@@ -1,11 +1,13 @@
 #include <ctime>
+#include <algorithm>
 
 #include "Core/PowerupManager.h"
 #include "Core/Map.h"
 
 namespace Core {
 	CPowerupManager::CPowerupManager() :
-		lastLap( -1 )
+		lastLap( -1 ),
+		initialized( false )
 	{
 		std::srand( std::time( nullptr ) );
 	}
@@ -43,6 +45,34 @@ namespace Core {
 		}
 	}
 
+	void CPowerupManager::handleWalls( CPlayer& player, std::set<CPlayer*>& crashedPlayers )
+	{
+		CCoordinates playersPreviousCoordinates = player.GetPreviousPosition( );
+		CCoordinates playersCoordinates = player.GetPosition();
+		
+		for( auto powerup : powerups ) {
+			CCoordinates realCoordinates( playersCoordinates.y * 10 + 5, playersCoordinates.x * 10 + 5 ),
+				realPreviousCoordinates( playersPreviousCoordinates.y * 10 + 5, playersPreviousCoordinates.x * 10 + 5 );
+
+			if( powerup.second != WALL ) {
+				continue;
+			}
+			CCoordinates firstPoint( powerup.first.y * 10, powerup.first.x * 10 ),
+				secondPoint( (powerup.first.y + 1) * 10, powerup.first.x * 10 ),
+				thirdPoint( (powerup.first.y + 1) * 10, (powerup.first.x + 1) * 10 ),
+				fourthPoint( powerup.first.y * 10, (powerup.first.x + 1) * 10 );
+
+			if( isIntersects( realPreviousCoordinates, realCoordinates, firstPoint, secondPoint ) ||
+				isIntersects( realPreviousCoordinates, realCoordinates, secondPoint, thirdPoint ) ||
+				isIntersects( realPreviousCoordinates, realCoordinates, thirdPoint, fourthPoint ) ||
+				isIntersects( realPreviousCoordinates, realCoordinates, fourthPoint, firstPoint ) ) {
+				powerups.erase( powerup.first );
+				crashedPlayers.insert( &player );
+				return;
+			}
+		}
+	}
+
 	void CPowerupManager::HandleStep( std::vector<Core::CPlayer>& players, std::set<CPlayer*>& crashedPlayers )
 	{
 		for( auto& player : players ) {
@@ -52,67 +82,53 @@ namespace Core {
 
 	void CPowerupManager::HandleStepForPlayer( CPlayer& activePlayer, std::vector<CPlayer>& players, std::set<CPlayer*>& crashedPlayers )
 	{
-		if( GetPowerup( activePlayer.GetPosition().x, activePlayer.GetPosition().y ) == NONE ) {
-			return;
-		}
-		switch( powerups[activePlayer.GetPosition()] ) {
-			case WALL:
-				// to do
-				break;
-			case SAND:
-				powerups.erase( activePlayer.GetPosition() );
-				activePlayer.SetInertia( { 0, 0 } );
-				break;
-			case OIL:
-				powerups.erase( activePlayer.GetPosition() );
-				activePlayer.SetInertia( { 0, 0 } );
-				while( true ) {
-					int direction = std::rand() % 9 + 1;
-					if( direction != 5 ) {
-						activePlayer.Move( Direction( direction ) );
-						break;
-					}
-				}
-				activePlayer.SetInertia( { 0, 0 } );
-				break;
-			case MINE:
-				powerups[activePlayer.GetPosition()] = MINE_ACTIVE;
-				break;
-			case MINE_ACTIVE:
-				powerups.erase( activePlayer.GetPosition() );
-				if( activePlayer.GetShield() == 0 ) {
+		if( GetPowerup( activePlayer.GetPosition().x, activePlayer.GetPosition().y ) != NONE ) {
+			switch( powerups[activePlayer.GetPosition()] ) {
+				case WALL:
+					powerups.erase( activePlayer.GetPosition() );
 					crashedPlayers.insert( &activePlayer );
-				} else {
-					activePlayer.DropShield();
-				}
-				break;
-			case LAZER:
-				// TODO
-				powerups.erase( activePlayer.GetPosition() );
-				break;
-			case SHIELD:
-				powerups.erase( activePlayer.GetPosition() );
-				activePlayer.ActivateShield();
-				break;
-			default: break;
+					break;
+				case SAND:
+					powerups.erase( activePlayer.GetPosition() );
+					activePlayer.SetInertia( { 0, 0 } );
+					break;
+				case OIL:
+					powerups.erase( activePlayer.GetPosition() );
+					activePlayer.SetInertia( { 0, 0 } );
+					while( true ) {
+						int direction = std::rand() % 9 + 1;
+						if( direction != 5 ) {
+							activePlayer.Move( Direction( direction ) );
+							break;
+						}
+					}
+					activePlayer.SetInertia( { 0, 0 } );
+					break;
+				case MINE:
+					powerups[activePlayer.GetPosition()] = MINE_ACTIVE;
+					break;
+				case MINE_ACTIVE:
+					powerups.erase( activePlayer.GetPosition() );
+					crashedPlayers.insert( &activePlayer );
+					break;
+				case LAZER:
+					// TODO
+					powerups.erase( activePlayer.GetPosition() );
+					break;
+				case SHIELD:
+					powerups.erase( activePlayer.GetPosition() );
+					activePlayer.ActivateShield();
+					break;
+				default: break;
+			}
+		}
+		for( auto& player : players ) {
+			handleWalls( player, crashedPlayers );
 		}
 	}
 
-	void CPowerupManager::UpdatePowerups( const CMap& map, const std::vector<CPlayer>& players )
+	void CPowerupManager::GeneratePowerups( const CMap& map )
 	{
-		int max = 0;
-		for( int i = 0; i < players.size(); ++i ) {
-			if( players[i].GetLaps() > players[max].GetLaps() ) {
-				max = i;
-			}
-		}
-		if( players[max].GetLaps() <= lastLap ) {
-			return;
-		}
-		if( lastLap > -1 && CGameMode::GetObjectChangeModel() == CGameMode::NO_CHANGE ) {
-			return;
-		}
-		powerups.clear();
 		int n = 0;
 		auto size = map.GetSize();
 		switch( CGameMode::GetObjectRate() ) {
@@ -122,21 +138,48 @@ namespace Core {
 			case CGameMode::MANY: n = size.first * size.second / 50; break;
 			default: n = 0;  break;
 		}
-		if( CGameMode::GetObjectChangeModel() == CGameMode::CIRCLE_RANDOM || CGameMode::GetObjectChangeModel() == CGameMode::STABLE && powerups.size() < n ) {
-			for( int i = 0; i < n; ++i ) {
-				generatePowerup( map );
+		if( initialized && CGameMode::GetObjectChangeModel() == CGameMode::NO_CHANGE ) {
+			return;
+		}
+		if( !initialized || CGameMode::GetObjectChangeModel() == CGameMode::RANDOM ) {
+			if( CGameMode::GetObjectChangeModel() == CGameMode::RANDOM ) {
+				powerupCoordinates.clear();
 			}
-		} else if( CGameMode::GetObjectChangeModel() == CGameMode::STABLE ) {
-			for( auto& powerup : powerups ) {
-				while( true ) {
-					int type = std::rand() % 8;
-					if( type != NONE ) {
-						powerup.second = PowerupType( type );
-						break;
-					}
-				}
+			initialized = true;
+			for( int i = 0; i < n; ++i ) {
+				int x, y;
+				do {
+					y = std::rand() % map.GetSize().first;
+					x = std::rand() % map.GetSize().second;
+				} while( map.GetField()[y][x] != ROAD || powerups.find( CCoordinates( x, y ) ) != powerups.end() );
+				powerupCoordinates.push_back( CCoordinates( x, y ) );
 			}
 		}
+		powerups.clear();
+		for( auto coordinates : powerupCoordinates ) {
+			int type;
+			do {
+				type = std::rand() % 8;
+			} while( type == NONE );
+			powerups[Core::CCoordinates( coordinates.x, coordinates.y )] = PowerupType( type );
+		}
+	}
+
+	void CPowerupManager::UpdatePowerups( const CMap& map, const std::vector<CPlayer>& players )
+	{
+		if( players.empty() ) {
+			return;
+		}
+		int max = 0;
+		for( int i = 0; i < players.size(); ++i ) {
+			if( players[i].GetLaps() > players[max].GetLaps() ) {
+				max = i;
+			}
+		}
+		if( players[max].GetLaps() <= lastLap ) {
+			return;
+		}
 		lastLap = players[max].GetLaps();
+		GeneratePowerups( map );
 	}
 }

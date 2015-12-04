@@ -4,7 +4,7 @@
 #include <SOIL/SOIL.h>
 
 #include "UI/Drawing.h"
-#include "GlobalDefinitions.h"
+#include "Utils.h"
 
 namespace UI
 {
@@ -22,6 +22,7 @@ namespace UI
 	int CDrawing::window;
 	int CDrawing::key;
 	Core::CCoordinates CDrawing::mouse;
+	std::map<PowerupType, GLuint> CDrawing::powerupTextureMap;
 	GLuint CDrawing::textureOil = 0;
 	GLuint CDrawing::textureSand = 0;
 	GLuint CDrawing::textureWall = 0;
@@ -206,6 +207,11 @@ namespace UI
 		map.UnmarkHighlightedCells( possibleMoves );
 	}
 
+	GLuint CDrawing::GetTextureForPowerup( PowerupType type )
+	{
+		return powerupTextureMap[type];
+	}
+
 	// load image from file to texture
 	void CDrawing::loadTexture( const char* filename, GLuint& texture )
 	{
@@ -299,19 +305,7 @@ namespace UI
 		std::unique_lock<std::mutex> lock( mutex );
 		powerups.clear();
 		for( auto& info : powerupsInfo ) {
-			GLuint texture;
-			switch( info.second ) {
-				case WALL: texture = textureWall; break;
-				case SAND: texture = textureSand; break;
-				case OIL: texture = textureOil; break;
-				case MINE: texture = textureBombInactive; break;
-				case MINE_ACTIVE: texture = textureBombActive; break;
-				case LAZER: texture = textureLazer; break;
-				case SHIELD: texture = textureShieldToPickUp; break;
-				case NONE:
-				default: texture = -1; break;
-			}
-			powerups.push_back( CPowerup( info.second, UI::CCoordinates(info.first.x, info.first.y), texture ) );
+			powerups.push_back( CPowerup( info.second, UI::CCoordinates(info.first.x, info.first.y) ) );
 		}
 	}
 
@@ -346,8 +340,14 @@ namespace UI
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\shieldToPickUp.png").c_str(), textureShieldToPickUp );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombActive.png").c_str(), textureBombActive );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombInactive.png").c_str(), textureBombInactive );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\lazer.png").c_str(), textureLazer );
-		
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\laser.png").c_str(), textureLazer );
+		powerupTextureMap[OIL] = textureOil;
+		powerupTextureMap[LAZER] = textureLazer;
+		powerupTextureMap[SAND] = textureSand;
+		powerupTextureMap[WALL] = textureWall;
+		powerupTextureMap[MINE] = textureBombInactive;
+		powerupTextureMap[MINE_ACTIVE] = textureBombActive;
+		powerupTextureMap[SHIELD] = textureShieldToPickUp;
 
 		//load textures for cars (depends on color)
 		std::string carFilename;

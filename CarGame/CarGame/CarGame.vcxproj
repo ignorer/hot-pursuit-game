@@ -160,16 +160,16 @@
     <ClCompile Include="Core\PowerupManager.cpp" />
     <ClCompile Include="Core\Reader.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SettingsDialog.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UI\Car.cpp" />
-    <ClCompile Include="UI\Coordinates.cpp" />
     <ClCompile Include="UI\Drawing.cpp" />
     <ClCompile Include="UI\MainMenuWindow.cpp" />
     <ClCompile Include="UI\Map.cpp" />
     <ClCompile Include="UI\MapSettingsWindow.cpp" />
     <ClCompile Include="UI\GameResultWindow.cpp" />
     <ClCompile Include="UI\Powerup.cpp" />
+    <ClCompile Include="UI\SettingsDialog.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Game.h" />
@@ -178,20 +178,19 @@
     <ClInclude Include="Core\Player.h" />
     <ClInclude Include="Core\PowerupManager.h" />
     <ClInclude Include="Core\Reader.h" />
-    <ClInclude Include="GlobalDefinitions.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="IMap.h" />
     <ClInclude Include="IPlayerState.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="SettingsDialog.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UI\Car.h" />
-    <ClInclude Include="UI\Coordinates.h" />
     <ClInclude Include="UI\Drawing.h" />
     <ClInclude Include="UI\MainMenuWindow.h" />
     <ClInclude Include="UI\Map.h" />
     <ClInclude Include="UI\MapSettingsWindow.h" />
     <ClInclude Include="UI\GameResultWindow.h" />
     <ClInclude Include="UI\Powerup.h" />
+    <ClInclude Include="UI\SettingsDialog.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Resources\Images\active.png" />

@@ -1,10 +1,9 @@
 ﻿#pragma once
 #include <vector>
+#include <set>
 #include <GL/glut.h>
 
-#include "UI/Coordinates.h"
-#include "GlobalDefinitions.h"
-#include <set>
+#include "Utils.h"
 
 namespace UI
 {

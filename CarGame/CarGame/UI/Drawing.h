@@ -35,7 +35,6 @@ namespace UI {
 
 		static void DropKey();
 		static int GetKey();
-
 		static void DropMouse();
 		static Core::CCoordinates GetMouse( const std::vector<Core::CCoordinates>& possibleMoves );
 
@@ -44,6 +43,8 @@ namespace UI {
 
 		static void MarkPossibleMoves( const std::vector<Core::CCoordinates>& possibleMoves );
 		static void UnMarkPossibleMoves( const std::vector<Core::CCoordinates>& possibleMoves );
+
+		static GLuint GetTextureForPowerup( PowerupType type );
 
 		static GLuint textureOil;
 		static GLuint textureSand;
@@ -76,5 +77,6 @@ namespace UI {
 		static int window;
 		static int key;
 		static Core::CCoordinates mouse;
+		static std::map<PowerupType, GLuint> powerupTextureMap;
 	};
 }

@@ -2,9 +2,7 @@
 
 #include <GL/glut.h>
 
-#include "UI/Coordinates.h"
-#include "GlobalDefinitions.h"
-#include <mutex>
+#include "Utils.h"
 
 namespace UI {
 	enum Color { RED, GREEN, BLUE, ORANGE };

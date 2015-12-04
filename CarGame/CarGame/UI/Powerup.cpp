@@ -1,10 +1,10 @@
 #include "UI/Powerup.h"
+#include "UI/Drawing.h"
 
 namespace UI {
-	CPowerup::CPowerup( PowerupType type, const CCoordinates& coordinates, GLuint texture ) :
+	CPowerup::CPowerup( PowerupType type, const CCoordinates& coordinates ) :
 		type( type ),
-		coordinates( coordinates ),
-		texture( texture )
+		coordinates( coordinates )
 	{
 	}
 
@@ -21,7 +21,7 @@ namespace UI {
 	void CPowerup::Draw( float cellSize, CWindowCoordinates indent, CSize mapSize ) const
 	{
 		glEnable( GL_TEXTURE_2D );
-		glBindTexture( GL_TEXTURE_2D, texture );
+		glBindTexture( GL_TEXTURE_2D, CDrawing::GetTextureForPowerup( type ) );
 		glTexEnvf( GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		CWindowCoordinates coord = transateToWcoord( coordinates.x, coordinates.y, cellSize, indent, mapSize );
 
@@ -29,12 +29,12 @@ namespace UI {
 		glBegin( GL_POLYGON );
 		{
 			glColor3f( 1, 1, 1 );
-			glTexCoord2f( 0.0f, 0.0f ); glVertex2f( coord.x, coord.y);
+			glTexCoord2f( 0.0f, 0.0f ); glVertex2f( coord.x, coord.y );
 			glTexCoord2f( 1.0f, 0.0f ); glVertex2f( coord.x + cellSize, coord.y );
 			glTexCoord2f( 1.0f, 1.0f ); glVertex2f( coord.x + cellSize, coord.y - cellSize );
 			glTexCoord2f( 0.0f, 1.0f ); glVertex2f( coord.x, coord.y - cellSize );
 		}
-		glEnd( );
+		glEnd();
 		glDisable( GL_BLEND );
 		glDisable( GL_TEXTURE_2D );
 	}

@@ -87,7 +87,7 @@ namespace Core {
 
 	void CPlayer::ActivateShield()
 	{
-		shieldLeft = 5;
+		shieldLeft = 6;
 	}
 
 	void CPlayer::DecreaseShield()
@@ -157,6 +157,7 @@ namespace Core {
 		return 0 <= (direction + position + inertia).x && (direction + position + inertia).x <= size.first - 1 &&
 			0 <= (direction + position + inertia).y && (direction + position + inertia).y <= size.second - 1;
 	}
+
 	bool CPlayer::DirectionIsValid( CCoordinates direction, const CSize& size ) const
 	{
 		return 0 <= (direction + position + inertia).x && (direction + position + inertia).x <= size.first - 1 &&

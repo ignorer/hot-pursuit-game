@@ -6,7 +6,7 @@ namespace Core {
 		enum MovementMode { CONCURRENT, SEQUENTIAL };
 		enum DeathPenalty { DESTROY, TO_START, STOP };
 		enum ObjectRate { NO, FEW, NORMAL, MANY };
-		enum ObjectChangeModel { NO_CHANGE, STABLE, CIRCLE_RANDOM};
+		enum ObjectChangeModel { NO_CHANGE, STABLE, RANDOM};
 
 		CGameMode() = delete;
 

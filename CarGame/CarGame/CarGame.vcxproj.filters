@@ -72,20 +72,17 @@
     <ClCompile Include="Core\PowerupManager.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Coordinates.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="SettingsDialog.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\Powerup.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\SettingsDialog.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GlobalDefinitions.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Reader.h">
       <Filter>Source Files\Core</Filter>
     </ClInclude>
@@ -134,14 +131,14 @@
     <ClInclude Include="Core\PowerupManager.h">
       <Filter>Source Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Coordinates.h">
-      <Filter>Source Files\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="SettingsDialog.h">
-      <Filter>Source Files\UI</Filter>
-    </ClInclude>
     <ClInclude Include="UI\Powerup.h">
       <Filter>Source Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\SettingsDialog.h">
+      <Filter>Source Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

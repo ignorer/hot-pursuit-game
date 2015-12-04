@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "GlobalDefinitions.h"
+#include "Utils.h"
 #include <vector>
 
 namespace Core {

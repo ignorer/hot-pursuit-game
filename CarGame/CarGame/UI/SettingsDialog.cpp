@@ -73,7 +73,7 @@ void UI::CSettingsDialog::OnDialogOk( HWND hwndDlg, WPARAM wParam )
 		changeModel = Core::CGameMode::ObjectChangeModel::STABLE;
 	}
 	else {
-		changeModel = Core::CGameMode::ObjectChangeModel::CIRCLE_RANDOM;
+		changeModel = Core::CGameMode::ObjectChangeModel::RANDOM;
 	}
 
 	int lapCount = GetLapsNumber( hwndDlg, IDC_EDIT2 );
@@ -181,7 +181,7 @@ int  UI::CModeToItemIdConverter::getObjectChangeModelItemId( Core::CGameMode::Ob
 		case Core::CGameMode::ObjectChangeModel::STABLE:
 			changeModelItemId = IDC_STABLE;
 			break;
-		case Core::CGameMode::ObjectChangeModel::CIRCLE_RANDOM:
+		case Core::CGameMode::ObjectChangeModel::RANDOM:
 			changeModelItemId = IDC_RANDOM;
 			break;
 		default:

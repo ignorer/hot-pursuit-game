@@ -8,7 +8,7 @@
 #include "resource.h"
 
 #include "UIManager.h"
-#include "GlobalDefinitions.h"
+#include "Utils.h"
 #include "Core/Reader.h"
 #include "Core/Game.h"
 #include "UI/MapSettingsWindow.h"

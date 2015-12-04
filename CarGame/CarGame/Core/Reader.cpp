@@ -4,7 +4,7 @@
 
 #include "Core/Reader.h"
 #include "Core/Map.h"
-#include "GlobalDefinitions.h"
+#include "Utils.h"
 
 namespace Core {
 	CMap CReader::ReadMap( const std::string& path )

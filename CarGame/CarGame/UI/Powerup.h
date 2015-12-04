@@ -1,13 +1,12 @@
 #pragma once
 #include <GL/glut.h>
 
-#include "GlobalDefinitions.h"
-#include "UI/Coordinates.h"
+#include "Utils.h"
 
 namespace UI {
 	class CPowerup {
 	public:
-		CPowerup( PowerupType type, const CCoordinates& coordinates, GLuint texture );
+		CPowerup( PowerupType type, const CCoordinates& coordinates );
 
 		PowerupType GetType() const;
 		CCoordinates GetCoordinates() const;
@@ -17,6 +16,5 @@ namespace UI {
 	private:
 		PowerupType type;
 		CCoordinates coordinates;
-		GLuint texture;
 	};
 }
