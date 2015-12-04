@@ -4,7 +4,6 @@
 #include <memory>
 #include <Windows.h>
 
-#include <CommCtrl.h>
 #include "resource.h"
 
 #include "UIManager.h"
@@ -13,8 +12,7 @@
 #include "Core/Game.h"
 #include "UI/MapSettingsWindow.h"
 #include "UI/Drawing.h"
-#include "Core/GameMode.h"
-#include "SettingsDialog.h"
+#include "UI/SettingsDialog.h"
 
 
 const wchar_t* const UI::CMapSettingsWindow::className = L"CMapSettingsWindow";
@@ -46,8 +44,8 @@ UI::CMapSettingsWindow::CMapSettingsWindow( CUIManager* _manager ) :
 	settingsButton( nullptr ), 
 	mapNameControl( nullptr ),
 	positionOwnerControls( std::vector<HWND>( 12, nullptr ) ),
-	manager( _manager ),
-	nameControls( std::vector<HWND> (12, nullptr) )
+	nameControls( std::vector<HWND> (12, nullptr) ),
+	manager( _manager )
 {}
 
 bool UI::CMapSettingsWindow::Create()
@@ -68,7 +66,7 @@ bool UI::CMapSettingsWindow::Create()
 		::SendMessage( positionOwnerControls[i], CB_SELECTSTRING, 0, LPARAM( L"None" ) );
 		nameControls[i] = CreateWindow( L"EDIT", (std::wstring( L"Name " ) + std::to_wstring( i + 1 )).c_str(),
 		 WS_VISIBLE | WS_CHILD, 175, 100 + 30 * i, 125, 24,
-			handle, 0, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+			handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 	}
 
 	startGameButton = CreateWindow( L"BUTTON", L"Start game", WS_VISIBLE | WS_CHILD, 350, 330, 150, 30,
@@ -128,13 +126,14 @@ void UI::CMapSettingsWindow::StartGame()
 	} catch( std::exception& e ) {
 		if( std::string( "Can't open file" ) == e.what() ) {
 			::MessageBox( handle, L"Map not found", L"You're doing it wrong", MB_ICONHAND );
-		}
-		else if ( std::string( "Empty Player Name" ) == e.what() ) {
+		} else if( std::string( "Empty Player Name" ) == e.what() ) {
 			::MessageBox( handle, L"Please, enter player name", L"Empty Player Name", MB_ICONHAND );
-		} 
-		else {
+		} else if( std::string( e.what( ) ).substr( 0, 17 ) == "Invalid cell type" ) {
+			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+			std::wstring message = converter.from_bytes( e.what() );
+			::MessageBox( handle, message.c_str(), L"Invalid cell type", MB_ICONHAND );
+		} else {
 			::MessageBeep( SOUND_SYSTEM_BEEP );
-			::PostQuitMessage( 1 );
 		}
 	}
 }
