@@ -21,15 +21,19 @@ namespace UI {
 		void MakeVisible() const;
 		void MakeInvisible() const;
 
+	protected:
+		void OnMapEditorExe();
 	private:
 		HWND handle;
 		HWND newGameButton;
+		HWND mapEditorButton;
 		HWND exitGameButton;
 
 		CUIManager manager;
 
 		const int BUTTON_NEW_GAME = 1;
 		const int BUTTON_EXIT = 2;
+		const int BUTTON_MAP_EDITOR = 3;
 
 		static const wchar_t* const className;
 		

@@ -200,6 +200,7 @@
     <Image Include="..\..\Resources\Images\car_green.png" />
     <Image Include="..\..\Resources\Images\car_orange.png" />
     <Image Include="..\..\Resources\Images\car_red.png" />
+    <Image Include="..\..\Resources\Images\cur.png" />
     <Image Include="..\..\Resources\Images\explosionAnimation.png" />
     <Image Include="..\..\Resources\Images\finish.png" />
     <Image Include="..\..\Resources\Images\forestCell.png" />
@@ -222,6 +223,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CarGame.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cursor.cur" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

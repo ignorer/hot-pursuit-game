@@ -18,7 +18,7 @@ bool UI::CMainMenuWindow::RegisterClass( HINSTANCE hInst )
 	tag.lpfnWndProc = windowProc;
 	tag.cbClsExtra = 0;
 	tag.cbWndExtra = 0;
-	tag.hCursor = LoadCursor( nullptr, IDC_ARROW );
+	tag.hCursor = LoadCursor( hInst, MAKEINTRESOURCE( IDC_CURSOR1 ) );
 	tag.hbrBackground = HBRUSH( GetStockObject( BLACK_BRUSH ) );
 	tag.lpszMenuName = nullptr;
 	tag.lpszClassName = className;
@@ -40,11 +40,16 @@ bool UI::CMainMenuWindow::Create()
 {
 	handle = CreateWindow( className, L"Main menu - Rock'n'Roll race", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		100, 100, 300, 300, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
-	newGameButton = CreateWindow( L"BUTTON", L"New game", WS_VISIBLE | WS_CHILD, 75, 100, 150, 30,
+	newGameButton = CreateWindow( L"BUTTON", L"New game", WS_VISIBLE | WS_CHILD, 75, 80, 150, 30,
 		handle, HMENU(BUTTON_NEW_GAME), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	exitGameButton = CreateWindow( L"BUTTON", L"Exit game", WS_VISIBLE | WS_CHILD, 75, 150, 150, 30,
+	mapEditorButton = CreateWindow( L"BUTTON", L"Map editor", WS_VISIBLE | WS_CHILD, 75, 120, 150, 30,
+		handle, HMENU( BUTTON_MAP_EDITOR ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	exitGameButton = CreateWindow( L"BUTTON", L"Exit game", WS_VISIBLE | WS_CHILD, 75, 160, 150, 30,
 		handle, HMENU(BUTTON_EXIT), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-
+	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
+	SetClassLong( newGameButton, GCL_HCURSOR, (LONG)cursor );
+	SetClassLong( mapEditorButton, GCL_HCURSOR, (LONG)cursor );
+	SetClassLong( exitGameButton, GCL_HCURSOR, (LONG)cursor );
 	return handle != nullptr;
 }
 
@@ -70,7 +75,6 @@ void UI::CMainMenuWindow::Play()
 void UI::CMainMenuWindow::MakeVisible() const
 {
 	::ShowWindow( handle, SW_SHOW );
-	//::SetForegroundWindow( handle );
 }
 
 void UI::CMainMenuWindow::MakeInvisible() const
@@ -78,6 +82,10 @@ void UI::CMainMenuWindow::MakeInvisible() const
 	::ShowWindow( handle, SW_HIDE );
 }
 
+void UI::CMainMenuWindow::OnMapEditorExe() {
+	ShellExecute( handle, nullptr, L".\\Race.exe", nullptr, nullptr, SW_SHOW );
+	Destroy();
+}
 LRESULT UI::CMainMenuWindow::windowProc( HWND handle, UINT message, WPARAM wParam, LPARAM lParam )
 {
 	CMainMenuWindow* wnd;
@@ -97,6 +105,8 @@ LRESULT UI::CMainMenuWindow::windowProc( HWND handle, UINT message, WPARAM wPara
 				wnd->Play();
 			} else if( LOWORD( wParam ) == wnd->BUTTON_EXIT ) {
 				::SendMessage( wnd->handle, WM_DESTROY, wParam, lParam );
+			} else if (LOWORD( wParam ) == wnd->BUTTON_MAP_EDITOR) {
+				wnd->OnMapEditorExe();
 			}
 			return 0;
 	}

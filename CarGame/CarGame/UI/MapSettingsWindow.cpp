@@ -26,7 +26,7 @@ bool UI::CMapSettingsWindow::RegisterClass( HINSTANCE hInst )
 	tag.lpfnWndProc = windowProc;
 	tag.cbClsExtra = 0;
 	tag.cbWndExtra = 0;
-	tag.hCursor = LoadCursor( nullptr, IDC_ARROW );
+	tag.hCursor = LoadCursor( hInst, MAKEINTRESOURCE( IDC_CURSOR1 ) );
 	tag.hbrBackground = HBRUSH( GetStockObject( BLACK_BRUSH ) );
 	tag.lpszMenuName = nullptr;
 	tag.lpszClassName = className;
@@ -55,11 +55,13 @@ bool UI::CMapSettingsWindow::Create()
 
 	CreateMapNameControl();
 	
+	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
 
 	for( int i = 0; i < positionOwnerControls.size(); ++i ) {
 		positionOwnerControls[i] = CreateWindow( L"COMBOBOX", (std::wstring( L"Position " ) + std::to_wstring( i + 1 )).c_str(),
 			CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 40, 100 + 30 * i, 125, 80,
 			handle, HMENU( FIRST_POSITION_OWNER + i ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+		SetClassLong( positionOwnerControls[i], GCL_HCURSOR, (LONG)cursor );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"None" ) );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"Player" ) );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"AI" ) );
@@ -67,6 +69,7 @@ bool UI::CMapSettingsWindow::Create()
 		nameControls[i] = CreateWindow( L"EDIT", (std::wstring( L"Name " ) + std::to_wstring( i + 1 )).c_str(),
 		 WS_VISIBLE | WS_CHILD, 175, 100 + 30 * i, 125, 24,
 			handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+		SetClassLong( nameControls[i], GCL_HCURSOR, (LONG)cursor );
 	}
 
 	startGameButton = CreateWindow( L"BUTTON", L"Start game", WS_VISIBLE | WS_CHILD, 350, 330, 150, 30,
@@ -81,8 +84,11 @@ bool UI::CMapSettingsWindow::Create()
 
 bool UI::CMapSettingsWindow::CreateMapNameControl()
 {
-	mapNameControl = CreateWindow( L"COMBOBOX", L"M", CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 40, 50, 125, 80,
+	mapNameControl = CreateWindow( L"COMBOBOX", L"Map", CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 40, 50, 125, 80,
 		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+
+	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
+	SetClassLong( mapNameControl, GCL_HCURSOR, (LONG)cursor );
 
 	WIN32_FIND_DATA findFileData;
 	HANDLE mapFile = ::FindFirstFile( L".\\Resources\\Maps\\*.txt", &findFileData );
@@ -191,8 +197,6 @@ std::vector<Core::CPlayer> UI::CMapSettingsWindow::GetPlayersInfo( const std::ve
 void UI::CMapSettingsWindow::MakeVisible() const
 {
 	::ShowWindow( handle, SW_SHOW );
-	//::SetForegroundWindow( handle );
-
 }
 
 void UI::CMapSettingsWindow::MakeInvisible() const

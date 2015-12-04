@@ -382,6 +382,7 @@ namespace UI
 			loadTexture( (RESOURCE_DIRECTORY + "Images\\explosionAnimation.png").c_str(), cars[i].explosion );
 			loadTexture( (RESOURCE_DIRECTORY + "Images\\shieldActive.png").c_str(), cars[i].shield );
 		}
+		
 	}
 
 	void CDrawing::keyboardFunction( unsigned char pressedKey, int x, int y )
