@@ -16,7 +16,7 @@ bool UI::CGameResultWindow::RegisterClass( HINSTANCE hInst )
 	tag.lpfnWndProc = windowProc;
 	tag.cbClsExtra = 0;
 	tag.cbWndExtra = 0;
-	tag.hCursor = LoadCursor( nullptr, IDC_ARROW );
+	tag.hCursor = LoadCursor( hInst, MAKEINTRESOURCE( IDC_CURSOR1 ) );
 	tag.hbrBackground = HBRUSH( GetStockObject( BLACK_BRUSH ) );
 	tag.lpszMenuName = nullptr;
 	tag.lpszClassName = className;
@@ -41,15 +41,22 @@ bool UI::CGameResultWindow::Create()
 	handle = CreateWindow( className, L"Game result - Rock'n'Roll race", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		200, 200, 300, 300, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
 
+	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
 	resultMessage = CreateWindow( L"Static", L"", WS_VISIBLE | WS_CHILD | SS_CENTER, 50, 50, 200, 50,
 		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	SetClassLong( resultMessage, GCL_HCURSOR, (LONG)cursor );
 
 	toSettingsButton = CreateWindow( L"BUTTON", L"Play again", WS_VISIBLE | WS_CHILD, 75, 130, 150, 30,
 		handle, HMENU( BUTTON_SETTINGS ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	SetClassLong( toSettingsButton, GCL_HCURSOR, (LONG)cursor );
+
 	toMainMenuButton = CreateWindow( L"BUTTON", L"To main menu", WS_VISIBLE | WS_CHILD, 75, 180, 150, 30,
 		handle, HMENU( BUTTON_MAIN_MENU ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	SetClassLong( toMainMenuButton, GCL_HCURSOR, (LONG)cursor );
+
 	exitButton = CreateWindow( L"BUTTON", L"Exit", WS_VISIBLE | WS_CHILD, 75, 230, 150, 30,
 		handle, HMENU( BUTTON_EXIT ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	SetClassLong( exitButton, GCL_HCURSOR, (LONG)cursor );
 
 	return handle != nullptr;
 }
