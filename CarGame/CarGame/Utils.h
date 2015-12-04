@@ -17,7 +17,7 @@ enum PowerupType {
 
 namespace Core {
 	enum Cell {
-		ROAD = 0, FOREST = 1, CAR = 2
+		ROAD = 0, FOREST = 1, CAR = 2, WALL_CELL = 3
 	};
 
 	struct CCoordinates {

@@ -28,6 +28,7 @@ namespace Core {
 				switch ( cell ) {
 					case ROAD:
 					case FOREST:
+					case WALL_CELL:
 						gameField[i].push_back( cell );
 						break;
 					case CAR:

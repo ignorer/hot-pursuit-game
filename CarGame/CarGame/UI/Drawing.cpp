@@ -290,8 +290,7 @@ namespace UI
 
 	void CDrawing::DeleteCars( const std::vector<int>& numbers )
 	{
-		const int numOfFrames = 6;		// number of frames in animation
-//		const int multiplicator = 1;	// how many times show explosion
+		const int numOfFrames = 6;		// количество кадров в анимации взрыва
 		for( int j = 0; j <= numOfFrames; ++j ) {
 			for( int i : numbers ) {
 				cars[i].SetOpacity( 1.0f - float( j ) / numOfFrames );
@@ -330,7 +329,7 @@ namespace UI
 		std::unique_lock<std::mutex> lock( mutex );
 		started = false;
 		glDeleteTextures( 1, &map.textureRoad );
-		glDeleteTextures( 1, &map.textureBoard );
+		glDeleteTextures( 1, &map.textureForest );
 		for( auto car : cars ) {
 			glDeleteTextures( 1, &car.texture );
 		}
@@ -340,8 +339,9 @@ namespace UI
 	void CDrawing::load()
 	{
 		//load textures for map
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\road.png").c_str(), map.textureRoad );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\forest.png").c_str(), map.textureBoard );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\roadCell.png").c_str(), map.textureRoad );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\forestCell.png").c_str(), map.textureForest );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\wallCell.png").c_str(), map.textureWall );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\active.png").c_str(), map.textureActiveCell );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\finish.png").c_str(), map.textureFinish );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\oil.png").c_str(), textureOil );
