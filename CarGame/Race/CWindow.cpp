@@ -190,11 +190,32 @@ void CWindow::OnPaint()
     }
 	std::pair<int, int> fc = map.GetFinishCoord( 1 );
 	std::pair<int, int> sc = map.GetFinishCoord( 2 );
+	// Прорисовка точек финиша
+	if( sc.first != -1 ) {
+		RECT rect1;
+		rect1.left = coordsOfCurrentView.first + sc.second * cellSize;
+		rect1.top = sc.first * cellSize + coordsOfCurrentView.second;
+		rect1.right = coordsOfCurrentView.first + (sc.second + 1) * cellSize;
+		rect1.bottom = (sc.first + 1) * cellSize + coordsOfCurrentView.second;
+
+		::SelectObject( backbuffDC, brushes[4] );
+		::Rectangle( backbuffDC, rect1.left, rect1.top, rect1.right, rect1.bottom );
+	}
+	if( fc.first != -1 ) {
+		RECT rect2;
+		rect2.left = coordsOfCurrentView.first + fc.second * cellSize;
+		rect2.top = fc.first * cellSize + coordsOfCurrentView.second;
+		rect2.right = coordsOfCurrentView.first + (fc.second + 1) * cellSize;
+		rect2.bottom = (fc.first + 1) * cellSize + coordsOfCurrentView.second;
+		
+		::SelectObject( backbuffDC, brushes[5] );
+		::Rectangle( backbuffDC, rect2.left, rect2.top, rect2.right, rect2.bottom );
+	}
 	if( fc.first != -1 && sc.first != -1 ) {
 		HPEN finishPen = ::CreatePen( PS_SOLID, cellSize / 2, RGB( 122, 122, 122 ) );
 		::SelectObject( backbuffDC, finishPen );
-		::MoveToEx( backbuffDC,( fc.second + 0.5 ) * cellSize + coordsOfCurrentView.first, coordsOfCurrentView.second + (fc.first + 0.5 ) * cellSize,  NULL );
-		::LineTo( backbuffDC, (sc.second + 0.5 ) * cellSize + coordsOfCurrentView.first, coordsOfCurrentView.second + (sc.first + 0.5 ) * cellSize );
+		::MoveToEx( backbuffDC, (fc.second + 0.5) * cellSize + coordsOfCurrentView.first, coordsOfCurrentView.second + (fc.first + 0.5) * cellSize, NULL );
+		::LineTo( backbuffDC, (sc.second + 0.5) * cellSize + coordsOfCurrentView.first, coordsOfCurrentView.second + (sc.first + 0.5) * cellSize );
 		::DeleteBrush( finishPen );
 	}
 	
@@ -252,6 +273,10 @@ void CWindow::LoadFile()
         UpdateState();
     }
     fin.close();
+	// Восстанавливаем настройки
+	drawFirstTime = true;
+	currentZoom = 1;
+
 }
 
 void CWindow::SaveFile()
@@ -387,15 +412,13 @@ void CWindow::Zoom( int dir){
 	RECT windowRect;
 	::GetClientRect( handle, &rect );
 	::GetWindowRect( handle, &windowRect);
-	//int plusX = windowRect.right - windowRect.left;
-	//int plusY = windowRect.bottom - windowRect.top - getRibbonHeight();
+
 	
 	if( dir > 0 ) {
 		if( currentZoom != maxZoom ) {
 			currentZoom++;
 			cellSize *= 2;
-			//coordsOfCurrentView.first = (coordsOfCurrentView.first - plusX) * 2 + plusX;
-			//coordsOfCurrentView.second = (coordsOfCurrentView.first - plusY) * 2 + plusY;
+
 			::InvalidateRect( handle, &rect, TRUE );
 		}
 	}
@@ -403,8 +426,6 @@ void CWindow::Zoom( int dir){
 		if( currentZoom != 1 ) {
 			currentZoom--;
 			cellSize /= 2;
-			//coordsOfCurrentView.first = (coordsOfCurrentView.first - plusX) / 2 + plusX;
-			//coordsOfCurrentView.second = (coordsOfCurrentView.first - plusY) / 2 + plusY;
 			::InvalidateRect( handle, &rect, TRUE );
 		}
 	}
