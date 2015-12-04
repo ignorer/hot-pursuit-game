@@ -4,43 +4,13 @@
 #include "Core/GameMode.h"
 
 namespace Core {
-	namespace {
-		bool inBoxOnAxis( int firstPoint, int secondPoint, int thirdPoint, int forthPoint )
-		{
-			if( firstPoint > secondPoint ) {
-				std::swap( firstPoint, secondPoint );
-			}
-			if( thirdPoint > forthPoint ) {
-				std::swap( thirdPoint, forthPoint );
-			}
-			return max( firstPoint, thirdPoint ) <= min( secondPoint, forthPoint );
-		}
-
-		int area( const CCoordinates& firstPoint, const CCoordinates& secondPoint, const CCoordinates& thirdPoint )
-		{
-			return (secondPoint.x - firstPoint.x) * (thirdPoint.y - firstPoint.y)
-				- (secondPoint.y - firstPoint.y) * (thirdPoint.x - firstPoint.x);
-		}
-
-		bool isIntersects(
-			const CCoordinates& firstPoint,
-			const CCoordinates& secondPoint,
-			const CCoordinates& thirdPoint,
-			const CCoordinates& fourthPoint )
-		{
-			return inBoxOnAxis( firstPoint.x, secondPoint.x, thirdPoint.x, fourthPoint.x )
-				&& inBoxOnAxis( firstPoint.y, secondPoint.y, thirdPoint.y, fourthPoint.y )
-				&& (area( firstPoint, secondPoint, thirdPoint )
-					* area( firstPoint, secondPoint, fourthPoint )) <= 0
-				&& (area( thirdPoint, fourthPoint, firstPoint )
-					* area( thirdPoint, fourthPoint, secondPoint )) <= 0;
-		}
-	}
-
 	CGame::CGame( const CMap& newMap, const std::vector<CPlayer>& playersInfo, const CUIManager* _manager ) :
 		map( newMap ),
 		players( playersInfo ),
-		manager( _manager )
+		manager( _manager ),
+		hInstanceDLLLibrary( nullptr ),
+		StrategyBuilderFunc( nullptr ),
+		GetPlayerStateFunc( nullptr )
 	{}
 
 	int CGame::finishLineIntersectsWithPlayer( const CPlayer& player ) const
@@ -71,16 +41,21 @@ namespace Core {
 	void CGame::handleFinishLineIntersections()
 	{
 		for( int i = 0; i < players.size(); ++i ) {
-			players[i].IncreaseLaps( finishLineIntersectsWithPlayer( players[i] ) );
+			handleFinishLineIntersectionsForPlayer( i );
 		}
+	}
+
+	void CGame::handleFinishLineIntersectionsForPlayer( int i )
+	{
+		players[i].IncreaseLaps( finishLineIntersectsWithPlayer( players[i] ) );
 	}
 
 	bool CGame::playerOutOfTrack( const CPlayer& player ) const
 	{
 		if( player.GetPosition().x < 0 ||
 			player.GetPosition().y < 0 ||
-			player.GetPosition().x >= map.GetSize().second ||
-			player.GetPosition().y >= map.GetSize().first ) {
+			player.GetPosition().x >= map.GetSize().first ||
+			player.GetPosition().y >= map.GetSize().second ) {
 			return true;
 		}
 		CCoordinates playersPreviousCoordinates = player.GetPreviousPosition();
@@ -124,14 +99,10 @@ namespace Core {
 
 	void CGame::findCollisionsForPlayer( int playerId, std::set<CPlayer*>& crashedPlayers )
 	{
-		for( size_t j = playerId + 1; j < players.size(); ++j ) {
-			if( players[playerId].GetPosition() == players[j].GetPosition() && players[playerId].IsAlive() && players[j].IsAlive() ) {
-				if( players[playerId].GetShield() == 0 ) {
-					crashedPlayers.insert( &players[playerId] );
-				}
-				if( players[j].GetShield() == 0 ) {
-					crashedPlayers.insert( &players[j] );
-				}
+		for( size_t j = 0; j < players.size(); ++j ) {
+			if( j != playerId && players[playerId].GetPosition() == players[j].GetPosition() && players[playerId].IsAlive() && players[j].IsAlive() ) {
+				crashedPlayers.insert( &players[playerId] );
+				crashedPlayers.insert( &players[j] );
 			}
 		}
 	}
@@ -145,7 +116,7 @@ namespace Core {
 
 	void CGame::findCrashesForPlayer( CPlayer& player, std::set<CPlayer*>& crashedPlayers ) const
 	{
-		if( player.IsAlive() && playerOutOfTrack( player ) && player.GetShield() == 0 ) {
+		if( player.IsAlive() && playerOutOfTrack( player ) ) {
 			crashedPlayers.insert( &player );
 		}
 	}
@@ -160,7 +131,7 @@ namespace Core {
 		}
 	}
 
-	int CGame::turnOfUser( CPlayer& player )
+	int CGame::turnOfUser( CPlayer& player ) const
 	{
 		std::vector<CCoordinates> possibleMoves = player.PossibleMoves( map.GetSize( ) );
 		manager->MarkPossibleMoves( possibleMoves );
@@ -173,8 +144,8 @@ namespace Core {
 	{
 		if( hInstanceDLLLibrary == nullptr ) {
 			hInstanceDLLLibrary = ::LoadLibrary( TEXT( "Strategy.dll" ) );
-			StrategyBuilderFunc = (STRATEGY_PROC) ::GetProcAddress( hInstanceDLLLibrary, "GetNewStrategy" );
-			GetPlayerStateFunc = (PLAYER_STATE_FACTORY_PROC) ::GetProcAddress( hInstanceDLLLibrary, "GetPlayerState" );
+			StrategyBuilderFunc = STRATEGY_PROC(::GetProcAddress( hInstanceDLLLibrary, "GetNewStrategy" ));
+			GetPlayerStateFunc = PLAYER_STATE_FACTORY_PROC(::GetProcAddress( hInstanceDLLLibrary, "GetPlayerState" ));
 		}
 
 		CField field = map.GetField();
@@ -198,7 +169,7 @@ namespace Core {
 
 		std::shared_ptr<IPlayerState> playerStatePtr( GetPlayerStateFunc( currentPosition.x, currentPosition.y, xVelocity, yVelocity ) );
 		AIStrategies[player->GetNumber()] = StrategyBuilderFunc( mapForAI, std::make_pair( firstFinishPoint.x, firstFinishPoint.y ),
-			std::make_pair( secondFinishPoint.x, secondFinishPoint.y ), playerStatePtr );
+			std::make_pair( secondFinishPoint.x, secondFinishPoint.y ), CGameMode::GetLapCount(), playerStatePtr );
 	}
 
 	void CGame::turnOfPlayer( CPlayer& player, std::set<CPlayer*>& crashedPlayers )
@@ -231,19 +202,20 @@ namespace Core {
 	void CGame::handleCrashes( const std::set<CPlayer*>& crashedPlayers, int& deadPlayersCount ) const
 	{
 		auto penalty = CGameMode::GetDeathPenalty();
-		if( penalty == CGameMode::DESTROY ) {
-			for( auto player : crashedPlayers ) {
+		for( auto player : crashedPlayers ) {
+			if( player->GetShield() ) {
+				player->DropShield();
+				player->SetInertia( CCoordinates( 0, 0 ) );
+				continue;
+			}
+			if( penalty == CGameMode::DESTROY ) {
 				player->Die();
 				++deadPlayersCount;
-			}
-			manager->ShowCrashes( crashedPlayers );
-		} else if( penalty == CGameMode::TO_START ) {
-			for( auto player : crashedPlayers ) {
+				manager->ShowCrashes( crashedPlayers );
+			} else if( penalty == CGameMode::TO_START ) {
 				player->GoToStart();
-			}
-			manager->ShowCrashesAndRespawn( crashedPlayers );
-		} else if( penalty == CGameMode::STOP ) {
-			for( auto player : crashedPlayers ) {
+				manager->ShowCrashesAndRespawn( crashedPlayers );
+			} else if( penalty == CGameMode::STOP ) {
 				if( player->GetPenalty() == 1 ) {
 					player->SetPenalty( 0 );
 				} else {
@@ -253,11 +225,12 @@ namespace Core {
 			}
 		}
 	}
-
+	
 	void CGame::Start()
 	{
 		std::vector<CPlayer> winners;
-		manager->InitMap( map, players, map.GetFinishLine( ) );
+		powerupManager.GeneratePowerups( map );
+		manager->InitMap( map, players, map.GetFinishLine() );
 		int deadPlayersCount = 0;
 		std::set<CPlayer*> crashedPlayers;
 
@@ -278,39 +251,53 @@ namespace Core {
 						}
 					}
 				}
-				manager->Move( players );
-				for( auto& player : players ) {
-					player.DecreaseShield();
-				}
+				manager->UpdatePlayersInfo( players );
 				powerupManager.HandleStep( players, crashedPlayers );
 				manager->ShowPowerups( powerupManager.GetPowerups() );
-				manager->Move( players );
+				manager->ShowShots( powerupManager.GetShots(), true );
+				manager->UpdatePlayersInfo( players );
+				powerupManager.DropShots();
+				manager->ShowShots( {}, false );
 
 				findCollisions( crashedPlayers );
 				findCrashes( crashedPlayers );
 				handleCrashes( crashedPlayers, deadPlayersCount );
 				crashedPlayers.clear();
+				for( auto& player : players ) {
+					player.DecreaseShield();
+				}
+				manager->UpdatePlayersInfo( players );
+				handleFinishLineIntersections();
+				findWinners( winners );
 			} else if( CGameMode::GetMovementMode() == CGameMode::SEQUENTIAL ) {
-//				for( size_t i = 0; i < players.size(); ++i ) {
-//					if( players[i].IsAlive() ) {
-//						if( players[i].GetPenalty() > 0 ) {
-//							players[i].SetPenalty( players[i].GetPenalty() - 1 );
-//						} else {
-//							turnOfPlayer( players[i], crashedPlayers );
-//							players[i].DecreaseShield();
-//						}
-//						manager->Move( { players[i] } );
-//					}
-//
-//					findCollisionsForPlayer( i, crashedPlayers );
-//					findCrashesForPlayer( players[i], crashedPlayers );
-//					handleCrashes( crashedPlayers, deadPlayersCount );
-//					crashedPlayers.clear();
-//				}
-			}
+				for( size_t i = 0; i < players.size(); ++i ) {
+					powerupManager.UpdatePowerups( map, players );
+					manager->ShowPowerups( powerupManager.GetPowerups() );
+					if( players[i].IsAlive() ) {
+						if( players[i].GetPenalty() > 0 ) {
+							players[i].SetPenalty( players[i].GetPenalty() - 1 );
+						} else {
+							turnOfPlayer( players[i], crashedPlayers );
+						}
+						manager->UpdatePlayersInfo( players );
+						powerupManager.HandleStepForPlayer( players[i], players, crashedPlayers );
+						manager->ShowPowerups( powerupManager.GetPowerups() );
+						manager->ShowShots( powerupManager.GetShots(), !powerupManager.GetShots().empty() );
+						manager->UpdatePlayersInfo( players );
+						powerupManager.DropShots();
+						manager->ShowShots( {}, false );
+					}
 
-			handleFinishLineIntersections();
-			findWinners( winners );
+					findCollisionsForPlayer( i, crashedPlayers );
+					findCrashesForPlayer( players[i], crashedPlayers );
+					handleCrashes( crashedPlayers, deadPlayersCount );
+					crashedPlayers.clear();
+					players[i].DecreaseShield();
+					manager->UpdatePlayersInfo( players );
+					handleFinishLineIntersectionsForPlayer( i );
+					findWinners( winners );
+				}
+			}
 		} while( winners.size() == 0 && deadPlayersCount < players.size() );
 
 		finish( winners );

@@ -1,10 +1,9 @@
 ﻿#pragma once
 #include <vector>
+#include <set>
 #include <GL/glut.h>
 
-#include "UI/Coordinates.h"
-#include "GlobalDefinitions.h"
-#include <set>
+#include "Utils.h"
 
 namespace UI
 {
@@ -14,6 +13,7 @@ namespace UI
 		CMap( const std::vector<std::vector<int>> &mapData );
 		void Calculate();
 		void DrawFinishLine( std::pair<CCoordinates, CCoordinates> finishLine ) const;
+		void DrawShot( const std::pair<Core::CCoordinates, Core::CCoordinates>& shot ) const;
 		void Draw();
 		void HighlightActiveCells() const;
 		float GetCellSize() const;
@@ -22,12 +22,12 @@ namespace UI
 		CSize GetSize() const;
 
 		bool NeedToReload();
-		GLuint textureBoard;
+		GLuint textureForest;
 		GLuint textureRoad;
+		GLuint textureWall;
 		GLuint textureActiveCell;
 		GLuint textureFinish;
 		GLuint textureMap;
-
 		void MarkHighlightedCells( const std::vector<Core::CCoordinates>& possibleMoves );
 		void UnmarkHighlightedCells( const std::vector<Core::CCoordinates>& possibleMoves );
 

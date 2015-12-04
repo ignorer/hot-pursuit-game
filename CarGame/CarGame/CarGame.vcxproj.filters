@@ -72,20 +72,17 @@
     <ClCompile Include="Core\PowerupManager.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Coordinates.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="SettingsDialog.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\Powerup.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\SettingsDialog.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GlobalDefinitions.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Reader.h">
       <Filter>Source Files\Core</Filter>
     </ClInclude>
@@ -134,14 +131,14 @@
     <ClInclude Include="Core\PowerupManager.h">
       <Filter>Source Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Coordinates.h">
-      <Filter>Source Files\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="SettingsDialog.h">
-      <Filter>Source Files\UI</Filter>
-    </ClInclude>
     <ClInclude Include="UI\Powerup.h">
       <Filter>Source Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\SettingsDialog.h">
+      <Filter>Source Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -157,12 +154,6 @@
     <Image Include="..\..\Resources\Images\car_red.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
-    <Image Include="..\..\Resources\Images\forest.png">
-      <Filter>Resource Files\Images</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Images\road.png">
-      <Filter>Resource Files\Images</Filter>
-    </Image>
     <Image Include="MainIcon.ico">
       <Filter>Resource Files</Filter>
     </Image>
@@ -170,6 +161,45 @@
       <Filter>Resource Files\Images</Filter>
     </Image>
     <Image Include="..\..\Resources\Images\finish.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\bombActive.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\bombInactive.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\explosionAnimation.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\laser.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\oil.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\sand.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\shieldActive.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\shieldToPickUp.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\wall.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\default.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\forestCell.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\roadCell.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\wallCell.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
   </ItemGroup>
@@ -181,6 +211,9 @@
       <Filter>Resource Files\Maps</Filter>
     </Text>
     <Text Include="..\..\Resources\Maps\dm4.txt">
+      <Filter>Resource Files\Maps</Filter>
+    </Text>
+    <Text Include="..\..\Resources\Maps\map3.txt">
       <Filter>Resource Files\Maps</Filter>
     </Text>
   </ItemGroup>

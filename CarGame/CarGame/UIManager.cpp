@@ -7,7 +7,6 @@
 #include "UI/Map.h"
 #include "UI/Car.h"
 #include "UI/MainMenuWindow.h"
-#include "UI/Powerup.h"
 
 CUIManager::CUIManager( UI::CMainMenuWindow* _mainMenuWindow, HINSTANCE hInst ) :
 	mainMenuWindow( _mainMenuWindow ),
@@ -60,7 +59,7 @@ void CUIManager::InitMap( const Core::CMap& map, const std::vector<Core::CPlayer
 	UI::CDrawing::Start();
 }
 
-void CUIManager::Move( const std::vector<Core::CPlayer>& movedPlayers ) const
+void CUIManager::UpdatePlayersInfo( const std::vector<Core::CPlayer>& movedPlayers ) const
 {
 	std::vector<int> numbers;
 	std::vector<UI::CCoordinates> coordinates;
@@ -91,7 +90,9 @@ void CUIManager::ShowCrashesAndRespawn( const std::set<Core::CPlayer*>& collided
 		numbers.push_back( player->GetNumber() );
 		coordinates.push_back( UI::CCoordinates( player->GetInitialPosition().x, player->GetInitialPosition().y, PI / 2 ) );
 	}
-	UI::CDrawing::MoveCarsToStart( numbers, coordinates );
+	if( !numbers.empty() ) {
+		UI::CDrawing::MoveCarsToStart( numbers, coordinates );
+	}
 }
 
 void CUIManager::ShowCrashes( const std::set<Core::CPlayer*>& crashedPlayers ) const
@@ -100,12 +101,22 @@ void CUIManager::ShowCrashes( const std::set<Core::CPlayer*>& crashedPlayers ) c
 	for( auto player : crashedPlayers ) {
 		numbers.push_back( player->GetNumber() );
 	}
-	UI::CDrawing::DeleteCars( numbers );
+	if( !numbers.empty() ) {
+		UI::CDrawing::DeleteCars( numbers );
+	}
 }
 
 void CUIManager::ShowPowerups( const std::map<Core::CCoordinates, PowerupType>& powerupsInfo ) const
 {
 	UI::CDrawing::SetPowerups( powerupsInfo );
+}
+
+void CUIManager::ShowShots( const std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>>& shots, bool needDelay ) const
+{
+	UI::CDrawing::SetShots( shots );
+	if( needDelay ) {
+		std::this_thread::sleep_for( std::chrono::milliseconds( 300 ) );
+	}
 }
 
 void CUIManager::ShowGameResult( const std::vector<Core::CPlayer>& winners ) const

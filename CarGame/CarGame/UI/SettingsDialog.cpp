@@ -1,4 +1,4 @@
-#include <Windows.h>
+п»ї#include <Windows.h>
 
 #include <CommCtrl.h>
 #include <string>
@@ -9,16 +9,16 @@
 #include "resource.h"
 
 void UI::CSettingsDialog::Init( HWND hwndDlg ) {
-	HWND hSpin = ::GetDlgItem( hwndDlg, IDC_SPIN3 ); //Получаем дескрипторы окон
+	HWND hSpin = ::GetDlgItem( hwndDlg, IDC_SPIN3 ); //РџРѕР»СѓС‡Р°РµРј РґРµСЃРєСЂРёРїС‚РѕСЂС‹ РѕРєРѕРЅ
 	HWND dialogEditCtrl = ::GetDlgItem( hwndDlg, IDC_EDIT2 );
 
-	//Задаём приятельское окно
+	//Р—Р°РґР°С‘Рј РїСЂРёСЏС‚РµР»СЊСЃРєРѕРµ РѕРєРЅРѕ
 	SendMessage( hSpin, UDM_SETBUDDY, WPARAM( dialogEditCtrl ), 0 );
 
-	//Задаём диапазон
+	//Р—Р°РґР°С‘Рј РґРёР°РїР°Р·РѕРЅ
 	SendMessage( hSpin, UDM_SETRANGE, 0, MAKELONG( Core::CGameMode::GetMaxLapsCount(), 1 ) );
 
-	//Задаём позицию
+	//Р—Р°РґР°С‘Рј РїРѕР·РёС†РёСЋ
 	SendMessage( hSpin, UDM_SETPOS, 0, Core::CGameMode::GetLapCount() );
 
 	::SetWindowText( dialogEditCtrl, std::to_wstring( Core::CGameMode::GetLapCount() ).c_str() );
@@ -73,7 +73,7 @@ void UI::CSettingsDialog::OnDialogOk( HWND hwndDlg, WPARAM wParam )
 		changeModel = Core::CGameMode::ObjectChangeModel::STABLE;
 	}
 	else {
-		changeModel = Core::CGameMode::ObjectChangeModel::CIRCLE_RANDOM;
+		changeModel = Core::CGameMode::ObjectChangeModel::RANDOM;
 	}
 
 	int lapCount = GetLapsNumber( hwndDlg, IDC_EDIT2 );
@@ -181,7 +181,7 @@ int  UI::CModeToItemIdConverter::getObjectChangeModelItemId( Core::CGameMode::Ob
 		case Core::CGameMode::ObjectChangeModel::STABLE:
 			changeModelItemId = IDC_STABLE;
 			break;
-		case Core::CGameMode::ObjectChangeModel::CIRCLE_RANDOM:
+		case Core::CGameMode::ObjectChangeModel::RANDOM:
 			changeModelItemId = IDC_RANDOM;
 			break;
 		default:

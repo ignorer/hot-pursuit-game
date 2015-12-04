@@ -16,6 +16,7 @@ namespace Core {
 		const std::vector< std::vector < int > > &inputCells,
 		const std::pair< int, int > &_leftFinishPoint,
 		const std::pair< int, int > &_rightFinishPoint,
+		int lapsCount,
 		std::shared_ptr<IPlayerState> playerState );
 
 	typedef IPlayerState*(__cdecl *PLAYER_STATE_FACTORY_PROC)(int x, int y, int xVelocity, int yVelocity);
@@ -38,6 +39,7 @@ namespace Core {
 		PLAYER_STATE_FACTORY_PROC GetPlayerStateFunc;
 
 		void handleFinishLineIntersections();
+		void handleFinishLineIntersectionsForPlayer( int i );
 		// требование к возвращаемому значению:
 		//	-1 - если пересекли финишную черту в неправильную сторону
 		//	0 - не пересекли
@@ -54,7 +56,7 @@ namespace Core {
 		void finish( const std::vector<CPlayer>& winners ) const;
 
 		void turnOfPlayer( CPlayer& player, std::set<CPlayer*>& crashedPlayers );
-		int turnOfUser(CPlayer& player);
+		int turnOfUser(CPlayer& player) const;
 		void initAI( CPlayer* player );
 	};
 }

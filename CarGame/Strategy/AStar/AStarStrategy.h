@@ -9,7 +9,7 @@
 
 class CAStarStrategy : public IStrategy {
 public:
-	CAStarStrategy( const Map& map, const PlayerState& initState );
+	CAStarStrategy( const Map& map, const PlayerState& initState, int lapsCount );
 
 	// Возвращает, в каком направлении нужно сдвинуться по оптимальному маршруту
 	int GetNextStep();
@@ -33,10 +33,9 @@ private:
 	std::vector<std::pair<int, int>> optimalPath;
 	int pathPosition = 0;
 
-	PlayerState finalState;
-	std::unordered_map<PlayerState, int, PlayerState::CPlayerStateHasher> fScore; // Функция текущей стоимости + эвристика
-
 	Map map;
+	int lapsCount;
+	int lapMaxLenght = 0;
 
 	static const int maxPathLenght;
 };

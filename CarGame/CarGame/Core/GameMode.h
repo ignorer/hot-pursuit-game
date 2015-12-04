@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 namespace Core {
 	class CGameMode {
@@ -6,7 +6,7 @@ namespace Core {
 		enum MovementMode { CONCURRENT, SEQUENTIAL };
 		enum DeathPenalty { DESTROY, TO_START, STOP };
 		enum ObjectRate { NO, FEW, NORMAL, MANY };
-		enum ObjectChangeModel { NO_CHANGE, STABLE, CIRCLE_RANDOM};
+		enum ObjectChangeModel { NO_CHANGE, STABLE, RANDOM};
 
 		CGameMode() = delete;
 
@@ -18,7 +18,7 @@ namespace Core {
 		static int GetLapCount();
 		static ObjectRate GetObjectRate();
 		static ObjectChangeModel GetObjectChangeModel();
-		// не использовать эту функцию в ядре. это для диалогового окна с выбором режима игры
+		// РЅРµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ С„СѓРЅРєС†РёСЋ РІ СЏРґСЂРµ. СЌС‚Рѕ РґР»СЏ РґРёР°Р»РѕРіРѕРІРѕРіРѕ РѕРєРЅР° СЃ РІС‹Р±РѕСЂРѕРј СЂРµР¶РёРјР° РёРіСЂС‹
 		static int GetMaxLapsCount();
 
 	private:

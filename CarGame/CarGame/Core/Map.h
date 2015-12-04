@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "GlobalDefinitions.h"
+#include "Utils.h"
 
 namespace Core {
 	class CMap {

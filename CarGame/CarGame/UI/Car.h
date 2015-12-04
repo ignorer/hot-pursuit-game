@@ -2,9 +2,7 @@
 
 #include <GL/glut.h>
 
-#include "UI/Coordinates.h"
-#include "GlobalDefinitions.h"
-#include <mutex>
+#include "Utils.h"
 
 namespace UI {
 	enum Color { RED, GREEN, BLUE, ORANGE };
@@ -17,6 +15,7 @@ namespace UI {
 
 		Color GetColor() const;
 		CCoordinates GetCoordinates() const;
+		bool GetShieldMode() const;
 
 		void Draw( float cellSize, CWindowCoordinates indent, CSize mapSize ) const;
 

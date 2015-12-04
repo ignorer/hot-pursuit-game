@@ -27,6 +27,7 @@ namespace UI {
 		static void MoveCarsToStart( const std::vector<int>& numbers, const std::vector<CCoordinates>& newCoordinates );
 		static void DeleteCars( const std::vector<int>& numbers );
 		static void SetPowerups( const std::map<Core::CCoordinates, PowerupType> powerupsInfo );
+		static void SetShots( const std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>>& shots );
 
 		static void Start();
 		static void Stop();
@@ -35,7 +36,6 @@ namespace UI {
 
 		static void DropKey();
 		static int GetKey();
-
 		static void DropMouse();
 		static Core::CCoordinates GetMouse( const std::vector<Core::CCoordinates>& possibleMoves );
 
@@ -45,6 +45,8 @@ namespace UI {
 		static void MarkPossibleMoves( const std::vector<Core::CCoordinates>& possibleMoves );
 		static void UnMarkPossibleMoves( const std::vector<Core::CCoordinates>& possibleMoves );
 
+		static GLuint GetTextureForPowerup( PowerupType type );
+
 		static GLuint textureOil;
 		static GLuint textureSand;
 		static GLuint textureWall;
@@ -52,7 +54,6 @@ namespace UI {
 		static GLuint textureBombInactive;
 		static GLuint textureShieldToPickUp;
 		static GLuint textureLazer;
-
 	private:
 		static void display();
 		static void reshape( int width, int height );
@@ -76,5 +77,7 @@ namespace UI {
 		static int window;
 		static int key;
 		static Core::CCoordinates mouse;
+		static std::map<PowerupType, GLuint> powerupTextureMap;
+		static std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>> shots;
 	};
 }

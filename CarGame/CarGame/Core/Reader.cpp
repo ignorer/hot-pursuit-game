@@ -4,7 +4,7 @@
 
 #include "Core/Reader.h"
 #include "Core/Map.h"
-#include "GlobalDefinitions.h"
+#include "Utils.h"
 
 namespace Core {
 	CMap CReader::ReadMap( const std::string& path )
@@ -28,6 +28,7 @@ namespace Core {
 				switch ( cell ) {
 					case ROAD:
 					case FOREST:
+					case WALL_CELL:
 						gameField[i].push_back( cell );
 						break;
 					case CAR:

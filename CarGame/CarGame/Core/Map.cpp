@@ -12,7 +12,7 @@ namespace Core {
 
 	bool CMap::IsEmpty( int x, int y ) const
 	{
-		return map[y][x] != FOREST;
+		return map[y][x] != FOREST && map[y][x] != WALL_CELL;
 	}
 
 	CSize CMap::GetSize() const

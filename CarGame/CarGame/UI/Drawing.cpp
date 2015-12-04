@@ -4,7 +4,7 @@
 #include <SOIL/SOIL.h>
 
 #include "UI/Drawing.h"
-#include "GlobalDefinitions.h"
+#include "Utils.h"
 
 namespace UI
 {
@@ -22,6 +22,8 @@ namespace UI
 	int CDrawing::window;
 	int CDrawing::key;
 	Core::CCoordinates CDrawing::mouse;
+	std::map<PowerupType, GLuint> CDrawing::powerupTextureMap;
+	std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>> CDrawing::shots;
 	GLuint CDrawing::textureOil = 0;
 	GLuint CDrawing::textureSand = 0;
 	GLuint CDrawing::textureWall = 0;
@@ -139,6 +141,9 @@ namespace UI
 		for( size_t i = 0; i < cars.size(); i++ ) {
 			cars[i].Draw( map.GetCellSize(), map.GetIndent(), map.GetSize() );
 		}
+		for( auto& shot : shots ) {
+			map.DrawShot( shot );
+		}
 		glFlush();
 		std::this_thread::sleep_for( std::chrono::milliseconds( 30 ) );
 		if( mapReloaded ) {
@@ -206,6 +211,11 @@ namespace UI
 		map.UnmarkHighlightedCells( possibleMoves );
 	}
 
+	GLuint CDrawing::GetTextureForPowerup( PowerupType type )
+	{
+		return powerupTextureMap[type];
+	}
+
 	// load image from file to texture
 	void CDrawing::loadTexture( const char* filename, GLuint& texture )
 	{
@@ -232,6 +242,17 @@ namespace UI
 			oldCoordinates.push_back( cars[i].GetCoordinates() );
 		}
 		lock.unlock();
+		
+		bool changed = false; // правда ли, что хотя бы одна машинка сдвинулась? по умолчанию считаем, что нет
+		for( int i = 0; i < oldCoordinates.size(); ++i ) {
+			if( oldCoordinates[i] != newCoordinates[i] || cars[i].GetShieldMode() != shields[i] ) {
+				changed = true;
+			}
+		}
+		if( !changed ) {
+			return;
+		}
+		
 		const int fps = 100;
 		for( int i = 0; i < numbers.size(); ++i ) {
 			cars[numbers[i]].SetShieldMode( shields[i] );
@@ -239,9 +260,9 @@ namespace UI
 		}
 		for( int j = 0; j <= fps; ++j ) {
 			for( int i = 0; i < numbers.size(); ++i ) {
-				cars[i].Move( UI::CCoordinates(
-					float( oldCoordinates[numbers[i]].x * (fps - j) + newCoordinates[i].x * j ) / fps,
-					float( oldCoordinates[numbers[i]].y * (fps - j) + newCoordinates[i].y * j ) / fps ) );
+				cars[numbers[i]].Move( UI::CCoordinates(
+					float( oldCoordinates[i].x * (fps - j) + newCoordinates[i].x * j ) / fps,
+					float( oldCoordinates[i].y * (fps - j) + newCoordinates[i].y * j ) / fps ) );
 			}
 			std::this_thread::sleep_for( std::chrono::milliseconds( 500 / fps ) );
 		}
@@ -269,8 +290,7 @@ namespace UI
 
 	void CDrawing::DeleteCars( const std::vector<int>& numbers )
 	{
-		const int numOfFrames = 6;		// number of frames in animation
-//		const int multiplicator = 1;	// how many times show explosion
+		const int numOfFrames = 6;		// количество кадров в анимации взрыва
 		for( int j = 0; j <= numOfFrames; ++j ) {
 			for( int i : numbers ) {
 				cars[i].SetOpacity( 1.0f - float( j ) / numOfFrames );
@@ -288,20 +308,14 @@ namespace UI
 		std::unique_lock<std::mutex> lock( mutex );
 		powerups.clear();
 		for( auto& info : powerupsInfo ) {
-			GLuint texture;
-			switch( info.second ) {
-				case WALL: texture = textureWall; break;
-				case SAND: texture = textureSand; break;
-				case OIL: texture = textureOil; break;
-				case MINE: texture = textureBombInactive; break;
-				case MINE_ACTIVE: texture = textureBombActive; break;
-				case LAZER: texture = textureLazer; break;
-				case SHIELD: texture = textureShieldToPickUp; break;
-				case NONE:
-				default: texture = -1; break;
-			}
-			powerups.push_back( CPowerup( info.second, UI::CCoordinates(info.first.x, info.first.y), texture ) );
+			powerups.push_back( CPowerup( info.second, UI::CCoordinates(info.first.x, info.first.y) ) );
 		}
+	}
+
+	void CDrawing::SetShots( const std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>>& _shots )
+	{
+		std::unique_lock<std::mutex> lock( mutex );
+		shots = _shots;
 	}
 
 	void CDrawing::Start()
@@ -315,7 +329,7 @@ namespace UI
 		std::unique_lock<std::mutex> lock( mutex );
 		started = false;
 		glDeleteTextures( 1, &map.textureRoad );
-		glDeleteTextures( 1, &map.textureBoard );
+		glDeleteTextures( 1, &map.textureForest );
 		for( auto car : cars ) {
 			glDeleteTextures( 1, &car.texture );
 		}
@@ -325,8 +339,9 @@ namespace UI
 	void CDrawing::load()
 	{
 		//load textures for map
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\road.png").c_str(), map.textureRoad );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\forest.png").c_str(), map.textureBoard );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\roadCell.png").c_str(), map.textureRoad );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\forestCell.png").c_str(), map.textureForest );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\wallCell.png").c_str(), map.textureWall );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\active.png").c_str(), map.textureActiveCell );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\finish.png").c_str(), map.textureFinish );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\oil.png").c_str(), textureOil );
@@ -335,8 +350,14 @@ namespace UI
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\shieldToPickUp.png").c_str(), textureShieldToPickUp );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombActive.png").c_str(), textureBombActive );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombInactive.png").c_str(), textureBombInactive );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\lazer.png").c_str(), textureLazer );
-		
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\laser.png").c_str(), textureLazer );
+		powerupTextureMap[OIL] = textureOil;
+		powerupTextureMap[LAZER] = textureLazer;
+		powerupTextureMap[SAND] = textureSand;
+		powerupTextureMap[WALL] = textureWall;
+		powerupTextureMap[MINE] = textureBombInactive;
+		powerupTextureMap[MINE_ACTIVE] = textureBombActive;
+		powerupTextureMap[SHIELD] = textureShieldToPickUp;
 
 		//load textures for cars (depends on color)
 		std::string carFilename;
