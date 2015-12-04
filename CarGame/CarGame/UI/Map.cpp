@@ -1,4 +1,5 @@
 ﻿#include <memory>
+#include <algorithm>
 
 #include "UI/Map.h"
 
@@ -135,9 +136,21 @@ namespace UI {
 			glTexCoord2f( 0.0f, 1.0f ); glVertex2f( point1.x + 5 * direction.first, point1.y + 5 * direction.second );
 		}
 		glEnd();
-		glDisable( GL_REPEAT );
 		glDisable( GL_BLEND );
 		glDisable( GL_TEXTURE_2D );
+	}
+
+	void CMap::DrawShot( const std::pair<Core::CCoordinates, Core::CCoordinates>& shot ) const
+	{
+		glColor3f( 1, 0, 0 );
+		glLineWidth( 3 );
+		glBegin( GL_LINES );
+		{
+			auto point1 = transateToWcoord( shot.first.x + 0.5, shot.first.y + 0.5, cellSize, indent, GetSize() );
+			auto point2 = transateToWcoord( shot.first.x + 0.5 + shot.second.x * 100, shot.first.y + 0.5 + shot.second.y * 100, cellSize, indent, GetSize() );
+			glVertex2d( point1.x, point1.y ); glVertex2d( point2.x, point2.y );
+		}
+		glEnd();
 	}
 
 	void CMap::Draw()
@@ -153,6 +166,7 @@ namespace UI {
 		// choose texture
 		glBindTexture( GL_TEXTURE_2D, textureMap );
 		// Draw a polygon of window size with texture
+		glColor3f( 1, 1, 1 );
 		glBegin( GL_QUADS );
 		{
 			glTexCoord2f( 0, 0 ); glVertex2f( 0, 0 );

@@ -29,6 +29,7 @@ public:
 	void ShowCrashesAndRespawn( const std::set<Core::CPlayer*>& collidedPlayers ) const;
 	void ShowCrashes( const std::set<Core::CPlayer*>& crashedPlayers ) const;
 	void ShowPowerups( const std::map<Core::CCoordinates, PowerupType>& powerups ) const;
+	void ShowShots( const std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>>& shots, bool needDelay ) const;
 	void ShowGameResult( const std::vector<Core::CPlayer>& winners ) const;
 	void SwitchToMainMenu() const;
 	void SwitchToSettings() const;

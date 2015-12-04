@@ -23,6 +23,7 @@ namespace UI
 	int CDrawing::key;
 	Core::CCoordinates CDrawing::mouse;
 	std::map<PowerupType, GLuint> CDrawing::powerupTextureMap;
+	std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>> CDrawing::shots;
 	GLuint CDrawing::textureOil = 0;
 	GLuint CDrawing::textureSand = 0;
 	GLuint CDrawing::textureWall = 0;
@@ -139,6 +140,9 @@ namespace UI
 		}
 		for( size_t i = 0; i < cars.size(); i++ ) {
 			cars[i].Draw( map.GetCellSize(), map.GetIndent(), map.GetSize() );
+		}
+		for( auto& shot : shots ) {
+			map.DrawShot( shot );
 		}
 		glFlush();
 		std::this_thread::sleep_for( std::chrono::milliseconds( 30 ) );
@@ -307,6 +311,12 @@ namespace UI
 		for( auto& info : powerupsInfo ) {
 			powerups.push_back( CPowerup( info.second, UI::CCoordinates(info.first.x, info.first.y) ) );
 		}
+	}
+
+	void CDrawing::SetShots( const std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>>& _shots )
+	{
+		std::unique_lock<std::mutex> lock( mutex );
+		shots = _shots;
 	}
 
 	void CDrawing::Start()

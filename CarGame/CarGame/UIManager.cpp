@@ -7,7 +7,6 @@
 #include "UI/Map.h"
 #include "UI/Car.h"
 #include "UI/MainMenuWindow.h"
-#include "UI/Powerup.h"
 
 CUIManager::CUIManager( UI::CMainMenuWindow* _mainMenuWindow, HINSTANCE hInst ) :
 	mainMenuWindow( _mainMenuWindow ),
@@ -110,6 +109,14 @@ void CUIManager::ShowCrashes( const std::set<Core::CPlayer*>& crashedPlayers ) c
 void CUIManager::ShowPowerups( const std::map<Core::CCoordinates, PowerupType>& powerupsInfo ) const
 {
 	UI::CDrawing::SetPowerups( powerupsInfo );
+}
+
+void CUIManager::ShowShots( const std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>>& shots, bool needDelay ) const
+{
+	UI::CDrawing::SetShots( shots );
+	if( needDelay ) {
+		std::this_thread::sleep_for( std::chrono::milliseconds( 300 ) );
+	}
 }
 
 void CUIManager::ShowGameResult( const std::vector<Core::CPlayer>& winners ) const

@@ -56,7 +56,7 @@ namespace Core {
 		void finish( const std::vector<CPlayer>& winners ) const;
 
 		void turnOfPlayer( CPlayer& player, std::set<CPlayer*>& crashedPlayers );
-		int turnOfUser(CPlayer& player);
+		int turnOfUser(CPlayer& player) const;
 		void initAI( CPlayer* player );
 	};
 }

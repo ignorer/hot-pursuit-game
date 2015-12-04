@@ -12,10 +12,15 @@ namespace Core {
 
 	class CPowerupManager {
 	public:
+
 		CPowerupManager();
 		PowerupType GetPowerup( const Core::CCoordinates& coordinates ) const;
 		PowerupType GetPowerup( int x, int y ) const;
+		const std::vector<std::pair<CCoordinates, CCoordinates>>& GetShots() const;
 		const std::map<CCoordinates, PowerupType>& GetPowerups() const;
+
+		void DropShots();
+
 		void HandleStep( std::vector<CPlayer>& players, std::set<CPlayer*>& crashedPlayers );
 		void HandleStepForPlayer( CPlayer& activePlayer, std::vector<CPlayer>& players, std::set<CPlayer*>& crashedPlayers );
 		// создаёт по всей карте поверапы или пересоздаёт на новом круге. в случае, если никто не зашёл на новый круг, не делает ничего
@@ -32,5 +37,6 @@ namespace Core {
 		std::vector<CCoordinates> powerupCoordinates;
 		int lastLap;
 		bool initialized;
+		std::vector<std::pair<CCoordinates, CCoordinates>> shots;
 	};
 }

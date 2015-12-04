@@ -13,6 +13,7 @@ namespace UI
 		CMap( const std::vector<std::vector<int>> &mapData );
 		void Calculate();
 		void DrawFinishLine( std::pair<CCoordinates, CCoordinates> finishLine ) const;
+		void DrawShot( const std::pair<Core::CCoordinates, Core::CCoordinates>& shot ) const;
 		void Draw();
 		void HighlightActiveCells() const;
 		float GetCellSize() const;

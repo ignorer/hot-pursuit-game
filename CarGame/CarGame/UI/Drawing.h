@@ -27,6 +27,7 @@ namespace UI {
 		static void MoveCarsToStart( const std::vector<int>& numbers, const std::vector<CCoordinates>& newCoordinates );
 		static void DeleteCars( const std::vector<int>& numbers );
 		static void SetPowerups( const std::map<Core::CCoordinates, PowerupType> powerupsInfo );
+		static void SetShots( const std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>>& shots );
 
 		static void Start();
 		static void Stop();
@@ -53,7 +54,6 @@ namespace UI {
 		static GLuint textureBombInactive;
 		static GLuint textureShieldToPickUp;
 		static GLuint textureLazer;
-
 	private:
 		static void display();
 		static void reshape( int width, int height );
@@ -78,5 +78,6 @@ namespace UI {
 		static int key;
 		static Core::CCoordinates mouse;
 		static std::map<PowerupType, GLuint> powerupTextureMap;
+		static std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>> shots;
 	};
 }

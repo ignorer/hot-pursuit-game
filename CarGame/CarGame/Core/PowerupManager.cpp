@@ -25,9 +25,19 @@ namespace Core {
 		return powerups.at( CCoordinates( x, y ) );
 	}
 
+	const std::vector<std::pair<CCoordinates, CCoordinates>>& CPowerupManager::GetShots() const
+	{
+		return shots;
+	}
+
 	const std::map<CCoordinates, PowerupType>& CPowerupManager::GetPowerups() const
 	{
 		return powerups;
+	}
+
+	void CPowerupManager::DropShots()
+	{
+		shots.clear();
 	}
 
 	void CPowerupManager::generatePowerup( const Core::CMap& map )
@@ -82,6 +92,9 @@ namespace Core {
 
 	void CPowerupManager::HandleStepForPlayer( CPlayer& activePlayer, std::vector<CPlayer>& players, std::set<CPlayer*>& crashedPlayers )
 	{
+		if( activePlayer.GetPosition() == activePlayer.GetPreviousPosition() ) {
+			return;
+		}
 		if( GetPowerup( activePlayer.GetPosition().x, activePlayer.GetPosition().y ) != NONE ) {
 			switch( powerups[activePlayer.GetPosition()] ) {
 				case WALL:
@@ -112,9 +125,23 @@ namespace Core {
 					crashedPlayers.insert( &activePlayer );
 					break;
 				case LAZER:
-					// TODO
+				{
+					CCoordinates u = activePlayer.GetPosition() - activePlayer.GetPreviousPosition();
+					double a = std::hypot( u.x, u.y ); // a > 0 всегда, т.к. соответствующая проверка выполнялась в начале функции
+					for( auto& player : players ) {
+						// геометрия. u - вектор движения, v - вектор от стреляющего до другого игрока
+						// a и b - длины этих векторов соответственно, dot - скалярное произведение
+						CCoordinates v = player.GetPosition() - activePlayer.GetPosition();
+						double dot = u.x * v.x + u.y * v.y;
+						double b = std::hypot( v.x, v.y );
+						if( dot > 0 && b > 0 && std::sqrt( 1 - std::pow( dot / (a * b), 2 ) ) * a < 0.3 ) {
+							crashedPlayers.insert( &player );
+						}
+					}
 					powerups.erase( activePlayer.GetPosition() );
+					shots.push_back( std::make_pair( activePlayer.GetPosition(), CCoordinates( u.x / a, u.y / a ) ) );
 					break;
+				}
 				case SHIELD:
 					powerups.erase( activePlayer.GetPosition() );
 					activePlayer.ActivateShield();

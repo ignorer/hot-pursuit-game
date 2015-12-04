@@ -131,7 +131,7 @@ namespace Core {
 		}
 	}
 
-	int CGame::turnOfUser( CPlayer& player )
+	int CGame::turnOfUser( CPlayer& player ) const
 	{
 		std::vector<CCoordinates> possibleMoves = player.PossibleMoves( map.GetSize( ) );
 		manager->MarkPossibleMoves( possibleMoves );
@@ -254,7 +254,10 @@ namespace Core {
 				manager->UpdatePlayersInfo( players );
 				powerupManager.HandleStep( players, crashedPlayers );
 				manager->ShowPowerups( powerupManager.GetPowerups() );
+				manager->ShowShots( powerupManager.GetShots(), true );
 				manager->UpdatePlayersInfo( players );
+				powerupManager.DropShots();
+				manager->ShowShots( {}, false );
 
 				findCollisions( crashedPlayers );
 				findCrashes( crashedPlayers );
@@ -279,7 +282,10 @@ namespace Core {
 						manager->UpdatePlayersInfo( players );
 						powerupManager.HandleStepForPlayer( players[i], players, crashedPlayers );
 						manager->ShowPowerups( powerupManager.GetPowerups() );
+						manager->ShowShots( powerupManager.GetShots(), !powerupManager.GetShots().empty() );
 						manager->UpdatePlayersInfo( players );
+						powerupManager.DropShots();
+						manager->ShowShots( {}, false );
 					}
 
 					findCollisionsForPlayer( i, crashedPlayers );
