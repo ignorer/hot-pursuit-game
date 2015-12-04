@@ -41,7 +41,7 @@ namespace Core {
 			}
 		}
 		int x1, y1, x2, y2;
-		in >> x1 >> y1 >> x2 >> y2;
+		in >> y1 >> x1 >> y2 >> x2;
 		CLine finishLine = CLine( CCoordinates( x1, y1 ), CCoordinates( x2, y2 ) );
 
 		return CMap( gameField, finishLine, startPoints );

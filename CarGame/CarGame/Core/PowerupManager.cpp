@@ -188,7 +188,7 @@ namespace Core {
 			do {
 				type = std::rand() % 8;
 			} while( type == NONE );
-			powerups[Core::CCoordinates( coordinates.x, coordinates.y )] = LAZER;// PowerupType( type );
+			powerups[Core::CCoordinates( coordinates.x, coordinates.y )] = PowerupType( type );
 		}
 	}
 
