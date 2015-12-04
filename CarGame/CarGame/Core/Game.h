@@ -32,7 +32,7 @@ namespace Core {
 		std::vector<CPlayer> players;
 		const CUIManager* manager;
 		CPowerupManager powerupManager;
-		std::map<int, IStrategy*> AIStrategies;
+		std::map<int, std::shared_ptr<IStrategy>> AIStrategies;
 
 		HINSTANCE hInstanceDLLLibrary;
 		STRATEGY_PROC StrategyBuilderFunc;
