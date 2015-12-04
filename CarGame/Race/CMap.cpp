@@ -113,6 +113,7 @@ void CMap::ClickCell( int i, int j, BType bType, bool lButtonPressed )
 			//
 			break;
 		case BFinish1: 
+			/*
 			if( finishFirstCoord.first != -1 ) {
 				numbers[finishFirstCoord.first][finishFirstCoord.second] = prevTexture1;
 				if( prevTexture1 == 5 ) {
@@ -144,7 +145,20 @@ void CMap::ClickCell( int i, int j, BType bType, bool lButtonPressed )
 				finishSecondCoord.second = -1;
 			}
 			break;
+			*/
+			if( finishFirstCoord.first == i && finishFirstCoord.second == j && !lButtonPressed && !lButtonWasPressed ) {
+				finishFirstCoord.first = -1;
+				finishFirstCoord.second = -1;
+			}
+			else {
+				lButtonWasPressed = lButtonPressed;
+				finishFirstCoord.first = i;
+				finishFirstCoord.second = j;
+			}
+			break;
+			
 		case BFinish2:
+			/*
 			if( finishSecondCoord.first != -1 ) {
 				numbers[finishSecondCoord.first][finishSecondCoord.second] = prevTexture2;
 				if( prevTexture2 == 4 ) {
@@ -176,7 +190,17 @@ void CMap::ClickCell( int i, int j, BType bType, bool lButtonPressed )
 				finishFirstCoord.second = -1;
 			}
 			break;
-
+			*/
+			if( finishSecondCoord.first == i && finishSecondCoord.second == j && !lButtonPressed && !lButtonWasPressed ) {
+				finishSecondCoord.first = -1;
+				finishSecondCoord.second = -1;
+			}
+			else{
+				lButtonWasPressed = lButtonPressed;
+				finishSecondCoord.first = i;
+				finishSecondCoord.second = j;
+			}
+			break;
 
     }
 }
@@ -192,6 +216,8 @@ void CMap::LoadMapFromFile( std::ifstream& fin )
             fin >> numbers[i][j];
         }
     }
+	fin >> finishFirstCoord.first >> finishFirstCoord.second >> finishSecondCoord.first >> finishSecondCoord.second;
+
 }
 
 
@@ -209,11 +235,12 @@ void CMap::SaveMapToFile( std::ofstream & fout )
                 case 3: fout << 3 << " "; break;
 				case 4: fout << 4 << " "; break;
 				case 5: fout << 5 << " "; break;
-				case 6: fout << 6 << " "; break;
             }
         }
         fout << std::endl;
     }
+	fout << finishFirstCoord.first << " " << finishFirstCoord.second << " " << finishSecondCoord.first << " " << finishSecondCoord.second;
+	fout << std::endl;
 }
 
 
