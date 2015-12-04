@@ -6,6 +6,26 @@
 
 static LPCWSTR szWindowClass = L"CWindow";
 
+UINT32 getRibbonHeight() {
+	UINT32 ribbonHeight;
+	HRESULT hr = E_FAIL;
+	IUIRibbon* pRibbon;
+	hr = g_pFramework->GetView( 0, IID_PPV_ARGS( &pRibbon ) );
+	if( SUCCEEDED( hr ) ) {
+		UINT32 uRibbonHeight = 0;
+		hr = pRibbon->GetHeight( &uRibbonHeight );
+		if( SUCCEEDED( hr ) ) {
+			ribbonHeight = uRibbonHeight;
+		}
+		pRibbon->Release();
+	}
+	if( FAILED( hr ) ) {
+		ribbonHeight = 0;
+	}
+
+	return ribbonHeight;
+}
+
 HWND CWindow::GetHandle()
 {
     return handle;
@@ -23,19 +43,20 @@ void CWindow::SetHandle( HWND newHandle )
 
 bool CWindow::Create()
 {
-    handle = ::CreateWindow( szWindowClass, L"Редактор карт", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_EX_LAYERED,
+    handle = ::CreateWindow( szWindowClass, L"Редактор карт", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_EX_LAYERED | WS_THICKFRAME,
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, ::GetModuleHandle( 0 ), this );
     InitRibbon( handle );
     ::UpdateWindow( handle );
-
     map.RestartMap();
     UpdateState();
-    return ( handle != 0 );
+	coordsRMouseButMoveFinish = std::pair<int, int>( 0, 0 );
+	coordsRMouseButMoveStart = std::pair<int, int>( 0, 0 );
+	return ( handle != 0 );
 }
 
 CWindow::CWindow():
-    brush( BNone ), m_cRef( 1 ), m_pCommandHandler( NULL ), lButtonPressed( false ),
-    backgroundBrush( ::CreateSolidBrush( RGB( 0xFF, 0xFF, 0xFF ) ) )
+    brush( BNone ), m_cRef( 1 ), m_pCommandHandler( NULL ), lButtonPressed( false ),rButtonPressed(false), drawFirstTime(true),
+    backgroundBrush( ::CreateSolidBrush( RGB( 0xFF, 0xFF, 0xFF ) ) ), currentZoom(1)
 {
     HINSTANCE hInst = ::GetModuleHandle( 0 );
     HBITMAP forest = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_FOREST ) );
@@ -98,26 +119,7 @@ void CWindow::OnDestroy()
     ::PostQuitMessage( 0 );
 }
 
-UINT32 getRibbonHeight()
-{
-    UINT32 ribbonHeight;
-    HRESULT hr = E_FAIL;
-    IUIRibbon* pRibbon;
-    hr = g_pFramework->GetView( 0, IID_PPV_ARGS( &pRibbon ) );
-    if( SUCCEEDED( hr ) ) {
-        UINT32 uRibbonHeight = 0;
-        hr = pRibbon->GetHeight( &uRibbonHeight );
-        if( SUCCEEDED( hr ) ) {
-            ribbonHeight = uRibbonHeight;
-        }
-        pRibbon->Release();
-    }
-    if( FAILED( hr ) ) {
-        ribbonHeight = 0;
-    }
 
-    return ribbonHeight;
-}
 
 
 void CWindow::OnSize()
@@ -143,12 +145,12 @@ void CWindow::OnSize()
 
 void CWindow::OnPaint()
 {
-    PAINTSTRUCT ps;
+	PAINTSTRUCT ps;
     HDC hdc = ::BeginPaint( handle, &ps );
 
     RECT rect;
     ::GetClientRect( handle, &rect );
-
+	
     UINT32 ribbonHeight = getRibbonHeight();
 
     int width = rect.right - rect.left;
@@ -157,7 +159,14 @@ void CWindow::OnPaint()
     //центрируем карту в окне
     int leftMargin = ( width - cellSize * map.GetX() ) / 2;
 
-    HDC backbuffDC = ::CreateCompatibleDC( hdc );
+	// В первую перерисовку задаем текущие коорлинаты
+	if( drawFirstTime ) {
+		coordsOfCurrentView.first = leftMargin;
+		coordsOfCurrentView.second = ribbonHeight;
+		drawFirstTime = false;
+	}
+	
+	HDC backbuffDC = ::CreateCompatibleDC( hdc );
     HBITMAP backbuffer = ::CreateCompatibleBitmap( hdc, width, height + ribbonHeight );
     HGDIOBJ oldBitmap = ::SelectObject( backbuffDC, backbuffer );
 
@@ -167,10 +176,10 @@ void CWindow::OnPaint()
     for( int i = 0; i < map.GetY(); i++ ) {
         for( int j = 0; j < map.GetX(); j++ ) {
             RECT rect;
-            rect.left = leftMargin + j * cellSize;
-            rect.top = i * cellSize + ribbonHeight;
-            rect.right = leftMargin + ( j + 1 ) * cellSize;
-            rect.bottom = ( i + 1 ) * cellSize + ribbonHeight;
+            rect.left = coordsOfCurrentView.first + j * cellSize;
+            rect.top = i * cellSize + coordsOfCurrentView.second;
+            rect.right = coordsOfCurrentView.first + ( j + 1 ) * cellSize;
+            rect.bottom = ( i + 1 ) * cellSize + coordsOfCurrentView.second;
 
             ::SelectObject( backbuffDC, brushes[map.GetNumbers()[i][j]] );
             ::Rectangle( backbuffDC, rect.left, rect.top, rect.right, rect.bottom );
@@ -179,12 +188,11 @@ void CWindow::OnPaint()
 	std::pair<int, int> fc = map.GetFinishCoord( 1 );
 	std::pair<int, int> sc = map.GetFinishCoord( 2 );
 	if( fc.first != -1 && sc.first != -1 ) {
-	
-		HBRUSH brushForLine =  CreateHatchBrush( HS_HORIZONTAL, RGB( 122, 122, 122 ) );
-		::SelectObject( backbuffDC, brushForLine );
-		::MoveToEx( backbuffDC,( fc.second + 0.5 ) * cellSize + leftMargin, ribbonHeight + (fc.first + 0.5 ) * cellSize,  NULL );
-		::LineTo( backbuffDC, (sc.second + 0.5 ) * cellSize + leftMargin,ribbonHeight  + (sc.first + 0.5 ) * cellSize );
-		::DeleteBrush( brushForLine );
+		HPEN finishPen = ::CreatePen( PS_SOLID, cellSize / 2, RGB( 122, 122, 122 ) );
+		::SelectObject( backbuffDC, finishPen );
+		::MoveToEx( backbuffDC,( fc.second + 0.5 ) * cellSize + coordsOfCurrentView.first, coordsOfCurrentView.second + (fc.first + 0.5 ) * cellSize,  NULL );
+		::LineTo( backbuffDC, (sc.second + 0.5 ) * cellSize + coordsOfCurrentView.first, coordsOfCurrentView.second + (sc.first + 0.5 ) * cellSize );
+		::DeleteBrush( finishPen );
 	}
 	
     ::BitBlt( hdc, 0, 0, width, height + ribbonHeight, backbuffDC, 0, 0, SRCCOPY );
@@ -355,22 +363,38 @@ void CWindow::Draw( LPARAM lParam )
     RECT rect;
     ::GetClientRect( handle, &rect );
 
-    int width = rect.right - rect.left;
-    int height = rect.bottom - rect.top;
-    int mapWidth = cellSize * map.GetX();
-    int leftMargin = ( width - mapWidth ) / 2;
+	int mapWidth = map.GetX()*cellSize;
 
-    int xPos = GET_X_LPARAM( lParam ) - leftMargin;
+	int xPos = GET_X_LPARAM( lParam ) - coordsOfCurrentView.first;
     if( xPos > 0 && xPos < mapWidth ) {
-        int yPos = GET_Y_LPARAM( lParam ) - getRibbonHeight();
+        int yPos = GET_Y_LPARAM( lParam ) - coordsOfCurrentView.second;
         int mouseI = yPos / cellSize;
         int mouseJ = xPos / cellSize;
-        map.ClickCell( mouseI, mouseJ, this->brush );
+        map.ClickCell( mouseI, mouseJ, this->brush, this->lButtonPressed );
 
         ::InvalidateRect( handle, &rect, TRUE );
     }
 }
 
+
+void CWindow::Zoom( int dir){
+	RECT rect;
+	::GetClientRect( handle, &rect );
+	if( dir > 0 ) {
+		if( currentZoom != maxZoom ) {
+			currentZoom++;
+			cellSize *= 2;
+			::InvalidateRect( handle, &rect, TRUE );
+		}
+	}
+	else {
+		if( currentZoom != 1 ) {
+			currentZoom--;
+			cellSize /= 2;
+			::InvalidateRect( handle, &rect, TRUE );
+		}
+	}
+} 
 
 void CWindow::OnLButtonDown( LPARAM lParam )
 {
@@ -383,6 +407,17 @@ void CWindow::OnMouseMove( LPARAM lParam )
     if( (this->lButtonPressed) && ( this->brush != BNone ) ) {
         Draw( lParam );
     }
+	if( this->rButtonPressed ) {
+		RECT rect;
+		::GetClientRect( handle, &rect );
+		coordsRMouseButMoveFinish.first = GET_X_LPARAM( lParam );
+		coordsRMouseButMoveFinish.second = GET_Y_LPARAM( lParam );
+		coordsOfCurrentView.first += (-coordsRMouseButMoveStart.first + coordsRMouseButMoveFinish.first);
+		coordsOfCurrentView.second += (-coordsRMouseButMoveStart.second + coordsRMouseButMoveFinish.second);
+		coordsRMouseButMoveStart.first = GET_X_LPARAM( lParam );
+		coordsRMouseButMoveStart.second = GET_Y_LPARAM( lParam );
+		::InvalidateRect( handle, &rect, TRUE );
+	}
 }
 
 
@@ -392,6 +427,21 @@ void CWindow::OnLButtonUp( LPARAM lParam )
     Draw( lParam );
 }
 
+
+void CWindow::OnRButtonUp( LPARAM lParam ) {
+	this->rButtonPressed = false;
+	coordsRMouseButMoveFinish.first = GET_X_LPARAM( lParam );
+	coordsRMouseButMoveFinish.second = GET_Y_LPARAM( lParam );
+	coordsOfCurrentView.first += coordsRMouseButMoveStart.first - coordsRMouseButMoveFinish.first;
+	coordsOfCurrentView.second += coordsRMouseButMoveStart.second - coordsRMouseButMoveFinish.second;
+
+}
+
+void CWindow::OnRButtonDown( LPARAM lparam ) {
+	this->rButtonPressed = true;
+	coordsRMouseButMoveStart.first = GET_X_LPARAM( lparam );
+	coordsRMouseButMoveStart.second = GET_Y_LPARAM( lparam );
+}
 
 // Static method to create an instance of the object.
 __checkReturn HRESULT CWindow::CreateInstance( __deref_out IUIApplication **ppApplication )
@@ -557,7 +607,13 @@ LRESULT __stdcall CWindow::windowProc( HWND hWnd, UINT message, WPARAM wParam, L
             return 0;
         case WM_LBUTTONUP:
             that->OnLButtonUp( lParam );
+			return 0;
+		case WM_RBUTTONDOWN:
+			that->OnRButtonDown(lParam);
             return 0;
+		case WM_RBUTTONUP:
+			that->OnRButtonUp( lParam );
+			return 0;
         default:
             return ::DefWindowProc( hWnd, message, wParam, lParam );
     }

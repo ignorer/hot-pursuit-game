@@ -202,21 +202,23 @@
     <Image Include="..\..\Resources\Images\car_red.png" />
     <Image Include="..\..\Resources\Images\explosionAnimation.png" />
     <Image Include="..\..\Resources\Images\finish.png" />
-    <Image Include="..\..\Resources\Images\forest.png" />
+    <Image Include="..\..\Resources\Images\forestCell.png" />
     <Image Include="..\..\Resources\Images\laser.png" />
     <Image Include="..\..\Resources\Images\default.png" />
     <Image Include="..\..\Resources\Images\oil.png" />
-    <Image Include="..\..\Resources\Images\road.png" />
+    <Image Include="..\..\Resources\Images\roadCell.png" />
     <Image Include="..\..\Resources\Images\sand.png" />
     <Image Include="..\..\Resources\Images\shieldActive.png" />
     <Image Include="..\..\Resources\Images\shieldToPickUp.png" />
     <Image Include="..\..\Resources\Images\wall.png" />
+    <Image Include="..\..\Resources\Images\wallCell.png" />
     <Image Include="MainIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\Resources\Maps\dm4.txt" />
     <Text Include="..\..\Resources\Maps\map1.txt" />
     <Text Include="..\..\Resources\Maps\map2.txt" />
+    <Text Include="..\..\Resources\Maps\map3.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CarGame.rc" />

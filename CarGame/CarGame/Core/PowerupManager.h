@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <map>
 #include <set>
@@ -23,17 +23,17 @@ namespace Core {
 
 		void HandleStep( std::vector<CPlayer>& players, std::set<CPlayer*>& crashedPlayers );
 		void HandleStepForPlayer( CPlayer& activePlayer, std::vector<CPlayer>& players, std::set<CPlayer*>& crashedPlayers );
-		// создаёт по всей карте поверапы или пересоздаёт на новом круге. в случае, если никто не зашёл на новый круг, не делает ничего
+		// СЃРѕР·РґР°С‘С‚ РїРѕ РІСЃРµР№ РєР°СЂС‚Рµ РїРѕРІРµСЂР°РїС‹ РёР»Рё РїРµСЂРµСЃРѕР·РґР°С‘С‚ РЅР° РЅРѕРІРѕРј РєСЂСѓРіРµ. РІ СЃР»СѓС‡Р°Рµ, РµСЃР»Рё РЅРёРєС‚Рѕ РЅРµ Р·Р°С€С‘Р» РЅР° РЅРѕРІС‹Р№ РєСЂСѓРі, РЅРµ РґРµР»Р°РµС‚ РЅРёС‡РµРіРѕ
 		void GeneratePowerups( const CMap& map );
 		void UpdatePowerups( const CMap& map, const std::vector<CPlayer>& players );
 
 	private:
-		// ищет свободную клетку дороги и генерит там рандомный поверап
+		// РёС‰РµС‚ СЃРІРѕР±РѕРґРЅСѓСЋ РєР»РµС‚РєСѓ РґРѕСЂРѕРіРё Рё РіРµРЅРµСЂРёС‚ С‚Р°Рј СЂР°РЅРґРѕРјРЅС‹Р№ РїРѕРІРµСЂР°Рї
 		void generatePowerup( const CMap& map );
 		void handleWalls( CPlayer& player, std::set<CPlayer*>& crashedPlayers );
 		
 		std::map<CCoordinates, PowerupType> powerups;
-		// это поле нужно для режима генерации поверапов STABLE
+		// СЌС‚Рѕ РїРѕР»Рµ РЅСѓР¶РЅРѕ РґР»СЏ СЂРµР¶РёРјР° РіРµРЅРµСЂР°С†РёРё РїРѕРІРµСЂР°РїРѕРІ STABLE
 		std::vector<CCoordinates> powerupCoordinates;
 		int lastLap;
 		bool initialized;

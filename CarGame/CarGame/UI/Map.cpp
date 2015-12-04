@@ -1,23 +1,24 @@
 ﻿#include <memory>
-#include <algorithm>
 
 #include "UI/Map.h"
 
 namespace UI {
 	CMap::CMap() :
-		textureBoard( 0 ),
+		textureForest( 0 ),
 		textureRoad( 0 ),
-		textureMap( 0 ),
+		textureWall( 0 ),
 		textureActiveCell( 0 ),
 		textureFinish( 0 ),
+		textureMap( 0 ),
 		cellSize( 0 ),
 		indent( 0, 0 ),
 		needReload( 0 )
 	{}
 
 	CMap::CMap( const std::vector<std::vector<int>>& map_data ) :
-		textureBoard( 0 ),
+		textureForest( 0 ),
 		textureRoad( 0 ),
+		textureWall( 0 ),
 		textureActiveCell( 0 ),
 		textureFinish( 0 ),
 		textureMap( 0 ),
@@ -27,7 +28,7 @@ namespace UI {
 		needReload( true )
 	{
 		glGenTextures( 1, &textureMap );
-		glGenTextures( 1, &textureBoard );
+		glGenTextures( 1, &textureForest );
 		glGenTextures( 1, &textureRoad );
 		glGenTextures( 1, &textureActiveCell );
 		glGenTextures( 1, &textureFinish );
@@ -73,10 +74,13 @@ namespace UI {
 			for( int j = 0; j < m; j++ ) {
 				switch( map[i][j] ) {
 					case 1:
-						glBindTexture( GL_TEXTURE_2D, textureBoard ); // load a texture of board (forest)
+						glBindTexture( GL_TEXTURE_2D, textureForest );
 						break;
 					case 0:
-						glBindTexture( GL_TEXTURE_2D, textureRoad ); // load a texture of road
+						glBindTexture( GL_TEXTURE_2D, textureRoad );
+						break;
+					case 3:
+						glBindTexture( GL_TEXTURE_2D, textureWall );
 						break;
 					default:
 						throw std::invalid_argument( "Wrong nuber of texture" );
@@ -126,7 +130,7 @@ namespace UI {
 		{
 			auto point1 = transateToWcoord( finishLine.first.x + 0.5, finishLine.first.y + 0.5, cellSize, indent, GetSize() );
 			auto point2 = transateToWcoord( finishLine.second.x + 0.5, finishLine.second.y + 0.5, cellSize, indent, GetSize() );
-			double distance = std::hypot( finishLine.first.x - finishLine.second.x, finishLine.second.y - finishLine.second.y );
+			double distance = std::hypot( finishLine.first.x - finishLine.second.x, finishLine.first.y - finishLine.second.y );
 			double distanceWindow = std::hypot( point1.x - point2.x, point1.y - point2.y );
 			std::pair<double, double> direction( (point2.x - point1.x) /  distanceWindow, (point2.y - point1.y) / distanceWindow );
 			direction = std::make_pair( direction.second, -direction.first );
