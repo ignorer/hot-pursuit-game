@@ -8,6 +8,7 @@ CMap::CMap() : sizeX( DEFAULT_SIZE_X ), sizeY( DEFAULT_SIZE_Y ), colorsNumber( D
 	finishSecondCoord = DEFAULT_FINISH_POINT;
 	prevTexture1 = 0;
 	prevTexture2 = 0;
+	lButtonWasPressed = false;
 }
 
 
@@ -39,23 +40,92 @@ void CMap::ClickCell( int i, int j )
 }
 
 
-void CMap::ClickCell( int i, int j, BType bType )
+void CMap::ClickCell( int i, int j, BType bType, bool lButtonPressed )
 {
-    
+	
 	switch (bType) {
-        case BNone:  ClickCell( i, j ); break;
-        case BTree:  numbers[i][j] = 0; break;
-        case BRoad:  numbers[i][j] = 1; break;
-        case BStart: numbers[i][j] = 2; break;
-        case BWall:  numbers[i][j] = 3; break;
+        case BNone:  ClickCell( i, j ); 
+			//«акрашивание кнопок финиша при клике на текстуру
+
+			if( finishFirstCoord.first == i && finishFirstCoord.second == j ) {
+				finishFirstCoord.first = -1;
+				finishFirstCoord.second = -1;
+			}
+			if( finishSecondCoord.first == i && finishSecondCoord.second == j ) {
+				finishSecondCoord.first = -1;
+				finishSecondCoord.second = -1;
+			}
+			//
+			break;
+        case BTree:  
+			numbers[i][j] = 0; 
+			//«акрашивание кнопок финиша при клике на текстуру
+
+			if( finishFirstCoord.first == i && finishFirstCoord.second == j ) {
+				finishFirstCoord.first = -1;
+				finishFirstCoord.second = -1;
+			}
+			if( finishSecondCoord.first == i && finishSecondCoord.second == j ) {
+				finishSecondCoord.first = -1;
+				finishSecondCoord.second = -1;
+			}
+			//
+			break;
+        case BRoad:  
+			numbers[i][j] = 1; 
+			//«акрашивание кнопок финиша при клике на текстуру
+
+			if( finishFirstCoord.first == i && finishFirstCoord.second == j ) {
+				finishFirstCoord.first = -1;
+				finishFirstCoord.second = -1;
+			}
+			if( finishSecondCoord.first == i && finishSecondCoord.second == j ) {
+				finishSecondCoord.first = -1;
+				finishSecondCoord.second = -1;
+			}
+			//
+			break;
+        case BStart: numbers[i][j] = 2; 
+			//«акрашивание кнопок финиша при клике на текстуру
+
+			if( finishFirstCoord.first == i && finishFirstCoord.second == j ) {
+				finishFirstCoord.first = -1;
+				finishFirstCoord.second = -1;
+			}
+			if( finishSecondCoord.first == i && finishSecondCoord.second == j ) {
+				finishSecondCoord.first = -1;
+				finishSecondCoord.second = -1;
+			}
+			//
+			break;
+        case BWall: 
+			numbers[i][j] = 3; 
+			//«акрашивание кнопок финиша при клике на текстуру
+
+			if( finishFirstCoord.first == i && finishFirstCoord.second == j ) {
+				finishFirstCoord.first = -1;
+				finishFirstCoord.second = -1;
+			}
+			if( finishSecondCoord.first == i && finishSecondCoord.second == j ) {
+				finishSecondCoord.first = -1;
+				finishSecondCoord.second = -1;
+			}
+			//
+			break;
 		case BFinish1: 
 			if( finishFirstCoord.first != -1 ) {
 				numbers[finishFirstCoord.first][finishFirstCoord.second] = prevTexture1;
-				if( finishFirstCoord.first == i && finishFirstCoord.second == j ) {
+				if( prevTexture1 == 5 ) {
+					finishSecondCoord.first = finishFirstCoord.first;
+					finishSecondCoord.second = finishFirstCoord.second;
+				}
+				if( finishFirstCoord.first == i && finishFirstCoord.second == j && !lButtonPressed && !lButtonWasPressed ) {
 					finishFirstCoord.first = -1;
 					finishFirstCoord.second = -1;
+					numbers[i][j] = prevTexture1;
 				}
 				else {
+					lButtonWasPressed = lButtonPressed;
 					prevTexture1 = numbers[i][j];
 					finishFirstCoord.first = i;
 					finishFirstCoord.second = j;
@@ -68,27 +138,45 @@ void CMap::ClickCell( int i, int j, BType bType )
 				finishFirstCoord.second = j;
 				numbers[i][j] = 4;
 			}
+
+			if( finishSecondCoord.first == i && finishSecondCoord.second == j && finishFirstCoord.first != -1 ) {
+				finishSecondCoord.first = -1;
+				finishSecondCoord.second = -1;
+			}
 			break;
 		case BFinish2:
 			if( finishSecondCoord.first != -1 ) {
-				numbers[finishSecondCoord.first][finishSecondCoord.second] = prevTexture1;
-				if( finishSecondCoord.first == i && finishSecondCoord.second == j ) {
+				numbers[finishSecondCoord.first][finishSecondCoord.second] = prevTexture2;
+				if( prevTexture2 == 4 ) {
+					finishFirstCoord.first = finishSecondCoord.first;
+					finishFirstCoord.second = finishSecondCoord.second;
+				}
+				if( finishSecondCoord.first == i && finishSecondCoord.second == j && !lButtonPressed && !lButtonWasPressed ) {
 					finishSecondCoord.first = -1;
 					finishSecondCoord.second = -1;
+					numbers[i][j] = prevTexture2;
 				}
 				else {
-					prevTexture1 = numbers[i][j];
+					lButtonWasPressed = lButtonPressed;
+					prevTexture2 = numbers[i][j];
 					finishSecondCoord.first = i;
 					finishSecondCoord.second = j;
-					numbers[i][j] = 4;
+					numbers[i][j] = 5;
 				}
 			}
 			else {
-				prevTexture1 = numbers[i][j];
+				prevTexture2 = numbers[i][j];
 				finishSecondCoord.first = i;
 				finishSecondCoord.second = j;
-				numbers[i][j] = 4;
+				numbers[i][j] = 5;
 			}
+
+			if( finishFirstCoord.first == i && finishFirstCoord.second == j && finishSecondCoord.first != -1 ) {
+				finishFirstCoord.first = -1;
+				finishFirstCoord.second = -1;
+			}
+			break;
+
 
     }
 }
@@ -96,7 +184,7 @@ void CMap::ClickCell( int i, int j, BType bType )
 
 void CMap::LoadMapFromFile( std::ifstream& fin )
 {
-    fin >> sizeX >> sizeY;
+    fin >> sizeY >> sizeX;
     numbers.resize( sizeY );
     for( int i = 0; i < sizeY; i++ ) {
         numbers[i].resize( sizeX );
@@ -109,7 +197,7 @@ void CMap::LoadMapFromFile( std::ifstream& fin )
 
 void CMap::SaveMapToFile( std::ofstream & fout )
 {
-    fout << sizeX << " " << sizeY;
+    fout << sizeY << " " << sizeX;
     fout << std::endl;
 
     for( int i = 0; i < sizeY; i++ ) {

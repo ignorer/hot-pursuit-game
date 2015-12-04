@@ -68,6 +68,8 @@ protected:
     void OnLButtonDown( LPARAM lParam );
     void OnMouseMove( LPARAM lParam );
     void OnLButtonUp( LPARAM lParam );
+	void OnRButtonDown( LPARAM lParam );
+	void OnRButtonUp( LPARAM lParam );
     void onDialogOk();
     void SaveFile();
     void LoadFile();
@@ -85,6 +87,13 @@ private:
     IUICommandHandler* m_pCommandHandler;  // Generic Command Handler
     BType brush;
     BOOL lButtonPressed;
+	BOOL rButtonPressed;
+
+	std::pair<int, int> coordsOfCurrentView;
+	std::pair<int, int> coordsRMouseButMoveStart;
+	std::pair<int, int> coordsRMouseButMoveFinish;
+
+	bool drawFirstTime;
 
     static LRESULT __stdcall windowProc( HWND handle, UINT message, WPARAM wParam, LPARAM lParam );
 };

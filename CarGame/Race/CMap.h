@@ -32,7 +32,7 @@ public:
 
     //меняет состояние клетки с координатами (i, j)
     void ClickCell( int i, int j );
-    void ClickCell( int i, int j, BType bType );
+    void ClickCell( int i, int j, BType bType, bool lButtonPressed );
     //обнуляет карту
     void RestartMap();
     //устанавливает размеры поля
@@ -57,4 +57,5 @@ private:
 	int prevTexture1;
 	std::pair<int, int> finishSecondCoord;
 	int prevTexture2;
+	bool lButtonWasPressed;
 };
