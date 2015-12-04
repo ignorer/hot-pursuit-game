@@ -36,7 +36,7 @@ namespace Core {
 						startPoints.push_back( CCoordinates( j, i ) );
 						break;
 					default:
-						throw std::invalid_argument( std::string( "invalid cell type on column " ) + std::to_string( i ) + " row " + std::to_string( j ) );
+						throw std::invalid_argument( std::string( "Invalid cell type: column " ) + std::to_string( i ) + " row " + std::to_string( j ) );
 				}
 			}
 		}
