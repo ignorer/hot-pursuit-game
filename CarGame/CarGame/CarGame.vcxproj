@@ -194,13 +194,23 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Resources\Images\active.png" />
+    <Image Include="..\..\Resources\Images\bombActive.png" />
+    <Image Include="..\..\Resources\Images\bombInactive.png" />
     <Image Include="..\..\Resources\Images\car_blue.png" />
     <Image Include="..\..\Resources\Images\car_green.png" />
     <Image Include="..\..\Resources\Images\car_orange.png" />
     <Image Include="..\..\Resources\Images\car_red.png" />
+    <Image Include="..\..\Resources\Images\explosionAnimation.png" />
     <Image Include="..\..\Resources\Images\finish.png" />
     <Image Include="..\..\Resources\Images\forest.png" />
+    <Image Include="..\..\Resources\Images\laser.png" />
+    <Image Include="..\..\Resources\Images\default.png" />
+    <Image Include="..\..\Resources\Images\oil.png" />
     <Image Include="..\..\Resources\Images\road.png" />
+    <Image Include="..\..\Resources\Images\sand.png" />
+    <Image Include="..\..\Resources\Images\shieldActive.png" />
+    <Image Include="..\..\Resources\Images\shieldToPickUp.png" />
+    <Image Include="..\..\Resources\Images\wall.png" />
     <Image Include="MainIcon.ico" />
   </ItemGroup>
   <ItemGroup>

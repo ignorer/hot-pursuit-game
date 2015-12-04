@@ -54,8 +54,8 @@ namespace Core {
 	{
 		if( player.GetPosition().x < 0 ||
 			player.GetPosition().y < 0 ||
-			player.GetPosition().x >= map.GetSize().second ||
-			player.GetPosition().y >= map.GetSize().first ) {
+			player.GetPosition().x >= map.GetSize().first ||
+			player.GetPosition().y >= map.GetSize().second ) {
 			return true;
 		}
 		CCoordinates playersPreviousCoordinates = player.GetPreviousPosition();

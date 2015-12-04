@@ -169,6 +169,36 @@
     <Image Include="..\..\Resources\Images\finish.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
+    <Image Include="..\..\Resources\Images\bombActive.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\bombInactive.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\explosionAnimation.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\laser.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\oil.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\sand.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\shieldActive.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\shieldToPickUp.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\wall.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Images\default.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\Resources\Maps\map1.txt">

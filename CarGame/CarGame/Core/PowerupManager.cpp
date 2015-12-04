@@ -149,8 +149,8 @@ namespace Core {
 			for( int i = 0; i < n; ++i ) {
 				int x, y;
 				do {
-					y = std::rand() % map.GetSize().first;
-					x = std::rand() % map.GetSize().second;
+					x = std::rand() % map.GetSize().first;
+					y = std::rand() % map.GetSize().second;
 				} while( map.GetField()[y][x] != ROAD || powerups.find( CCoordinates( x, y ) ) != powerups.end() );
 				powerupCoordinates.push_back( CCoordinates( x, y ) );
 			}
