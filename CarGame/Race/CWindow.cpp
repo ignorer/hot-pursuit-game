@@ -136,10 +136,13 @@ void CWindow::OnSize()
     int diffHeight = windowHeight - height;
     int diffWidth = windowWidth - width;
 
-    cellSize = height / map.GetY();
+	currentZoom = 1;
+	cellSize = height / map.GetY();
     //подгоняем размеры поля под высоту клеток
     ::SetWindowPos( handle, NULL, windowRect.left, windowRect.top, windowWidth, diffHeight + cellSize * map.GetY(), NULL );
     ::InvalidateRect( handle, &rect, TRUE );
+
+
 }
 
 
