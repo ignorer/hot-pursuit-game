@@ -367,26 +367,35 @@ void CWindow::Draw( LPARAM lParam )
     ::GetClientRect( handle, &rect );
 
 	int mapWidth = map.GetX()*cellSize;
+	int mapHeight = map.GetY()*cellSize;
 
 	int xPos = GET_X_LPARAM( lParam ) - coordsOfCurrentView.first;
     if( xPos > 0 && xPos < mapWidth ) {
         int yPos = GET_Y_LPARAM( lParam ) - coordsOfCurrentView.second;
         int mouseI = yPos / cellSize;
         int mouseJ = xPos / cellSize;
-        map.ClickCell( mouseI, mouseJ, this->brush, this->lButtonPressed );
-
-        ::InvalidateRect( handle, &rect, TRUE );
+		if( yPos > 0 && yPos < mapHeight ) {
+			map.ClickCell( mouseI, mouseJ, this->brush, this->lButtonPressed );
+			::InvalidateRect( handle, &rect, TRUE );
+		}
     }
 }
 
 
 void CWindow::Zoom( int dir){
 	RECT rect;
+	RECT windowRect;
 	::GetClientRect( handle, &rect );
+	::GetWindowRect( handle, &windowRect);
+	//int plusX = windowRect.right - windowRect.left;
+	//int plusY = windowRect.bottom - windowRect.top - getRibbonHeight();
+	
 	if( dir > 0 ) {
 		if( currentZoom != maxZoom ) {
 			currentZoom++;
 			cellSize *= 2;
+			//coordsOfCurrentView.first = (coordsOfCurrentView.first - plusX) * 2 + plusX;
+			//coordsOfCurrentView.second = (coordsOfCurrentView.first - plusY) * 2 + plusY;
 			::InvalidateRect( handle, &rect, TRUE );
 		}
 	}
@@ -394,6 +403,8 @@ void CWindow::Zoom( int dir){
 		if( currentZoom != 1 ) {
 			currentZoom--;
 			cellSize /= 2;
+			//coordsOfCurrentView.first = (coordsOfCurrentView.first - plusX) / 2 + plusX;
+			//coordsOfCurrentView.second = (coordsOfCurrentView.first - plusY) / 2 + plusY;
 			::InvalidateRect( handle, &rect, TRUE );
 		}
 	}
