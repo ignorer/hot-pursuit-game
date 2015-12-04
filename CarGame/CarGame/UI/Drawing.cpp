@@ -363,20 +363,20 @@ namespace UI
 		std::string carFilename;
 		for( size_t i = 0; i < cars.size(); i++ ) {
 			switch( cars[i].GetColor() ) {
-			case RED:
-				carFilename = RESOURCE_DIRECTORY + "Images\\car_red.png";
-				break;
-			case BLUE:
-				carFilename = RESOURCE_DIRECTORY + "Images\\car_blue.png";
-				break;
-			case GREEN:
-				carFilename = RESOURCE_DIRECTORY + "Images\\car_green.png";
-				break;
-			case ORANGE:
-				carFilename = RESOURCE_DIRECTORY + "Images\\car_orange.png";
-				break;
-			default:
-				carFilename = RESOURCE_DIRECTORY + "Images\\car_red.png";
+				case RED:
+					carFilename = RESOURCE_DIRECTORY + "Images\\car_red.png";
+					break;
+				case BLUE:
+					carFilename = RESOURCE_DIRECTORY + "Images\\car_blue.png";
+					break;
+				case GREEN:
+					carFilename = RESOURCE_DIRECTORY + "Images\\car_green.png";
+					break;
+				case ORANGE:
+					carFilename = RESOURCE_DIRECTORY + "Images\\car_orange.png";
+					break;
+				default:
+					carFilename = RESOURCE_DIRECTORY + "Images\\car_red.png";
 			}
 			loadTexture( carFilename.c_str(), cars[i].texture );
 			loadTexture( (RESOURCE_DIRECTORY + "Images\\explosionAnimation.png").c_str(), cars[i].explosion );

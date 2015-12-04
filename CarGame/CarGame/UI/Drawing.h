@@ -54,6 +54,7 @@ namespace UI {
 		static GLuint textureBombInactive;
 		static GLuint textureShieldToPickUp;
 		static GLuint textureLazer;
+
 	private:
 		static void display();
 		static void reshape( int width, int height );
