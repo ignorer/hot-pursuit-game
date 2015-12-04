@@ -116,6 +116,12 @@ STDMETHODIMP CCommandHandler::Execute(
 	case cmdFinishSecondPoint:
 		MainWindow.SetBrush( MainWindow.GetBrush() == BFinish2?BNone:BFinish2 );
 		break;
+	case cmdZoomIn:
+		MainWindow.Zoom( 1 );
+		break;
+	case cmdZoomOut:
+		MainWindow.Zoom( 0 );
+		break;
 	default:
 		break;
 	}

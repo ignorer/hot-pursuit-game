@@ -74,6 +74,7 @@ protected:
     void SaveFile();
     void LoadFile();
     void Draw( LPARAM lParam );
+	void Zoom( int dir );
     static INT_PTR __stdcall dialogProc( HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
 private:
@@ -94,6 +95,8 @@ private:
 	std::pair<int, int> coordsRMouseButMoveFinish;
 
 	bool drawFirstTime;
+	int currentZoom;
+	const int maxZoom = 4;
 
     static LRESULT __stdcall windowProc( HWND handle, UINT message, WPARAM wParam, LPARAM lParam );
 };

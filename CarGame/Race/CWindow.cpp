@@ -56,7 +56,7 @@ bool CWindow::Create()
 
 CWindow::CWindow():
     brush( BNone ), m_cRef( 1 ), m_pCommandHandler( NULL ), lButtonPressed( false ),rButtonPressed(false), drawFirstTime(true),
-    backgroundBrush( ::CreateSolidBrush( RGB( 0xFF, 0xFF, 0xFF ) ) )
+    backgroundBrush( ::CreateSolidBrush( RGB( 0xFF, 0xFF, 0xFF ) ) ), currentZoom(1)
 {
     HINSTANCE hInst = ::GetModuleHandle( 0 );
     HBITMAP forest = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_FOREST ) );
@@ -377,6 +377,25 @@ void CWindow::Draw( LPARAM lParam )
 }
 
 
+void CWindow::Zoom( int dir){
+	RECT rect;
+	::GetClientRect( handle, &rect );
+	if( dir > 0 ) {
+		if( currentZoom != maxZoom ) {
+			currentZoom++;
+			cellSize *= 2;
+			::InvalidateRect( handle, &rect, TRUE );
+		}
+	}
+	else {
+		if( currentZoom != 1 ) {
+			currentZoom--;
+			cellSize /= 2;
+			::InvalidateRect( handle, &rect, TRUE );
+		}
+	}
+} 
+
 void CWindow::OnLButtonDown( LPARAM lParam )
 {
     this->lButtonPressed = true;
@@ -389,12 +408,15 @@ void CWindow::OnMouseMove( LPARAM lParam )
         Draw( lParam );
     }
 	if( this->rButtonPressed ) {
+		RECT rect;
+		::GetClientRect( handle, &rect );
 		coordsRMouseButMoveFinish.first = GET_X_LPARAM( lParam );
 		coordsRMouseButMoveFinish.second = GET_Y_LPARAM( lParam );
-		coordsOfCurrentView.first += coordsRMouseButMoveStart.first - coordsRMouseButMoveFinish.first;
-		coordsOfCurrentView.second += coordsRMouseButMoveStart.second - coordsRMouseButMoveFinish.second;
+		coordsOfCurrentView.first += (-coordsRMouseButMoveStart.first + coordsRMouseButMoveFinish.first);
+		coordsOfCurrentView.second += (-coordsRMouseButMoveStart.second + coordsRMouseButMoveFinish.second);
 		coordsRMouseButMoveStart.first = GET_X_LPARAM( lParam );
 		coordsRMouseButMoveStart.second = GET_Y_LPARAM( lParam );
+		::InvalidateRect( handle, &rect, TRUE );
 	}
 }
 
@@ -589,7 +611,7 @@ LRESULT __stdcall CWindow::windowProc( HWND hWnd, UINT message, WPARAM wParam, L
 		case WM_RBUTTONDOWN:
 			that->OnRButtonDown(lParam);
             return 0;
-		case WM_NCRBUTTONUP:
+		case WM_RBUTTONUP:
 			that->OnRButtonUp( lParam );
 			return 0;
         default:
