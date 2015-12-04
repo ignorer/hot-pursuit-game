@@ -134,7 +134,7 @@ namespace Core {
 						CCoordinates v = player.GetPosition() - activePlayer.GetPosition();
 						double dot = u.x * v.x + u.y * v.y;
 						double b = std::hypot( v.x, v.y );
-						if( dot > 0 && b > 0 && std::sqrt( 1 - std::pow( dot / (a * b), 2 ) ) * a < 0.3 ) {
+						if( dot > 0 && b > 0 && std::sqrt( 1 - std::pow( dot / (a * b), 2 ) ) * b < 0.3 ) {
 							crashedPlayers.insert( &player );
 						}
 					}

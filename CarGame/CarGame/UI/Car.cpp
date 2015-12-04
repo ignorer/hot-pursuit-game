@@ -89,28 +89,28 @@ namespace UI {
 		float right = coord.x + cellSize;
 		float bottom = coord.y - cellSize / 4;
 		float top = coord.y - 3 * cellSize / 4;
+		float Ax = left,
+			Ay = bottom,
+			Bx = right,
+			By = bottom,
+			Cx = right,
+			Cy = top,
+			Dx = left,
+			Dy = top;
+
+		float centerX = Dx - (Dx - Bx) / 2,
+			centerY = Dy - (Dy - By) / 2;
+		rotateCar( Ax, Ay, Bx, By, Cx, Cy, Dx, Dy, centerX, centerY, coords.angle );
 
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glBegin( GL_POLYGON );
 		{
 			glColor4f( 1, 1, 1, alpha );
-			float Ax = left,
-				Ay = bottom,
-				Bx = right,
-				By = bottom,
-				Cx = right,
-				Cy = top,
-				Dx = left,
-				Dy = top;
-
-			float centerX = Dx - (Dx - Bx) / 2,
-				centerY = Dy - (Dy - By) / 2;
-			rotateCar( Ax, Ay, Bx, By, Cx, Cy, Dx, Dy, centerX, centerY, coords.angle );
-			glTexCoord2f( 0.0f, 0.0f ); glVertex2f( Ax, Ay );
-			glTexCoord2f( 1.0f, 0.0f ); glVertex2f( Bx, By );
-			glTexCoord2f( 1.0f, 1.0f ); glVertex2f( Cx, Cy );
-			glTexCoord2f( 0.0f, 1.0f ); glVertex2f( Dx, Dy );
+			glTexCoord2f( 0, 0 ); glVertex2f( Ax, Ay );
+			glTexCoord2f( 1, 0 ); glVertex2f( Bx, By );
+			glTexCoord2f( 1, 1 ); glVertex2f( Cx, Cy );
+			glTexCoord2f( 0, 1 ); glVertex2f( Dx, Dy );
 		}
 		glEnd();
 

@@ -96,7 +96,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)..\postBuildDebug.cmd</Command>
+      <Command>$(SolutionDir)\..\postBuildDebug.cmd</Command>
       <Message>Copy resources and dlls to output directories.</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
