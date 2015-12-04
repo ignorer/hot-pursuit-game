@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <Windows.h>
 #include <Core/Player.h>
@@ -45,7 +45,7 @@ namespace UI {
 		const int BUTTON_BACK_TO_MENU = 2;
 		const int BUTTON_SETTINGS = 3;
 		const int FIRST_POSITION_OWNER = 4;
-		//id каждого следующего position owner'а на 1 отличаются от предыдущего 
+		//id РєР°Р¶РґРѕРіРѕ СЃР»РµРґСѓСЋС‰РµРіРѕ position owner'Р° РЅР° 1 РѕС‚Р»РёС‡Р°СЋС‚СЃСЏ РѕС‚ РїСЂРµРґС‹РґСѓС‰РµРіРѕ 
 
 		static const wchar_t* const className;
 

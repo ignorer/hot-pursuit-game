@@ -1,4 +1,4 @@
-#include "Core/GameMode.h"
+﻿#include "Core/GameMode.h"
 
 namespace Core {
 	CGameMode::MovementMode CGameMode::movementMode = CONCURRENT;

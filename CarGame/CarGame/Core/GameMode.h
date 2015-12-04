@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 namespace Core {
 	class CGameMode {
@@ -18,7 +18,7 @@ namespace Core {
 		static int GetLapCount();
 		static ObjectRate GetObjectRate();
 		static ObjectChangeModel GetObjectChangeModel();
-		// не использовать эту функцию в ядре. это для диалогового окна с выбором режима игры
+		// РЅРµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ С„СѓРЅРєС†РёСЋ РІ СЏРґСЂРµ. СЌС‚Рѕ РґР»СЏ РґРёР°Р»РѕРіРѕРІРѕРіРѕ РѕРєРЅР° СЃ РІС‹Р±РѕСЂРѕРј СЂРµР¶РёРјР° РёРіСЂС‹
 		static int GetMaxLapsCount();
 
 	private:

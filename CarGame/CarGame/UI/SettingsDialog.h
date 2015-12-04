@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <Windows.h>
 
@@ -14,7 +14,7 @@ namespace UI {
 		static void OnDialogVscroll( HWND hwndDlg );
 		static int GetLapsNumber( HWND hwndDlg, int editId );
 		static BOOL CALLBACK DialogSettingsProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam );
-		//специальный флаг, определяющий, посылается ли EN_CHANGE из UI-окна
+		//СЃРїРµС†РёР°Р»СЊРЅС‹Р№ С„Р»Р°Рі, РѕРїСЂРµРґРµР»СЏСЋС‰РёР№, РїРѕСЃС‹Р»Р°РµС‚СЃСЏ Р»Рё EN_CHANGE РёР· UI-РѕРєРЅР°
 		static bool sent;
 	};
 

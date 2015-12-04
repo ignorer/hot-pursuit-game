@@ -1,4 +1,4 @@
-#include <ctime>
+п»ї#include <ctime>
 #include <algorithm>
 
 #include "Core/PowerupManager.h"
@@ -127,10 +127,10 @@ namespace Core {
 				case LAZER:
 				{
 					CCoordinates u = activePlayer.GetPosition() - activePlayer.GetPreviousPosition();
-					double a = std::hypot( u.x, u.y ); // a > 0 всегда, т.к. соответствующая проверка выполнялась в начале функции
+					double a = std::hypot( u.x, u.y ); // a > 0 РІСЃРµРіРґР°, С‚.Рє. СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰Р°СЏ РїСЂРѕРІРµСЂРєР° РІС‹РїРѕР»РЅСЏР»Р°СЃСЊ РІ РЅР°С‡Р°Р»Рµ С„СѓРЅРєС†РёРё
 					for( auto& player : players ) {
-						// геометрия. u - вектор движения, v - вектор от стреляющего до другого игрока
-						// a и b - длины этих векторов соответственно, dot - скалярное произведение
+						// РіРµРѕРјРµС‚СЂРёСЏ. u - РІРµРєС‚РѕСЂ РґРІРёР¶РµРЅРёСЏ, v - РІРµРєС‚РѕСЂ РѕС‚ СЃС‚СЂРµР»СЏСЋС‰РµРіРѕ РґРѕ РґСЂСѓРіРѕРіРѕ РёРіСЂРѕРєР°
+						// a Рё b - РґР»РёРЅС‹ СЌС‚РёС… РІРµРєС‚РѕСЂРѕРІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕ, dot - СЃРєР°Р»СЏСЂРЅРѕРµ РїСЂРѕРёР·РІРµРґРµРЅРёРµ
 						CCoordinates v = player.GetPosition() - activePlayer.GetPosition();
 						double dot = u.x * v.x + u.y * v.y;
 						double b = std::hypot( v.x, v.y );

@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <string>
 #include <vector>
@@ -41,7 +41,7 @@ namespace Core {
 }
 
 namespace UI {
-	// координаты в игре
+	// РєРѕРѕСЂРґРёРЅР°С‚С‹ РІ РёРіСЂРµ
 	struct CCoordinates {
 		float x;
 		float y;
@@ -54,7 +54,7 @@ namespace UI {
 		bool operator< (const CCoordinates& point) const;
 	};
 
-	// координаты в окне
+	// РєРѕРѕСЂРґРёРЅР°С‚С‹ РІ РѕРєРЅРµ
 	struct CWindowCoordinates {
 		float x;
 		float y;
