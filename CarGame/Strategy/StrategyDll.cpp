@@ -42,10 +42,11 @@ IStrategy* GetNewStrategy(
 	const std::vector< std::vector < int > > &inputCells,
 	const std::pair< int, int > &_leftFinishPoint,
 	const std::pair< int, int > &_rightFinishPoint,
+	int lapsCount,
 	std::shared_ptr<IPlayerState> playerState )
 {
 	Map map( inputCells, _leftFinishPoint, _rightFinishPoint );
 	const PlayerState currentPlayer = *(std::dynamic_pointer_cast<PlayerState>(playerState));
 
-	return new CAStarStrategy( map, currentPlayer );
+	return new CAStarStrategy( map, currentPlayer, lapsCount );
 }

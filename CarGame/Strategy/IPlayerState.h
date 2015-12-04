@@ -4,9 +4,6 @@
 
 class IPlayerState {
 public:
-	virtual bool operator== (const IPlayerState &other) const = 0;
-	virtual bool operator!= (const IPlayerState &other) const = 0;
-
 	virtual void changePosition(std::pair< int, int > inputPosition) = 0;
 	virtual void changeVelocityVector(std::pair< int, int > inputVelocityVector) = 0;
 	virtual void changePositionUsingVelocityVector() = 0;

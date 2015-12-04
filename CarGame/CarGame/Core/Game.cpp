@@ -169,7 +169,7 @@ namespace Core {
 
 		std::shared_ptr<IPlayerState> playerStatePtr( GetPlayerStateFunc( currentPosition.x, currentPosition.y, xVelocity, yVelocity ) );
 		AIStrategies[player->GetNumber()] = StrategyBuilderFunc( mapForAI, std::make_pair( firstFinishPoint.x, firstFinishPoint.y ),
-			std::make_pair( secondFinishPoint.x, secondFinishPoint.y ), playerStatePtr );
+			std::make_pair( secondFinishPoint.x, secondFinishPoint.y ), CGameMode::GetLapCount(), playerStatePtr );
 	}
 
 	void CGame::turnOfPlayer( CPlayer& player, std::set<CPlayer*>& crashedPlayers )

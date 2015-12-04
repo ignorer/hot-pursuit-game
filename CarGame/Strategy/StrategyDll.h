@@ -14,6 +14,7 @@ extern "C" RACE_AI_API IStrategy* GetNewStrategy(
 	const std::vector< std::vector < int > > &inputCells,
 	const std::pair< int, int > &_leftFinishPoint,
 	const std::pair< int, int > &_rightFinishPoint,
+	int lapsCount,
 	std::shared_ptr<IPlayerState> playerState );
 
 // Factories to export PlayerState and Map classes
