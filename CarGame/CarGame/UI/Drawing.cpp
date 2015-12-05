@@ -8,7 +8,7 @@
 
 namespace UI
 {
-	CMap CDrawing::map; // static data members must be explicitly defined in exactly one translation unit
+	CMap CDrawing::map({});
 	std::vector<CCar> CDrawing::cars;
 	std::vector<CPowerup> CDrawing::powerups;
 	bool CDrawing::initialized = false;
@@ -23,7 +23,7 @@ namespace UI
 	int CDrawing::key;
 	Core::CCoordinates CDrawing::mouse;
 	std::map<PowerupType, GLuint> CDrawing::powerupTextureMap;
-	std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>> CDrawing::shots;
+	std::vector<std::pair<std::pair<float, float>, std::pair<float, float>>> CDrawing::shots;
 	GLuint CDrawing::textureOil = 0;
 	GLuint CDrawing::textureSand = 0;
 	GLuint CDrawing::textureWall = 0;
@@ -31,12 +31,16 @@ namespace UI
 	GLuint CDrawing::textureBombActive = 0;
 	GLuint CDrawing::textureBombInactive = 0;
 	GLuint CDrawing::textureShieldToPickUp = 0;
+	GLuint CDrawing::cursor = 0;
+	int CDrawing::cursorX = 0;
+	int CDrawing::cursorY = 0;
 
 	void CDrawing::Init( int argc, char** argv )
 	{
 		glutInit( &argc, argv );
 		glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA );
 		glutInitWindowSize( 800, 600 );
+		glutInitWindowPosition( 100, 100 );
 		std::unique_lock<std::mutex> lock( mutex );
 		window = glutCreateWindow( windowName.c_str() );
 		glutHideWindow();
@@ -47,6 +51,8 @@ namespace UI
 		glutDisplayFunc( display );
 		glutKeyboardFunc( keyboardFunction );
 		glutMouseFunc( mouseFunction );
+		glutPassiveMotionFunc( passiveMotion );
+		glutSetCursor( GLUT_CURSOR_NONE );
 
 		glutMainLoop();
 	}
@@ -105,6 +111,12 @@ namespace UI
 		glutTimerFunc( 1, timer, 0 );
 	}
 
+	void CDrawing::passiveMotion( int x, int y )
+	{
+		cursorX = x;
+		cursorY = y;
+	}
+
 	void CDrawing::display()
 	{
 		std::unique_lock<std::mutex> lock( mutex );
@@ -131,7 +143,6 @@ namespace UI
 		glClearColor( 1.0, 1.0, 1.0, 0.0 );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-		bool mapReloaded = !map.NeedToReload();
 		map.Draw();
 		map.HighlightActiveCells();
 		map.DrawFinishLine( finishLine );
@@ -144,11 +155,10 @@ namespace UI
 		for( auto& shot : shots ) {
 			map.DrawShot( shot );
 		}
+		drawCursor();
 		glFlush();
-		std::this_thread::sleep_for( std::chrono::milliseconds( 30 ) );
-		if( mapReloaded ) {
-			glutSwapBuffers(); // if map wasn't reloaded (and buffers weren't swapped), swap buffers
-		}
+		std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+		glutSwapBuffers(); // if map wasn't reloaded (and buffers weren't swapped), swap buffers
 	}
 
 	int CDrawing::GetWindow()
@@ -216,7 +226,6 @@ namespace UI
 		return powerupTextureMap[type];
 	}
 
-	// load image from file to texture
 	void CDrawing::loadTexture( const char* filename, GLuint& texture )
 	{
 		// create and choose texture
@@ -232,6 +241,27 @@ namespace UI
 		SOIL_free_image_data( image );
 		// unchoose texture
 		glBindTexture( GL_TEXTURE_2D, 0 );
+	}
+
+	void CDrawing::drawCursor()
+	{
+		int x = cursorX;
+		int y = cursorY;
+		y = map.GetSize( ).second* map.GetCellSize( ) - y;
+		glEnable( GL_TEXTURE_2D );
+		glBindTexture( GL_TEXTURE_2D, cursor );
+		glEnable( GL_BLEND );
+		glBegin( GL_QUADS );
+		{
+			glColor3f( 1, 1, 1 );
+			glTexCoord2f( 0, 0 ); glVertex2f( x, y );
+			glTexCoord2f( 0, 1 ); glVertex2f( x, y - 32);
+			glTexCoord2f( 1, 1 ); glVertex2f( x + 32, y - 32 );
+			glTexCoord2f( 1, 0 ); glVertex2f( x + 32, y );
+		}
+		glEnd();
+		glDisable( GL_BLEND );
+		glDisable( GL_TEXTURE_2D );
 	}
 
 	void CDrawing::MoveCars( const std::vector<int>& numbers, const std::vector<CCoordinates>& newCoordinates, const std::vector<bool>& shields )
@@ -312,7 +342,7 @@ namespace UI
 		}
 	}
 
-	void CDrawing::SetShots( const std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>>& _shots )
+	void CDrawing::SetShots( const std::vector<std::pair<std::pair<float, float>, std::pair<float, float>>>& _shots )
 	{
 		std::unique_lock<std::mutex> lock( mutex );
 		shots = _shots;
@@ -351,6 +381,7 @@ namespace UI
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombActive.png").c_str(), textureBombActive );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombInactive.png").c_str(), textureBombInactive );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\laser.png").c_str(), textureLazer );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\cur.png").c_str(), cursor );
 		powerupTextureMap[OIL] = textureOil;
 		powerupTextureMap[LAZER] = textureLazer;
 		powerupTextureMap[SAND] = textureSand;

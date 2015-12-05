@@ -3,18 +3,6 @@
 #include "UI/Map.h"
 
 namespace UI {
-	CMap::CMap() :
-		textureForest( 0 ),
-		textureRoad( 0 ),
-		textureWall( 0 ),
-		textureActiveCell( 0 ),
-		textureFinish( 0 ),
-		textureMap( 0 ),
-		cellSize( 0 ),
-		indent( 0, 0 ),
-		needReload( 0 )
-	{}
-
 	CMap::CMap( const std::vector<std::vector<int>>& map_data ) :
 		textureForest( 0 ),
 		textureRoad( 0 ),
@@ -24,8 +12,7 @@ namespace UI {
 		textureMap( 0 ),
 		map( map_data ),
 		cellSize( 0 ),
-		indent( 0, 0 ),
-		needReload( true )
+		indent( 0, 0 )
 	{
 		glGenTextures( 1, &textureMap );
 		glGenTextures( 1, &textureForest );
@@ -42,69 +29,42 @@ namespace UI {
 		cellSize = fmin( height / n, width / m );
 		indent.x = (width - cellSize * m) / 2;
 		indent.y = (height - cellSize * n) / 2;
-		needReload = true;
 	}
 
-	void CMap::saveTexture() const
+	void CMap::drawAllCellsOfType( int cellType ) const
 	{
-		// write window to array of pixels
-		unsigned long imageSize;
-		GLint viewPort[4];
-		glGetIntegerv( GL_VIEWPORT, viewPort );
-		GLint width = viewPort[2];
-		GLint height = viewPort[3];
-		imageSize = (width + 4 - width % 4) * height * 3;
-		std::shared_ptr<GLbyte> data = std::shared_ptr<GLbyte>( new GLbyte[imageSize] );
-		glReadBuffer( GL_BACK );
-		glReadPixels( 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data.get() );
-
-		// write pixels to texture of map
-		glBindTexture( GL_TEXTURE_2D, textureMap );
-		gluBuild2DMipmaps( GL_TEXTURE_2D, 3, width, height, GL_RGB, GL_UNSIGNED_BYTE, data.get() );
-		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, float( GL_MODULATE) );
-	}
-
-	void CMap::reload()
-	{
-		int n = map.size(), m = map[0].size();
-		glEnable( GL_TEXTURE_2D );
-		glEnable( GL_BLEND );
-		glColor3f( 1, 1, 1 );
+		switch( cellType ) {
+			case 1:
+				glBindTexture( GL_TEXTURE_2D, textureForest );
+				break;
+			case 0:
+				glBindTexture( GL_TEXTURE_2D, textureRoad );
+				break;
+			case 3:
+				glBindTexture( GL_TEXTURE_2D, textureWall );
+				break;
+			default:
+				throw std::invalid_argument( "Wrong nuber of texture" );
+		}
+		glBegin( GL_QUADS );
+		{
+		int n = map.size( ), m = map[0].size( );
 		for( int i = 0; i < n; i++ ) {
 			for( int j = 0; j < m; j++ ) {
-				switch( map[i][j] ) {
-					case 1:
-						glBindTexture( GL_TEXTURE_2D, textureForest );
-						break;
-					case 0:
-						glBindTexture( GL_TEXTURE_2D, textureRoad );
-						break;
-					case 3:
-						glBindTexture( GL_TEXTURE_2D, textureWall );
-						break;
-					default:
-						throw std::invalid_argument( "Wrong nuber of texture" );
+				if( map[i][j] == cellType ) {
+					float left = j * cellSize + indent.x;
+					float right = (j + 1) * cellSize + indent.x;
+					float bottom = (n - i) * cellSize + indent.y;
+					float top = (n - (i + 1)) * cellSize + indent.y;
+						glTexCoord2f( 0, 0 ); glVertex2f( left, bottom );
+						glTexCoord2f( 1, 0 ); glVertex2f( right, bottom );
+						glTexCoord2f( 1, 1 ); glVertex2f( right, top );
+						glTexCoord2f( 0, 1 ); glVertex2f( left, top );
+					}
 				}
-				//calculate coordinates
-				float left = j * cellSize + indent.x;
-				float right = (j + 1) * cellSize + indent.x;
-				float bottom = (n - i) * cellSize + indent.y;
-				float top = (n - (i + 1)) * cellSize + indent.y;
-				//Draw a cell with texture (board or road)
-				glBegin( GL_POLYGON );
-				{
-					glTexCoord2f( 0, 0 ); glVertex2f( left, bottom );
-					glTexCoord2f( 1, 0 ); glVertex2f( right, bottom );
-					glTexCoord2f( 1, 1 ); glVertex2f( right, top );
-					glTexCoord2f( 0, 1 ); glVertex2f( left, top );
-				}
-				glEnd();
 			}
 		}
-		glDisable( GL_BLEND );
-		saveTexture(); // save the whole window with map to texture
-		glDisable( GL_TEXTURE_2D );
-		needReload = false;
+		glEnd();
 	}
 
 	void CMap::MarkHighlightedCells( const std::vector<Core::CCoordinates>& possibleMoves )
@@ -144,41 +104,30 @@ namespace UI {
 		glDisable( GL_TEXTURE_2D );
 	}
 
-	void CMap::DrawShot( const std::pair<Core::CCoordinates, Core::CCoordinates>& shot ) const
+	void CMap::DrawShot( const std::pair<std::pair<float, float>, std::pair<float, float>>& shot ) const
 	{
 		glColor3f( 1, 0, 0 );
 		glLineWidth( 3 );
 		glBegin( GL_LINES );
 		{
-			auto point1 = transateToWcoord( shot.first.x + 0.5, shot.first.y + 0.5, cellSize, indent, GetSize() );
-			auto point2 = transateToWcoord( shot.first.x + 0.5 + shot.second.x * 100, shot.first.y + 0.5 + shot.second.y * 100, cellSize, indent, GetSize() );
+			auto point1 = transateToWcoord( shot.first.first + 0.5, shot.first.second + 0.5, cellSize, indent, GetSize() );
+			auto point2 = transateToWcoord( shot.first.first + 0.5 + shot.second.first * 100, shot.first.second + 0.5 + shot.second.second * 100, cellSize, indent, GetSize() );
 			glVertex2d( point1.x, point1.y ); glVertex2d( point2.x, point2.y );
 		}
 		glEnd();
 	}
 
-	void CMap::Draw()
+	void CMap::Draw() const
 	{
-		if( needReload ) {
-			reload();
-			return;
-		}
-		// load window from texture
 		glEnable( GL_TEXTURE_2D );
-		int height = glutGet( GLUT_WINDOW_HEIGHT ),
-			width = glutGet( GLUT_WINDOW_WIDTH );
-		// choose texture
-		glBindTexture( GL_TEXTURE_2D, textureMap );
-		// Draw a polygon of window size with texture
+		glEnable( GL_BLEND );
 		glColor3f( 1, 1, 1 );
-		glBegin( GL_QUADS );
-		{
-			glTexCoord2f( 0, 0 ); glVertex2f( 0, 0 );
-			glTexCoord2f( 1, 0 ); glVertex2f( width, 0 );
-			glTexCoord2f( 1, 1 ); glVertex2f( width, height );
-			glTexCoord2f( 0, 1 ); glVertex2f( 0, height );
-		}
-		glEnd();
+
+		drawAllCellsOfType( 0 );
+		drawAllCellsOfType( 1 );
+		drawAllCellsOfType( 3 );
+
+		glDisable( GL_BLEND );
 		glDisable( GL_TEXTURE_2D );
 	}
 
@@ -221,10 +170,5 @@ namespace UI {
 	CSize CMap::GetSize() const
 	{
 		return CSize( map[0].size(), map.size() );
-	}
-
-	bool CMap::NeedToReload()
-	{
-		return needReload;
 	}
 }

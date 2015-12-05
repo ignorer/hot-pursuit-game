@@ -5,7 +5,6 @@
 
 #include "Utils.h"
 #include "Core/Player.h"
-#include "GameMode.h"
 
 namespace Core {
 	class CMap;
@@ -16,7 +15,7 @@ namespace Core {
 		CPowerupManager();
 		PowerupType GetPowerup( const Core::CCoordinates& coordinates ) const;
 		PowerupType GetPowerup( int x, int y ) const;
-		const std::vector<std::pair<CCoordinates, CCoordinates>>& GetShots() const;
+		const std::vector<std::pair<std::pair<float, float>, std::pair<float, float>>>& GetShots( ) const;
 		const std::map<CCoordinates, PowerupType>& GetPowerups() const;
 
 		void DropShots();
@@ -37,6 +36,6 @@ namespace Core {
 		std::vector<CCoordinates> powerupCoordinates;
 		int lastLap;
 		bool initialized;
-		std::vector<std::pair<CCoordinates, CCoordinates>> shots;
+		std::vector<std::pair<std::pair<float, float>, std::pair<float, float>>> shots;
 	};
 }

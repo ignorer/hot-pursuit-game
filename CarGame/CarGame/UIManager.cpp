@@ -111,7 +111,7 @@ void CUIManager::ShowPowerups( const std::map<Core::CCoordinates, PowerupType>& 
 	UI::CDrawing::SetPowerups( powerupsInfo );
 }
 
-void CUIManager::ShowShots( const std::vector<std::pair<Core::CCoordinates, Core::CCoordinates>>& shots, bool needDelay ) const
+void CUIManager::ShowShots( const std::vector<std::pair<std::pair<float, float>, std::pair<float, float>>>& shots, bool needDelay ) const
 {
 	UI::CDrawing::SetShots( shots );
 	if( needDelay ) {

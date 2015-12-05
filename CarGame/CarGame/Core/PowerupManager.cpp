@@ -3,6 +3,7 @@
 
 #include "Core/PowerupManager.h"
 #include "Core/Map.h"
+#include "Core/GameMode.h"
 
 namespace Core {
 	CPowerupManager::CPowerupManager() :
@@ -25,7 +26,7 @@ namespace Core {
 		return powerups.at( CCoordinates( x, y ) );
 	}
 
-	const std::vector<std::pair<CCoordinates, CCoordinates>>& CPowerupManager::GetShots() const
+	const std::vector<std::pair<std::pair<float, float>, std::pair<float, float>>>& CPowerupManager::GetShots( ) const
 	{
 		return shots;
 	}
@@ -139,7 +140,9 @@ namespace Core {
 						}
 					}
 					powerups.erase( activePlayer.GetPosition() );
-					shots.push_back( std::make_pair( activePlayer.GetPosition(), CCoordinates( u.x / a, u.y / a ) ) );
+					shots.push_back( std::make_pair( 
+						std::make_pair( activePlayer.GetPosition().x, activePlayer.GetPosition().y ),
+						std::make_pair( float(u.x) / a, float(u.y) / a ) ) );
 					break;
 				}
 				case SHIELD:

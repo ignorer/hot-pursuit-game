@@ -9,19 +9,17 @@ namespace UI
 {
 	class CMap {
 	public:
-		CMap();
 		CMap( const std::vector<std::vector<int>> &mapData );
 		void Calculate();
 		void DrawFinishLine( std::pair<CCoordinates, CCoordinates> finishLine ) const;
-		void DrawShot( const std::pair<Core::CCoordinates, Core::CCoordinates>& shot ) const;
-		void Draw();
+		void DrawShot( const std::pair<std::pair<float, float>, std::pair<float, float>>& shot ) const;
+		void Draw() const;
 		void HighlightActiveCells() const;
 		float GetCellSize() const;
 
 		CWindowCoordinates GetIndent() const;
 		CSize GetSize() const;
 
-		bool NeedToReload();
 		GLuint textureForest;
 		GLuint textureRoad;
 		GLuint textureWall;
@@ -36,9 +34,7 @@ namespace UI
 		std::set<CCoordinates> highlightedCells;
 		float cellSize;
 		CWindowCoordinates indent;
-		bool needReload;
 
-		void saveTexture() const;
-		void reload();
+		void drawAllCellsOfType( int cellType ) const;
 	};
 }
