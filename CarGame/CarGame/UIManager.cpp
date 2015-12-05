@@ -172,8 +172,3 @@ void CUIManager::FinishGame() const
 {
 	UI::CDrawing::DropGame();
 }
-
-void CUIManager::FinishUIThread() const
-{
-	UI::CDrawing::Finish();
-}

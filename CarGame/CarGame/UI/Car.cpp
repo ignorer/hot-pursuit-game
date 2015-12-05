@@ -1,6 +1,7 @@
 ﻿#include <vector>
 
 #include "UI/Car.h"
+#include "UI/Drawing.h"
 
 namespace UI {
 	namespace {
@@ -16,6 +17,7 @@ namespace UI {
 	}
 
 	CCar::CCar( CCoordinates startCoordinates, Color carColor ) :
+		texture( 0 ),
 		explosionFrameNumber( 0 ),
 		coords( startCoordinates ),
 		color( carColor ),
@@ -123,7 +125,7 @@ namespace UI {
 		top = carCenterY + delta;
 
 		if( explosionFrameNumber > 0 ) {
-			glBindTexture( GL_TEXTURE_2D, explosion );
+			glBindTexture( GL_TEXTURE_2D, CDrawing::explosion );
 			glTexEnvf( GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 			glBegin( GL_POLYGON );
 			{
@@ -137,7 +139,7 @@ namespace UI {
 		}
 
 		if( shielded ) {
-			glBindTexture( GL_TEXTURE_2D, shield );
+			glBindTexture( GL_TEXTURE_2D, CDrawing::shieldActive );
 			glTexEnvf( GL_TEXTURE_2D, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 			glBegin( GL_POLYGON );
 			{

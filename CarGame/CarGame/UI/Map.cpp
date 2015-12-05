@@ -1,24 +1,14 @@
 ﻿#include <memory>
 
 #include "UI/Map.h"
+#include "UI/Drawing.h"
 
 namespace UI {
 	CMap::CMap( const std::vector<std::vector<int>>& map_data ) :
-		textureForest( 0 ),
-		textureRoad( 0 ),
-		textureWall( 0 ),
-		textureActiveCell( 0 ),
-		textureFinish( 0 ),
-		textureMap( 0 ),
 		map( map_data ),
 		cellSize( 0 ),
 		indent( 0, 0 )
 	{
-		glGenTextures( 1, &textureMap );
-		glGenTextures( 1, &textureForest );
-		glGenTextures( 1, &textureRoad );
-		glGenTextures( 1, &textureActiveCell );
-		glGenTextures( 1, &textureFinish );
 	}
 
 	void CMap::Calculate()
@@ -35,13 +25,13 @@ namespace UI {
 	{
 		switch( cellType ) {
 			case 1:
-				glBindTexture( GL_TEXTURE_2D, textureForest );
+				glBindTexture( GL_TEXTURE_2D, CDrawing::forestCell );
 				break;
 			case 0:
-				glBindTexture( GL_TEXTURE_2D, textureRoad );
+				glBindTexture( GL_TEXTURE_2D, CDrawing::roadCell );
 				break;
 			case 3:
-				glBindTexture( GL_TEXTURE_2D, textureWall );
+				glBindTexture( GL_TEXTURE_2D, CDrawing::wallCell );
 				break;
 			default:
 				throw std::invalid_argument( "Wrong nuber of texture" );
@@ -84,7 +74,7 @@ namespace UI {
 	void CMap::DrawFinishLine( std::pair<CCoordinates, CCoordinates> finishLine ) const
 	{
 		glEnable( GL_TEXTURE_2D );
-		glBindTexture( GL_TEXTURE_2D, textureFinish );
+		glBindTexture( GL_TEXTURE_2D, CDrawing::finish );
 		glColor3f( 1, 1, 1 );
 		glBegin( GL_POLYGON );
 		{
@@ -134,7 +124,7 @@ namespace UI {
 	void CMap::HighlightActiveCells() const
 	{
 		glEnable( GL_TEXTURE_2D );
-		glBindTexture( GL_TEXTURE_2D, textureActiveCell );
+		glBindTexture( GL_TEXTURE_2D, CDrawing::activeCell );
 		glEnable( GL_BLEND );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glColor4f( 1, 1, 1, 0.5 );

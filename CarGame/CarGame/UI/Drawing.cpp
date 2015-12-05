@@ -13,8 +13,6 @@ namespace UI
 	std::vector<CPowerup> CDrawing::powerups;
 	bool CDrawing::initialized = false;
 	bool CDrawing::started = false;
-	bool CDrawing::finished = false;
-	bool CDrawing::loaded = false;
 	bool CDrawing::justStartedFlag = false;
 	std::mutex CDrawing::mutex;
 	std::string CDrawing::windowName = "Rock'n'Roll race";
@@ -32,6 +30,14 @@ namespace UI
 	GLuint CDrawing::textureBombInactive = 0;
 	GLuint CDrawing::textureShieldToPickUp = 0;
 	GLuint CDrawing::cursor = 0;
+	GLuint CDrawing::shieldActive = 0;
+	GLuint CDrawing::explosion = 0;
+	GLuint CDrawing::forestCell = 0;
+	GLuint CDrawing::roadCell = 0;
+	GLuint CDrawing::wallCell = 0;
+	GLuint CDrawing::finish = 0;
+	GLuint CDrawing::activeCell = 0;
+	std::vector<GLuint> CDrawing::carTextures;
 	int CDrawing::cursorX = 0;
 	int CDrawing::cursorY = 0;
 
@@ -53,14 +59,9 @@ namespace UI
 		glutMouseFunc( mouseFunction );
 		glutPassiveMotionFunc( passiveMotion );
 		glutSetCursor( GLUT_CURSOR_NONE );
+		load();
 
 		glutMainLoop();
-	}
-
-	void CDrawing::Finish()
-	{
-		std::unique_lock<std::mutex> lock( mutex );
-		finished = true;
 	}
 
 	void CDrawing::InitGame( const CMap &mapData, const std::vector<CCar> &carsData, const Core::CLine& finish )
@@ -77,6 +78,23 @@ namespace UI
 		finishLine.first.y = finish.first.y;
 		finishLine.second.x = finish.second.x;
 		finishLine.second.y = finish.second.y;
+		for( size_t i = 0; i < cars.size( ); i++ ) {
+			switch( cars[i].GetColor( ) ) {
+				default:
+				case RED:
+					cars[i].texture = carTextures[0];
+					break;
+				case BLUE:
+					cars[i].texture = carTextures[1];
+					break;
+				case GREEN:
+					cars[i].texture = carTextures[2];
+					break;
+				case ORANGE:
+					cars[i].texture = carTextures[3];
+					break;
+			}
+		}
 	}
 
 	void CDrawing::DropGame()
@@ -122,10 +140,6 @@ namespace UI
 		std::unique_lock<std::mutex> lock( mutex );
 		if( !started ) {
 			return;
-		}
-		if( !loaded ) {
-			load();
-			loaded = true;
 		}
 		if( justStartedFlag ) {
 			glViewport( 0, 0, glutGet( GLUT_WINDOW_WIDTH ), glutGet( GLUT_WINDOW_HEIGHT ) ); // set view block
@@ -358,22 +372,16 @@ namespace UI
 	{
 		std::unique_lock<std::mutex> lock( mutex );
 		started = false;
-		glDeleteTextures( 1, &map.textureRoad );
-		glDeleteTextures( 1, &map.textureForest );
-		for( auto car : cars ) {
-			glDeleteTextures( 1, &car.texture );
-		}
-		loaded = false;
 	}
 
 	void CDrawing::load()
 	{
 		//load textures for map
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\roadCell.png").c_str(), map.textureRoad );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\forestCell.png").c_str(), map.textureForest );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\wallCell.png").c_str(), map.textureWall );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\active.png").c_str(), map.textureActiveCell );
-		loadTexture( (RESOURCE_DIRECTORY + "Images\\finish.png").c_str(), map.textureFinish );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\roadCell.png").c_str(), roadCell );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\forestCell.png").c_str(), forestCell );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\wallCell.png").c_str(), wallCell );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\active.png").c_str(), activeCell );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\finish.png").c_str(), finish );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\oil.png").c_str(), textureOil );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\sand.png").c_str(), textureSand );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\wall.png").c_str(), textureWall );
@@ -382,6 +390,8 @@ namespace UI
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\bombInactive.png").c_str(), textureBombInactive );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\laser.png").c_str(), textureLazer );
 		loadTexture( (RESOURCE_DIRECTORY + "Images\\cur.png").c_str(), cursor );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\explosionAnimation.png").c_str(), explosion );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\shieldActive.png").c_str(), shieldActive );
 		powerupTextureMap[OIL] = textureOil;
 		powerupTextureMap[LAZER] = textureLazer;
 		powerupTextureMap[SAND] = textureSand;
@@ -392,28 +402,15 @@ namespace UI
 
 		//load textures for cars (depends on color)
 		std::string carFilename;
-		for( size_t i = 0; i < cars.size(); i++ ) {
-			switch( cars[i].GetColor() ) {
-				case RED:
-					carFilename = RESOURCE_DIRECTORY + "Images\\car_red.png";
-					break;
-				case BLUE:
-					carFilename = RESOURCE_DIRECTORY + "Images\\car_blue.png";
-					break;
-				case GREEN:
-					carFilename = RESOURCE_DIRECTORY + "Images\\car_green.png";
-					break;
-				case ORANGE:
-					carFilename = RESOURCE_DIRECTORY + "Images\\car_orange.png";
-					break;
-				default:
-					carFilename = RESOURCE_DIRECTORY + "Images\\car_red.png";
-			}
-			loadTexture( carFilename.c_str(), cars[i].texture );
-			loadTexture( (RESOURCE_DIRECTORY + "Images\\explosionAnimation.png").c_str(), cars[i].explosion );
-			loadTexture( (RESOURCE_DIRECTORY + "Images\\shieldActive.png").c_str(), cars[i].shield );
-		}
-		
+		GLuint carTexture;
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\car_red.png").c_str( ), carTexture );
+		carTextures.push_back( carTexture );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\car_blue.png").c_str( ), carTexture );
+		carTextures.push_back( carTexture );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\car_green.png").c_str( ), carTexture );
+		carTextures.push_back( carTexture );
+		loadTexture( (RESOURCE_DIRECTORY + "Images\\car_orange.png").c_str( ), carTexture );
+		carTextures.push_back( carTexture );
 	}
 
 	void CDrawing::keyboardFunction( unsigned char pressedKey, int x, int y )

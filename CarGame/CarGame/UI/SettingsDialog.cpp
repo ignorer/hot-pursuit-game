@@ -13,9 +13,9 @@ void UI::CSettingsDialog::Init( HWND hwndDlg ) {
 	HWND dialogEditCtrl = ::GetDlgItem( hwndDlg, IDC_EDIT2 );
 	//Задаем вид курсора
 	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( hwndDlg, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
-	SetClassLong( hwndDlg, GCL_HCURSOR, (LONG)cursor );
-	SetClassLong( dialogEditCtrl, GCL_HCURSOR, (LONG)cursor );
-	SetClassLong( hSpin, GCL_HCURSOR, (LONG)cursor );
+	SetClassLong( hwndDlg, GCL_HCURSOR, LONG(cursor) );
+	SetClassLong( dialogEditCtrl, GCL_HCURSOR, LONG(cursor) );
+	SetClassLong( hSpin, GCL_HCURSOR, LONG(cursor) );
 
 	//Задаём приятельское окно
 	SendMessage( hSpin, UDM_SETBUDDY, WPARAM( dialogEditCtrl ), 0 );
@@ -93,19 +93,16 @@ void UI::CSettingsDialog::OnDialogCancel( HWND hwndDlg, WPARAM wParam )
 
 void UI::CSettingsDialog::OnDialogLapsNumberEdit( HWND hwndDlg )
 {
-	if (CSettingsDialog::sent){
+	if( sent ) {
 		HWND dialogEditCtrl = ::GetDlgItem( hwndDlg, IDC_EDIT2 );
 		int lapCount = GetLapsNumber( hwndDlg, IDC_EDIT2 );
 		int maxLapsCount = Core::CGameMode::GetMaxLapsCount();
-		if (lapCount > maxLapsCount) {
-			HWND hSpin = ::GetDlgItem( hwndDlg, IDC_SPIN3 );
-			LRESULT curPos = ::SendMessage( hSpin, UDM_SETPOS, 0, maxLapsCount );
-			CSettingsDialog::sent = !CSettingsDialog::sent;
+		if( lapCount > maxLapsCount ) {
+			sent = !sent;
 			::SetWindowText( dialogEditCtrl, std::to_wstring( maxLapsCount ).c_str() );
 		}
-	}
-	else {
-		CSettingsDialog::sent = !CSettingsDialog::sent;
+	} else {
+		sent = !sent;
 	}
 }
 
@@ -114,8 +111,7 @@ void UI::CSettingsDialog::OnDialogVscroll( HWND hwndDlg )
 	HWND dialogEditCtrl = ::GetDlgItem( hwndDlg, IDC_EDIT2 );
 	HWND hSpin = ::GetDlgItem( hwndDlg, IDC_SPIN3 );
 	LRESULT curPos = ::SendMessage( hSpin, UDM_GETPOS, 0, 0 );
-	int pos = LOWORD( curPos );
-	CSettingsDialog::sent = 0;
+	sent = 0;
 	::SetWindowText( dialogEditCtrl, std::to_wstring( LOWORD( curPos ) ).c_str() );
 }
 
@@ -124,7 +120,7 @@ int UI::CSettingsDialog::GetLapsNumber( HWND hwndDlg, int editId )
 	const size_t MAX_LENGTH = 1024;
 	std::unique_ptr<wchar_t> text = std::unique_ptr<wchar_t>( new wchar_t[MAX_LENGTH] );
 	int symbCount = ::GetDlgItemText( hwndDlg, editId, text.get(), MAX_LENGTH );
-	if (symbCount == 0) {
+	if( symbCount == 0 ) {
 		return -1;
 	}
 	return std::stoi( text.get() );

@@ -38,7 +38,7 @@ UI::CGameResultWindow::CGameResultWindow( CUIManager* _manager ) :
 
 bool UI::CGameResultWindow::Create()
 {
-	handle = CreateWindow( className, L"Game result - Rock'n'Roll race", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
+	handle = CreateWindow( className, L"Game result - Rock'n'Roll racing", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		200, 200, 300, 300, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
 
 	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
@@ -63,7 +63,6 @@ bool UI::CGameResultWindow::Create()
 
 void UI::CGameResultWindow::Destroy() const
 {
-	manager->FinishUIThread();
 	glutDestroyWindow( UI::CDrawing::GetWindow() );
 	manager->GetUIThread()->join();
 	::PostQuitMessage( 0 );

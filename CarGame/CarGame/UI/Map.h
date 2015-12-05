@@ -20,12 +20,6 @@ namespace UI
 		CWindowCoordinates GetIndent() const;
 		CSize GetSize() const;
 
-		GLuint textureForest;
-		GLuint textureRoad;
-		GLuint textureWall;
-		GLuint textureActiveCell;
-		GLuint textureFinish;
-		GLuint textureMap;
 		void MarkHighlightedCells( const std::vector<Core::CCoordinates>& possibleMoves );
 		void UnmarkHighlightedCells( const std::vector<Core::CCoordinates>& possibleMoves );
 

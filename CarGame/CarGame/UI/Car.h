@@ -31,8 +31,6 @@ namespace UI {
 		void SetShieldMode( bool mode );
 
 		GLuint texture;
-		GLuint explosion;
-		GLuint shield;
 		int explosionFrameNumber;
 
 	private:

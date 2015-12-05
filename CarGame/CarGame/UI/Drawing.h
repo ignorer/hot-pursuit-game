@@ -16,7 +16,6 @@ namespace UI {
 	class CDrawing {
 	public:
 		static void Init( int argc, char** argv );
-		static void Finish();
 		static void InitGame( const CMap &mapData, const std::vector<CCar> &carsData, const Core::CLine& finish );
 		static void DropGame();
 		
@@ -47,14 +46,13 @@ namespace UI {
 
 		static GLuint GetTextureForPowerup( PowerupType type );
 
-		static GLuint textureOil;
-		static GLuint textureSand;
-		static GLuint textureWall;
-		static GLuint textureBombActive;
-		static GLuint textureBombInactive;
-		static GLuint textureShieldToPickUp;
-		static GLuint textureLazer;
-		static GLuint cursor;
+		static GLuint shieldActive;
+		static GLuint explosion;
+		static GLuint forestCell;
+		static GLuint roadCell;
+		static GLuint wallCell;
+		static GLuint activeCell;
+		static GLuint finish;
 
 	private:
 		static void display();
@@ -69,8 +67,6 @@ namespace UI {
 
 		static bool initialized;
 		static bool started;
-		static bool finished;
-		static bool loaded;
 		static bool justStartedFlag;
 		static CMap map;
 		static std::vector<CCar> cars;
@@ -85,5 +81,15 @@ namespace UI {
 		static std::vector<std::pair<std::pair<float, float>, std::pair<float, float>>> shots;
 		static int cursorX;
 		static int cursorY;
+
+		static GLuint textureOil;
+		static GLuint textureSand;
+		static GLuint textureWall;
+		static GLuint textureBombActive;
+		static GLuint textureBombInactive;
+		static GLuint textureShieldToPickUp;
+		static GLuint textureLazer;
+		static GLuint cursor;
+		static std::vector<GLuint> carTextures;
 	};
 }

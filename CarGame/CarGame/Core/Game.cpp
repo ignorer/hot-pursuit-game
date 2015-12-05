@@ -274,9 +274,7 @@ namespace Core {
 					powerupManager.UpdatePowerups( map, players );
 					manager->ShowPowerups( powerupManager.GetPowerups() );
 					if( players[i].IsAlive() ) {
-						if( players[i].GetPenalty() > 0 ) {
-							players[i].SetPenalty( players[i].GetPenalty() - 1 );
-						} else {
+						if( players[i].GetPenalty() == 0 ) {
 							turnOfPlayer( players[i], crashedPlayers );
 						}
 						manager->UpdatePlayersInfo( players );

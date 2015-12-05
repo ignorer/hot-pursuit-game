@@ -38,7 +38,7 @@ UI::CMainMenuWindow::CMainMenuWindow( HINSTANCE hInst ) :
 
 bool UI::CMainMenuWindow::Create()
 {
-	handle = CreateWindow( className, L"Main menu - Rock'n'Roll race", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
+	handle = CreateWindow( className, L"Main menu - Rock'n'Roll racing", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		100, 100, 300, 300, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
 	newGameButton = CreateWindow( L"BUTTON", L"New game", WS_VISIBLE | WS_CHILD, 75, 80, 150, 30,
 		handle, HMENU(BUTTON_NEW_GAME), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
@@ -55,7 +55,6 @@ bool UI::CMainMenuWindow::Create()
 
 void UI::CMainMenuWindow::Destroy()
 {
-	manager.FinishUIThread();
 	glutDestroyWindow( UI::CDrawing::GetWindow() );
 	manager.GetUIThread()->join();
 	::PostQuitMessage( 0 );
