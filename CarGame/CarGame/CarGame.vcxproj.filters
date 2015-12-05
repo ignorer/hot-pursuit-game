@@ -28,6 +28,9 @@
     <Filter Include="Header Files\AI">
       <UniqueIdentifier>{0ee9a8db-d337-4dca-b3c7-d7e0da63e076}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\BackGround">
+      <UniqueIdentifier>{412a99aa-87da-441a-b808-d98021a2834d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Game.cpp">
@@ -116,9 +119,6 @@
     <ClInclude Include="UI\GameResultWindow.h">
       <Filter>Source Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IMap.h">
       <Filter>Header Files\AI</Filter>
     </ClInclude>
@@ -140,6 +140,9 @@
     <ClInclude Include="Utils.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Resources\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Resources\Images\car_blue.png">
@@ -153,9 +156,6 @@
     </Image>
     <Image Include="..\..\Resources\Images\car_red.png">
       <Filter>Resource Files\Images</Filter>
-    </Image>
-    <Image Include="MainIcon.ico">
-      <Filter>Resource Files</Filter>
     </Image>
     <Image Include="..\..\Resources\Images\active.png">
       <Filter>Resource Files\Images</Filter>
@@ -205,6 +205,18 @@
     <Image Include="..\..\Resources\Images\cur.png">
       <Filter>Resource Files\Images</Filter>
     </Image>
+    <Image Include="Resources\MainIcon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\default_main.bmp">
+      <Filter>Resource Files\BackGround</Filter>
+    </Image>
+    <Image Include="Resources\default_result.bmp">
+      <Filter>Resource Files\BackGround</Filter>
+    </Image>
+    <Image Include="Resources\default_settings.bmp">
+      <Filter>Resource Files\BackGround</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\Resources\Maps\map1.txt">
@@ -221,12 +233,12 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="CarGame.rc">
+    <ResourceCompile Include="Resources\CarGame.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="cursor.cur">
+    <None Include="Resources\cursor.cur">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

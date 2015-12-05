@@ -178,10 +178,10 @@
     <ClInclude Include="Core\Player.h" />
     <ClInclude Include="Core\PowerupManager.h" />
     <ClInclude Include="Core\Reader.h" />
+    <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="IMap.h" />
     <ClInclude Include="IPlayerState.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UI\Car.h" />
     <ClInclude Include="UI\Drawing.h" />
@@ -213,7 +213,10 @@
     <Image Include="..\..\Resources\Images\shieldToPickUp.png" />
     <Image Include="..\..\Resources\Images\wall.png" />
     <Image Include="..\..\Resources\Images\wallCell.png" />
-    <Image Include="MainIcon.ico" />
+    <Image Include="Resources\default_main.bmp" />
+    <Image Include="Resources\default_result.bmp" />
+    <Image Include="Resources\default_settings.bmp" />
+    <Image Include="Resources\MainIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\Resources\Maps\dm4.txt" />
@@ -222,10 +225,10 @@
     <Text Include="..\..\Resources\Maps\map3.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="CarGame.rc" />
+    <ResourceCompile Include="Resources\CarGame.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="cursor.cur" />
+    <None Include="Resources\cursor.cur" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

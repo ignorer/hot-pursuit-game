@@ -4,7 +4,7 @@
 #include <memory>
 #include <Windows.h>
 
-#include "resource.h"
+#include "Resources/resource.h"
 
 #include "UIManager.h"
 #include "Utils.h"
@@ -27,7 +27,7 @@ bool UI::CMapSettingsWindow::RegisterClass( HINSTANCE hInst )
 	tag.cbClsExtra = 0;
 	tag.cbWndExtra = 0;
 	tag.hCursor = LoadCursor( hInst, MAKEINTRESOURCE( IDC_CURSOR1 ) );
-	tag.hbrBackground = HBRUSH( GetStockObject( BLACK_BRUSH ) );
+	tag.hbrBackground = HBRUSH( CreatePatternBrush( LoadBitmap( hInst, MAKEINTRESOURCE( IDB_BITMAP3 ) ) ) );
 	tag.lpszMenuName = nullptr;
 	tag.lpszClassName = className;
 	tag.hInstance = ::GetModuleHandle( nullptr );

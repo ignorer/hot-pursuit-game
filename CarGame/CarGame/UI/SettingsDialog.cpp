@@ -6,7 +6,7 @@
 
 #include "SettingsDialog.h"
 #include "Core\GameMode.h"
-#include "resource.h"
+#include "Resources/resource.h"
 
 void UI::CSettingsDialog::Init( HWND hwndDlg ) {
 	HWND hSpin = ::GetDlgItem( hwndDlg, IDC_SPIN3 ); //Получаем дескрипторы окон

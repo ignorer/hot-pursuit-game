@@ -1,6 +1,6 @@
 ﻿#include <GL/glut.h>
 
-#include "resource.h"
+#include "Resources/resource.h"
 
 #include "UIManager.h"
 #include "UI/GameResultWindow.h"
@@ -17,7 +17,7 @@ bool UI::CGameResultWindow::RegisterClass( HINSTANCE hInst )
 	tag.cbClsExtra = 0;
 	tag.cbWndExtra = 0;
 	tag.hCursor = LoadCursor( hInst, MAKEINTRESOURCE( IDC_CURSOR1 ) );
-	tag.hbrBackground = HBRUSH( GetStockObject( BLACK_BRUSH ) );
+	tag.hbrBackground = HBRUSH( CreatePatternBrush( LoadBitmap( hInst, MAKEINTRESOURCE( IDB_BITMAP2 ) ) ) );
 	tag.lpszMenuName = nullptr;
 	tag.lpszClassName = className;
 	tag.hInstance = ::GetModuleHandle( nullptr );
