@@ -11,6 +11,11 @@
 void UI::CSettingsDialog::Init( HWND hwndDlg ) {
 	HWND hSpin = ::GetDlgItem( hwndDlg, IDC_SPIN3 ); //Получаем дескрипторы окон
 	HWND dialogEditCtrl = ::GetDlgItem( hwndDlg, IDC_EDIT2 );
+	//Задаем вид курсора
+	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( hwndDlg, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
+	SetClassLong( hwndDlg, GCL_HCURSOR, (LONG)cursor );
+	SetClassLong( dialogEditCtrl, GCL_HCURSOR, (LONG)cursor );
+	SetClassLong( hSpin, GCL_HCURSOR, (LONG)cursor );
 
 	//Задаём приятельское окно
 	SendMessage( hSpin, UDM_SETBUDDY, WPARAM( dialogEditCtrl ), 0 );
