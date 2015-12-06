@@ -126,6 +126,12 @@ LRESULT UI::CGameResultWindow::windowProc( HWND handle, UINT message, WPARAM wPa
 				::SendMessage( wnd->handle, WM_DESTROY, wParam, lParam );
 			}
 			return 0;
+		case WM_CTLCOLORSTATIC:
+			auto hdc = (HDC)wParam;
+			SetTextColor( hdc, RGB( 0, 0, 0 ) );
+			SetBkMode( hdc, TRANSPARENT );
+
+			return (LRESULT)GetStockObject( NULL_BRUSH );
 	}
 
 	return ::DefWindowProc( handle, message, wParam, lParam );

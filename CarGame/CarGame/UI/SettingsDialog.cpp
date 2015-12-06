@@ -12,7 +12,7 @@ void UI::CSettingsDialog::Init( HWND hwndDlg ) {
 	HWND hSpin = ::GetDlgItem( hwndDlg, IDC_SPIN3 ); //Получаем дескрипторы окон
 	HWND dialogEditCtrl = ::GetDlgItem( hwndDlg, IDC_EDIT2 );
 	auto openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
-
+	
 	//Задаем вид курсора
 	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( hwndDlg, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
 	SetClassLong( hwndDlg, GCL_HCURSOR, LONG(cursor) );
@@ -29,9 +29,7 @@ void UI::CSettingsDialog::Init( HWND hwndDlg ) {
 	SendMessage( hSpin, UDM_SETPOS, 0, Core::CGameMode::GetLapCount() );
 
 	::SetWindowText( dialogEditCtrl, std::to_wstring( Core::CGameMode::GetLapCount() ).c_str() );
-	::SendMessage( hSpin, WM_SETFONT, WPARAM( openSans ), TRUE );
-
-
+	::SendMessage( dialogEditCtrl, WM_SETFONT, WPARAM( openSans ), TRUE );
 
 	Core::CGameMode::MovementMode initMovState = Core::CGameMode::GetMovementMode();
 	Core::CGameMode::DeathPenalty initDeathPenalty = Core::CGameMode::GetDeathPenalty();

@@ -59,6 +59,20 @@ bool UI::CMapSettingsWindow::Create()
 	auto openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
 	::SendMessage( mapNameControl, WM_SETFONT, WPARAM( openSans ), TRUE );
 
+	auto mapText = CreateWindow( L"Static", L"CHOOSE MAP", WS_VISIBLE | WS_CHILD | SS_LEFT, 310, 160, 200, 20,
+		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	auto playersText = CreateWindow( L"Static", L"CHOOSE PLAYERS", WS_VISIBLE | WS_CHILD | SS_LEFT, 23, 40, 200, 20,
+		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	auto typeText = CreateWindow( L"Static", L"Type:", WS_VISIBLE | WS_CHILD | SS_LEFT, 23, 80, 200, 20,
+		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	auto nameText = CreateWindow( L"Static", L"Name:", WS_VISIBLE | WS_CHILD | SS_LEFT, 135, 80, 200, 20,
+		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+
+	::SendMessage( mapText, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( playersText, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( typeText, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( nameText, WM_SETFONT, WPARAM( openSans ), TRUE );
+
 	for( int i = 0; i < positionOwnerControls.size(); ++i ) {
 		positionOwnerControls[i] = CreateWindow( L"COMBOBOX", (std::wstring( L"Position " ) + std::to_wstring( i + 1 )).c_str(),
 			CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 23, 100 + 30 * i, 107, 80,
@@ -83,9 +97,14 @@ bool UI::CMapSettingsWindow::Create()
 		handle, HMENU( BUTTON_SETTINGS ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 	backToMenuButton = CreateWindow( L"BUTTON", L"Back to main menu", WS_VISIBLE | WS_CHILD, 310, 400, 200, 60,
 		handle, HMENU( BUTTON_BACK_TO_MENU ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+
 	::SendMessage( startGameButton, WM_SETFONT, WPARAM( openSans ), TRUE );
 	::SendMessage( settingsButton, WM_SETFONT, WPARAM( openSans ), TRUE );
 	::SendMessage( backToMenuButton, WM_SETFONT, WPARAM( openSans ), TRUE );
+
+	auto hdc = GetWindowDC( startGameButton ); //get button HDC 
+	SetTextColor( hdc, RGB( 255, 255, 255 ) );
+
 
 	return handle != nullptr;
 }
@@ -236,6 +255,12 @@ LRESULT UI::CMapSettingsWindow::windowProc( HWND handle, UINT message, WPARAM wP
 				wnd->ChangeSettings();
 			}
 			return 0;
+		case WM_CTLCOLORSTATIC:
+			auto hdc = (HDC)wParam;
+			SetTextColor( hdc, RGB( 0, 0, 0 ) );
+			SetBkMode( hdc, TRANSPARENT );
+
+			return (LRESULT)GetStockObject( NULL_BRUSH );
 	}
 
 	return ::DefWindowProc( handle, message, wParam, lParam );
