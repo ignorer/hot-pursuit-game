@@ -56,6 +56,8 @@ bool UI::CMainMenuWindow::Create()
 	::SendMessage( HWND_BROADCAST, WM_FONTCHANGE, 0, 0 );
 	auto openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
 	::SendMessage( newGameButton, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( mapEditorButton, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( exitGameButton, WM_SETFONT, WPARAM( openSans ), TRUE );
 
 	return handle != nullptr;
 }

@@ -51,40 +51,48 @@ UI::CMapSettingsWindow::CMapSettingsWindow( CUIManager* _manager ) :
 bool UI::CMapSettingsWindow::Create()
 {
 	handle = CreateWindow( className, L"Map settings - Rock'n'Roll racing", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-		200, 200, 550, 500, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
+		200, 200, 550, 550, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
 
 	CreateMapNameControl();
 	
 	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
+	auto openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
+	::SendMessage( mapNameControl, WM_SETFONT, WPARAM( openSans ), TRUE );
 
 	for( int i = 0; i < positionOwnerControls.size(); ++i ) {
 		positionOwnerControls[i] = CreateWindow( L"COMBOBOX", (std::wstring( L"Position " ) + std::to_wstring( i + 1 )).c_str(),
-			CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 40, 100 + 30 * i, 125, 80,
+			CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 23, 100 + 30 * i, 107, 80,
 			handle, HMENU( FIRST_POSITION_OWNER + i ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 		SetClassLong( positionOwnerControls[i], GCL_HCURSOR, LONG(cursor) );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"None" ) );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"Player" ) );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"AI" ) );
-		::SendMessage( positionOwnerControls[i], CB_SELECTSTRING, 0, i == 0? LPARAM(L"Player") : LPARAM( L"None" ) );
+		::SendMessage( positionOwnerControls[i], CB_SELECTSTRING, 0, i == 0? LPARAM( L"Player" ) : LPARAM( L"None" ) );
+		::SendMessage( positionOwnerControls[i], WM_SETFONT, WPARAM( openSans ), TRUE );
 		nameControls[i] = CreateWindow( L"EDIT", (std::wstring( L"Name " ) + std::to_wstring( i + 1 )).c_str(),
-		 WS_VISIBLE | WS_CHILD, 175, 100 + 30 * i, 125, 24,
+		 WS_VISIBLE | WS_CHILD, 135, 100 + 30 * i, 133, 24,
 			handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 		SetClassLong( nameControls[i], GCL_HCURSOR, LONG(cursor) );
+		::SendMessage( nameControls[i], WM_SETFONT, WPARAM( openSans ), TRUE );
+
 	}
 
-	startGameButton = CreateWindow( L"BUTTON", L"Start game", WS_VISIBLE | WS_CHILD, 350, 330, 150, 30,
+	startGameButton = CreateWindow( L"BUTTON", L"Start game", WS_VISIBLE | WS_CHILD, 310, 260, 200, 60,
 		handle, HMENU( BUTTON_START_GAME ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	settingsButton = CreateWindow( L"BUTTON", L"Settings", WS_VISIBLE | WS_CHILD, 350, 380, 150, 30,
+	settingsButton = CreateWindow( L"BUTTON", L"Settings", WS_VISIBLE | WS_CHILD, 310, 330, 200, 60,
 		handle, HMENU( BUTTON_SETTINGS ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	backToMenuButton = CreateWindow( L"BUTTON", L"Back to main menu", WS_VISIBLE | WS_CHILD, 350, 430, 150, 30,
+	backToMenuButton = CreateWindow( L"BUTTON", L"Back to main menu", WS_VISIBLE | WS_CHILD, 310, 400, 200, 60,
 		handle, HMENU( BUTTON_BACK_TO_MENU ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	::SendMessage( startGameButton, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( settingsButton, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( backToMenuButton, WM_SETFONT, WPARAM( openSans ), TRUE );
 
 	return handle != nullptr;
 }
 
 bool UI::CMapSettingsWindow::CreateMapNameControl()
 {
-	mapNameControl = CreateWindow( L"COMBOBOX", L"Map", CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 40, 50, 125, 160,
+	mapNameControl = CreateWindow( L"COMBOBOX", L"Map", CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 310, 190, 200, 160,
 		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 
 	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );

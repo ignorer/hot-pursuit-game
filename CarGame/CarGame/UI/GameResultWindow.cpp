@@ -58,6 +58,12 @@ bool UI::CGameResultWindow::Create()
 		handle, HMENU( BUTTON_EXIT ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 	SetClassLong( exitButton, GCL_HCURSOR, (LONG)cursor );
 
+	auto openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
+	::SendMessage( toSettingsButton, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( toMainMenuButton, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( exitButton, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( resultMessage, WM_SETFONT, WPARAM( openSans ), TRUE );
+
 	return handle != nullptr;
 }
 
