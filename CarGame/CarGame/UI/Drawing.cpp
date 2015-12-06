@@ -261,7 +261,7 @@ namespace UI
 	{
 		int x = cursorX;
 		int y = cursorY;
-		y = map.GetSize( ).second* map.GetCellSize( ) - y;
+		y = map.GetSize().second* map.GetCellSize() + 2 * map.GetIndent().y - y;
 		glEnable( GL_TEXTURE_2D );
 		glBindTexture( GL_TEXTURE_2D, cursor );
 		glEnable( GL_BLEND );
@@ -269,7 +269,7 @@ namespace UI
 		{
 			glColor3f( 1, 1, 1 );
 			glTexCoord2f( 0, 0 ); glVertex2f( x, y );
-			glTexCoord2f( 0, 1 ); glVertex2f( x, y - 32);
+			glTexCoord2f( 0, 1 ); glVertex2f( x, y - 32 );
 			glTexCoord2f( 1, 1 ); glVertex2f( x + 32, y - 32 );
 			glTexCoord2f( 1, 0 ); glVertex2f( x + 32, y );
 		}

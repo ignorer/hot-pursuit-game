@@ -4,7 +4,7 @@
 #include <vector>
 
 const std::string RESOURCE_DIRECTORY = ".\\Resources\\";
-const std::wstring RESOURCE_DIRECTORY_W = L".\\Resources";
+const std::wstring RESOURCE_DIRECTORY_W = L".\\Resources\\";
 
 typedef std::pair<size_t, size_t> CSize;
 

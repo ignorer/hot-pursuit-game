@@ -5,7 +5,6 @@
 namespace Core {
 	CMap::CMap( const CField& newMap, CLine finish, const std::vector<CCoordinates>& _startPoints ) :
 		map( newMap ),
-		size( newMap[0].size(), newMap.size() ),
 		finishLine( finish ),
 		startPoints( _startPoints )
 	{}
@@ -17,7 +16,7 @@ namespace Core {
 
 	CSize CMap::GetSize() const
 	{
-		return size;
+		return CSize( map[0].size(), map.size() );
 	}
 
 	CField CMap::GetField() const

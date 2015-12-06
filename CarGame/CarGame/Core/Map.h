@@ -18,7 +18,6 @@ namespace Core {
 		
 	private:
 		CField map;
-		CSize size;
 		CLine finishLine;
 		std::vector<CCoordinates> startPoints;
 	};
