@@ -128,7 +128,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EntryPointSymbol>
       </EntryPointSymbol>
-      <AdditionalDependencies>freeglut.lib;soil.lib;comctl32.lib;Gdiplus.lib%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut.lib;soil.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -220,6 +220,7 @@
     <Image Include="Resources\default_main.bmp" />
     <Image Include="Resources\default_result.bmp" />
     <Image Include="Resources\default_settings.bmp" />
+    <Image Include="Resources\logo_bg.bmp" />
     <Image Include="Resources\MainIcon.ico" />
   </ItemGroup>
   <ItemGroup>
