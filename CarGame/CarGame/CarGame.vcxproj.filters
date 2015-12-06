@@ -220,6 +220,9 @@
     <Image Include="Resources\default_settings.bmp">
       <Filter>Resource Files\BackGround</Filter>
     </Image>
+    <Image Include="Resources\logo_bg.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\Resources\Maps\map1.txt">

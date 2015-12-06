@@ -107,6 +107,7 @@ void UI::CMainMenuWindow::OnPaint()
 	::GetClientRect( handle, &rect );
 	HFONT openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
 		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
+
 	HBITMAP bitmap = ::CreateCompatibleBitmap( hdc, rect.right - rect.left, rect.bottom - rect.top );
 	HGDIOBJ oldbitmap = ::SelectObject( newHdc, bitmap );
 	FillRect( newHdc, &ps.rcPaint, bkgrdBrush );
@@ -118,6 +119,7 @@ void UI::CMainMenuWindow::OnPaint()
 	graphics.DrawImage( exitGameButton.curButtonImage, exitGameButton.buttonRect );
 
 	SetBkMode( newHdc, TRANSPARENT );
+	SetTextColor( newHdc, RGB( 255, 255, 255 ) );
 	SelectObject( newHdc, openSans );
 	TextOut( newHdc, 222, 263, newGameButton.buttonName, 8 );
 	TextOut( newHdc, 215, 333, mapEditorButton.buttonName, 10 );

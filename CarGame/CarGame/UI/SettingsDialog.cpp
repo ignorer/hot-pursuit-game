@@ -12,7 +12,7 @@ std::pair<COLORREF, HBRUSH> UI::CSettingsDialog::staticBrush =
 							std::make_pair( RGB( 25, 27, 78 ), CreateSolidBrush( RGB( 25, 27, 78 ) ) );
 
 std::pair<COLORREF, HBRUSH> UI::CSettingsDialog::editBrush =
-							std::make_pair( RGB( 25, 27, 78 ), CreateSolidBrush( RGB( 25, 27, 78 ) ) );
+							std::make_pair( RGB( 255, 255, 255 ), CreateSolidBrush( RGB( 255, 255, 255 ) ) );
 
 HBRUSH UI::CSettingsDialog::bkgrdBrush = HBRUSH( GetStockObject( WHITE_BRUSH ) );
 
@@ -216,12 +216,18 @@ BOOL CALLBACK UI::CSettingsDialog::DialogSettingsProc( HWND hwndDlg, UINT messag
 			return TRUE;
 		case WM_CTLCOLOREDIT:
 			::SetBkColor( reinterpret_cast<HDC>(wParam), editBrush.first );
+			//SetBkMode( reinterpret_cast<HDC>( wParam ), TRANSPARENT );
+			//return (LRESULT)GetStockObject( NULL_BRUSH );
 			return INT_PTR( editBrush.second );
 		case WM_CTLCOLORSTATIC:
-			brush = CreateSolidBrush( RGB( 255, 27, 78 ) );
-			::SetBkColor( reinterpret_cast<HDC>(wParam), staticBrush.first );
-			return INT_PTR( staticBrush.second );
+			//brush = CreateSolidBrush( RGB( 255, 27, 78 ) );
+			//::SetBkColor( reinterpret_cast<HDC>(wParam), staticBrush.first );
+			//return INT_PTR( staticBrush.second );
+			SetBkMode( reinterpret_cast<HDC>( wParam ), TRANSPARENT );
+			return (LRESULT)GetStockObject( NULL_BRUSH );
 		case WM_CTLCOLORDLG:
+			//SetBkMode( reinterpret_cast<HDC>( wParam ), TRANSPARENT );
+			//return (LRESULT)GetStockObject( NULL_BRUSH );
 			return (INT_PTR)bkgrdBrush;
 		case WM_COMMAND:
 			switch (LOWORD( wParam ))
