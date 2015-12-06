@@ -8,9 +8,19 @@
 #include "Core\GameMode.h"
 #include "Resources/resource.h"
 
+std::pair<COLORREF, HBRUSH> UI::CSettingsDialog::staticBrush = 
+							std::make_pair( RGB( 25, 27, 78 ), CreateSolidBrush( RGB( 25, 27, 78 ) ) );
+
+std::pair<COLORREF, HBRUSH> UI::CSettingsDialog::editBrush =
+							std::make_pair( RGB( 25, 27, 78 ), CreateSolidBrush( RGB( 25, 27, 78 ) ) );
+
+HBRUSH UI::CSettingsDialog::bkgrdBrush = HBRUSH( GetStockObject( WHITE_BRUSH ) );
+
 void UI::CSettingsDialog::Init( HWND hwndDlg ) {
 	HWND hSpin = ::GetDlgItem( hwndDlg, IDC_SPIN3 ); //Получаем дескрипторы окон
 	HWND dialogEditCtrl = ::GetDlgItem( hwndDlg, IDC_EDIT2 );
+
+	bkgrdBrush = CreatePatternBrush( LoadBitmap( HINSTANCE( GetWindowLong( hwndDlg, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDB_BITMAP3 ) ) );
 	//Задаем вид курсора
 	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( hwndDlg, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
 	SetClassLong( hwndDlg, GCL_HCURSOR, LONG(cursor) );
@@ -88,6 +98,8 @@ void UI::CSettingsDialog::OnDialogOk( HWND hwndDlg, WPARAM wParam )
 
 void UI::CSettingsDialog::OnDialogCancel( HWND hwndDlg, WPARAM wParam )
 {
+	//::DeleteObject( staticBrush.second );
+	//::DeleteObject( editBrush.second );
 	::EndDialog( hwndDlg, wParam );
 }
 
@@ -194,11 +206,21 @@ int  UI::CModeToItemIdConverter::getObjectChangeModelItemId( Core::CGameMode::Ob
 
 BOOL CALLBACK UI::CSettingsDialog::DialogSettingsProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam )
 {
+	HBRUSH brush;
 	switch (message)
 	{
 		case WM_INITDIALOG:
 			CSettingsDialog::Init( hwndDlg );
 			return TRUE;
+		case WM_CTLCOLOREDIT:
+			::SetBkColor( reinterpret_cast<HDC>(wParam), editBrush.first );
+			return INT_PTR( editBrush.second );
+		case WM_CTLCOLORSTATIC:
+			brush = CreateSolidBrush( RGB( 255, 27, 78 ) );
+			::SetBkColor( reinterpret_cast<HDC>(wParam), staticBrush.first );
+			return INT_PTR( staticBrush.second );
+		case WM_CTLCOLORDLG:
+			return (INT_PTR)bkgrdBrush;
 		case WM_COMMAND:
 			switch (LOWORD( wParam ))
 			{

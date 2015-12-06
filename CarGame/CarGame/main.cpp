@@ -3,6 +3,9 @@
 
 int __stdcall wWinMain( HINSTANCE hInst, HINSTANCE /*hPrevInst*/, LPWSTR commandLine, int nCmdShow )
 {
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	ULONG_PTR gdiplusToken;
+	Gdiplus::GdiplusStartup( &gdiplusToken, &gdiplusStartupInput, NULL );
 	UI::CMainMenuWindow mainWindow( hInst );
 	UI::CMainMenuWindow::RegisterClass( hInst );
 	mainWindow.Create();
@@ -21,6 +24,7 @@ int __stdcall wWinMain( HINSTANCE hInst, HINSTANCE /*hPrevInst*/, LPWSTR command
 		::TranslateMessage( &msg );
 		::DispatchMessage( &msg );
 	}
+	Gdiplus::GdiplusShutdown( gdiplusToken );
 
 	return static_cast<int>(msg.wParam);
 }

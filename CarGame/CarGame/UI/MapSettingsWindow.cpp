@@ -51,7 +51,7 @@ UI::CMapSettingsWindow::CMapSettingsWindow( CUIManager* _manager ) :
 bool UI::CMapSettingsWindow::Create()
 {
 	handle = CreateWindow( className, L"Map settings - Rock'n'Roll racing", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-		200, 200, 550, 500, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
+		200, 200, 535, 515, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
 
 	CreateMapNameControl();
 	

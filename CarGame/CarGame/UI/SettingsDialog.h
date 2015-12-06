@@ -3,6 +3,12 @@
 #include <Windows.h>
 
 #include "Core\GameMode.h"
+#include <utility>
+
+struct colorStruct {
+	COLORREF color;
+	HBRUSH brush;
+};
 
 namespace UI {
 	class CSettingsDialog {
@@ -16,6 +22,9 @@ namespace UI {
 		static BOOL CALLBACK DialogSettingsProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam );
 		//специальный флаг, определяющий, посылается ли EN_CHANGE из UI-окна
 		static bool sent;
+		static std::pair<COLORREF, HBRUSH> staticBrush;
+		static std::pair<COLORREF, HBRUSH> editBrush;
+		static HBRUSH bkgrdBrush;
 	};
 
 	class CModeToItemIdConverter {
