@@ -167,9 +167,28 @@ namespace Core {
 		int xVelocity = currentPosition.x - previuosPosition.x;
 		int yVelocity = currentPosition.y - previuosPosition.y;
 
-		std::shared_ptr<IPlayerState> playerStatePtr( GetPlayerStateFunc( currentPosition.x, currentPosition.y, xVelocity, yVelocity ) );
+		std::shared_ptr<IPlayerState> playerStatePtr( GetPlayerStateFunc( currentPosition.x, currentPosition.y, xVelocity, yVelocity, 0 ) );
 		AIStrategies[player->GetNumber()] = std::shared_ptr<IStrategy>( StrategyBuilderFunc( mapForAI, std::make_pair( firstFinishPoint.x, firstFinishPoint.y ),
 			std::make_pair( secondFinishPoint.x, secondFinishPoint.y ), CGameMode::GetLapCount(), playerStatePtr ) );
+	}
+
+	int CGame::turnOfAI( CPlayer& player )
+	{
+		std::vector<std::shared_ptr<IPlayerState>> playersForAI;
+		for( int i = 0; i < players.size(); ++i ) {
+			CCoordinates currentPosition = players[i].GetPosition();
+			CCoordinates previuosPosition = players[i].GetPreviousPosition();
+
+			int xVelocity = currentPosition.x - previuosPosition.x;
+			int yVelocity = currentPosition.y - previuosPosition.y;
+			playersForAI.push_back( std::shared_ptr<IPlayerState>(
+				GetPlayerStateFunc( currentPosition.x, currentPosition.y, xVelocity, yVelocity, players[i].GetLaps() ) ) );
+		}
+		std::vector<Powerup> powerups;
+		for( auto powerup : powerupManager.GetPowerups() ) {
+			powerups.push_back( Powerup( powerup.second, std::make_pair( powerup.first.x, powerup.first.y ) ) );
+		}
+		return AIStrategies[player.GetNumber()]->GetNextStep( playersForAI, player.GetNumber(), powerups );
 	}
 
 	void CGame::turnOfPlayer( CPlayer& player, std::set<CPlayer*>& crashedPlayers )
@@ -181,10 +200,8 @@ namespace Core {
 				direction = turnOfUser( player );
 				break;
 			case AI:
-			{
-				direction = AIStrategies[player.GetNumber()]->GetNextStep();
+				direction = turnOfAI( player );
 				break;
-			}
 			default:
 				throw std::runtime_error( "Invalid type of player. Please, don't cheat." );
 		}

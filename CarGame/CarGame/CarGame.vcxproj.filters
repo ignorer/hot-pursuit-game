@@ -31,6 +31,9 @@
     <Filter Include="Resource Files\BackGround">
       <UniqueIdentifier>{412a99aa-87da-441a-b808-d98021a2834d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Core\AI">
+      <UniqueIdentifier>{25720df1-f60c-4336-bffb-5abccaca591f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Game.cpp">
@@ -142,6 +145,15 @@
     </ClInclude>
     <ClInclude Include="Resources\resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\IPlayerState.h">
+      <Filter>Source Files\Core\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\IStrategy.h">
+      <Filter>Source Files\Core\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Powerup.h">
+      <Filter>Source Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

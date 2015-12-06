@@ -21,7 +21,7 @@ private:
 public:    
     PlayerState();
     PlayerState(std::pair< int, int > startPosition);
-    PlayerState(int x, int y, int xVelocity, int yVelocity);
+	PlayerState( int x, int y, int xVelocity, int yVelocity, int _curLap );
     
     ~PlayerState();
 

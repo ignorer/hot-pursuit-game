@@ -23,6 +23,7 @@
     <ClInclude Include="IMap.h" />
     <ClInclude Include="IPlayerState.h" />
     <ClInclude Include="IStrategy.h" />
+    <ClInclude Include="Powerup.h" />
     <ClInclude Include="StrategyDll.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

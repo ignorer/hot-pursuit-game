@@ -48,5 +48,8 @@
     <ClInclude Include="IStrategy.h">
       <Filter>StrategyDll</Filter>
     </ClInclude>
+    <ClInclude Include="Powerup.h">
+      <Filter>StrategyDll</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

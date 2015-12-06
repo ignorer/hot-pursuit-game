@@ -179,7 +179,18 @@ const std::vector< int >& Map::operator[](int i)const {
 	return cells[i];
 }
 
-int Map::orientedArea(int ax, int ay, int bx, int by, int cx, int cy) const {
+void Map::AddBarrier( std::pair<int, int>& barrier )
+{
+	cells[barrier.second][barrier.first] = 1;
+}
+
+void Map::DeleteBarrier( std::pair<int, int>& barrier )
+{
+	cells[barrier.second][barrier.first] = 0;
+}
+
+int Map::orientedArea( int ax, int ay, int bx, int by, int cx, int cy ) const
+{
 	return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
 }
 
