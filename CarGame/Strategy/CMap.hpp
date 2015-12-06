@@ -52,6 +52,7 @@ public:
     bool canPlayerStayOnCellLookOnOtherPlayers(int x, int y, int playerID, const std::vector< IPlayerState > &players) const;
 	bool intersectFinishLine( int xFirst, int yFirst, int xSecond, int ySecond ) const;
 	bool IsOnTheFinishLine( int y1, int x1, int y2, int x2 );
+	bool IsOnRightSideOfFinishLine( int x, int y );
 	bool wrongFinishLineIntersection( int xFirst, int yFirst, int xSecond, int ySecond ) const;
 
 	const std::pair< int, int >& GetLeftFinishPoint() const;

@@ -13,7 +13,6 @@ public:
 
 	// Возвращает, в каком направлении нужно сдвинуться по оптимальному маршруту
 	int GetNextStep();
-
 private:
 	// Предподсчет расстояний до финиша по чебышевской метрике
 	void calculateDistancesToFinish();
@@ -38,4 +37,7 @@ private:
 	int lapMaxLenght = 0;
 
 	static const int maxPathLenght;
+
+	std::unordered_map<PlayerState, int, PlayerState::CPlayerStateHasher> gScore; // Функция текущей стоимости
+	std::unordered_map<PlayerState, int, PlayerState::CPlayerStateHasher> fScore; // Функция текущей стоимости + эвристика
 };
