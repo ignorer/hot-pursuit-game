@@ -9,7 +9,7 @@
 
 class CAStarStrategy : public IStrategy {
 public:
-	CAStarStrategy( const Map& map, const PlayerState& initState, int lapsCount );
+	CAStarStrategy( const Map& map, const PlayerState& initState, int lapsCount, bool isSequential );
 
 	// Возвращает, в каком направлении нужно сдвинуться по оптимальному маршруту
 	int GetNextStep( std::vector<std::shared_ptr<IPlayerState>>& players, int playerNumber, std::vector<Powerup>& powerups );
@@ -41,6 +41,8 @@ private:
 	int lapMaxLenght = 0;
 
 	PlayerState curState;
+
+	bool isSequential;
 
 	static const int maxPathLenght;
 };
