@@ -3,10 +3,12 @@
 #include <Windows.h>
 #include <Core/Player.h>
 #include "Core/GameMode.h"
+//#include <GdiUtils.h>
 
 class CUIManager;
 
 namespace UI {
+
 	class CMapSettingsWindow {
 	public:
 		static bool RegisterClass( HINSTANCE hInst );
@@ -29,6 +31,11 @@ namespace UI {
 	protected:
 		bool CreateMapNameControl();
 		int GetPositionOwnersNumber();
+		void OnCreate();
+		void OnPaint();
+		void OnLButtonDown( int xMousePos, int yMousePos );
+		void OnLButtonUp( int xMousePos, int yMousePos );
+		void OnMouseMove( int xMousePos, int yMousePos );
 		
 	private:
 		HWND handle;
@@ -38,6 +45,15 @@ namespace UI {
 		HWND mapNameControl;
 		std::vector<HWND> positionOwnerControls;
 		std::vector<HWND> nameControls;
+
+		HBRUSH bkgrdBrush;
+
+		/*ButtonInfo startGameButton;
+		ButtonInfo settingsButton;
+		ButtonInfo backToMenuButton;
+		Gdiplus::Image* defButtonImage;
+		Gdiplus::Image* hoverButtonImage;
+		Gdiplus::Image* pressedButtonImage;*/
 
 		CUIManager* manager;
 

@@ -2,7 +2,8 @@
 #include <locale>
 #include <codecvt>
 #include <memory>
-#include <Windows.h>
+#include <Windowsx.h>
+//#include <GdiUtils.h>
 
 #include "Resources/resource.h"
 
@@ -13,7 +14,6 @@
 #include "UI/MapSettingsWindow.h"
 #include "UI/Drawing.h"
 #include "UI/SettingsDialog.h"
-
 
 const wchar_t* const UI::CMapSettingsWindow::className = L"CMapSettingsWindow";
 bool UI::CSettingsDialog::sent = 0;
@@ -51,40 +51,63 @@ UI::CMapSettingsWindow::CMapSettingsWindow( CUIManager* _manager ) :
 bool UI::CMapSettingsWindow::Create()
 {
 	handle = CreateWindow( className, L"Map settings - Rock'n'Roll racing", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-		200, 200, 550, 500, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
+		200, 200, 535, 515, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
 
 	CreateMapNameControl();
 	
 	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
+	auto openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
+	::SendMessage( mapNameControl, WM_SETFONT, WPARAM( openSans ), TRUE );
+
+	auto mapText = CreateWindow( L"Static", L"CHOOSE MAP", WS_VISIBLE | WS_CHILD | SS_LEFT, 310, 160, 200, 20,
+		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	auto playersText = CreateWindow( L"Static", L"CHOOSE PLAYERS", WS_VISIBLE | WS_CHILD | SS_LEFT, 23, 40, 200, 20,
+		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	auto typeText = CreateWindow( L"Static", L"Type:", WS_VISIBLE | WS_CHILD | SS_LEFT, 23, 80, 200, 20,
+		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	auto nameText = CreateWindow( L"Static", L"Name:", WS_VISIBLE | WS_CHILD | SS_LEFT, 135, 80, 200, 20,
+		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+
+	::SendMessage( mapText, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( playersText, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( typeText, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( nameText, WM_SETFONT, WPARAM( openSans ), TRUE );
 
 	for( int i = 0; i < positionOwnerControls.size(); ++i ) {
 		positionOwnerControls[i] = CreateWindow( L"COMBOBOX", (std::wstring( L"Position " ) + std::to_wstring( i + 1 )).c_str(),
-			CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 40, 100 + 30 * i, 125, 80,
+			CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 23, 100 + 30 * i, 107, 80,
 			handle, HMENU( FIRST_POSITION_OWNER + i ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 		SetClassLong( positionOwnerControls[i], GCL_HCURSOR, LONG(cursor) );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"None" ) );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"Player" ) );
 		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"AI" ) );
-		::SendMessage( positionOwnerControls[i], CB_SELECTSTRING, 0, i == 0? LPARAM(L"Player") : LPARAM( L"None" ) );
+		::SendMessage( positionOwnerControls[i], CB_SELECTSTRING, 0, i == 0? LPARAM( L"Player" ) : LPARAM( L"None" ) );
+		::SendMessage( positionOwnerControls[i], WM_SETFONT, WPARAM( openSans ), TRUE );
 		nameControls[i] = CreateWindow( L"EDIT", (std::wstring( L"Name " ) + std::to_wstring( i + 1 )).c_str(),
-		 WS_VISIBLE | WS_CHILD, 175, 100 + 30 * i, 125, 24,
+		 WS_VISIBLE | WS_CHILD, 135, 100 + 30 * i, 133, 24,
 			handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 		SetClassLong( nameControls[i], GCL_HCURSOR, LONG(cursor) );
+		::SendMessage( nameControls[i], WM_SETFONT, WPARAM( openSans ), TRUE );
+
 	}
 
-	startGameButton = CreateWindow( L"BUTTON", L"Start game", WS_VISIBLE | WS_CHILD, 350, 330, 150, 30,
+	startGameButton = CreateWindow( L"BUTTON", L"Start game", WS_VISIBLE | WS_CHILD, 310, 260, 200, 60,
 		handle, HMENU( BUTTON_START_GAME ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	settingsButton = CreateWindow( L"BUTTON", L"Settings", WS_VISIBLE | WS_CHILD, 350, 380, 150, 30,
+	settingsButton = CreateWindow( L"BUTTON", L"Settings", WS_VISIBLE | WS_CHILD, 310, 330, 200, 60,
 		handle, HMENU( BUTTON_SETTINGS ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	backToMenuButton = CreateWindow( L"BUTTON", L"Back to main menu", WS_VISIBLE | WS_CHILD, 350, 430, 150, 30,
+	backToMenuButton = CreateWindow( L"BUTTON", L"Back to main menu", WS_VISIBLE | WS_CHILD, 310, 400, 200, 60,
 		handle, HMENU( BUTTON_BACK_TO_MENU ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+
+	::SendMessage( startGameButton, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( settingsButton, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( backToMenuButton, WM_SETFONT, WPARAM( openSans ), TRUE );
 
 	return handle != nullptr;
 }
 
 bool UI::CMapSettingsWindow::CreateMapNameControl()
 {
-	mapNameControl = CreateWindow( L"COMBOBOX", L"Map", CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 40, 50, 125, 160,
+	mapNameControl = CreateWindow( L"COMBOBOX", L"Map", CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 310, 190, 200, 160,
 		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 
 	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
@@ -204,6 +227,125 @@ void UI::CMapSettingsWindow::MakeInvisible() const
 
 }
 
+//void UI::CMapSettingsWindow::OnCreate()
+//{
+//	HINSTANCE hInstance = (HINSTANCE)GetWindowLong( handle, GWL_HINSTANCE );
+//	bkgrdBrush = CreatePatternBrush( LoadBitmap( hInstance, MAKEINTRESOURCE( IDB_BITMAP1 ) ) );
+//	startGameButton.curButtonImage = defButtonImage = new Gdiplus::Image( ( RESOURCE_DIRECTORY_W + L"\\Images\\default_button.png" ).c_str() );
+//	hoverButtonImage = new Gdiplus::Image( ( RESOURCE_DIRECTORY_W + L"\\Images\\hover.png" ).c_str() );
+//	pressedButtonImage = new Gdiplus::Image( ( RESOURCE_DIRECTORY_W + L"\\Images\\pressed.png" ).c_str() );
+//	startGameButton.buttonRect = { 160, 240, 204, 61 };
+//	startGameButton.buttonName = L"START GAME";
+//	startGameButton.buttonNameRect = { 165, 245, 200, 60 };
+//	settingsButton.buttonName = L"SETTINGS";
+//	settingsButton.curButtonImage = defButtonImage;
+//	settingsButton.buttonRect = { 160, 310, 204, 61 };
+//	backToMenuButton.buttonName = L"BACK";
+//	backToMenuButton.curButtonImage = defButtonImage;
+//	backToMenuButton.buttonRect = { 160, 380, 204, 61 };
+//}
+//
+//void UI::CMapSettingsWindow::OnPaint()
+//{
+//	PAINTSTRUCT ps;
+//	HDC hdc = ::BeginPaint( handle, &ps );
+//	HDC newHdc = ::CreateCompatibleDC( hdc );
+//	RECT rect;
+//	::GetClientRect( handle, &rect );
+//	HFONT openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+//		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
+//	HBITMAP bitmap = ::CreateCompatibleBitmap( hdc, rect.right - rect.left, rect.bottom - rect.top );
+//	HGDIOBJ oldbitmap = ::SelectObject( newHdc, bitmap );
+//	FillRect( newHdc, &ps.rcPaint, bkgrdBrush );
+//
+//	Gdiplus::Graphics graphics( newHdc );
+//
+//	graphics.DrawImage( startGameButton.curButtonImage, startGameButton.buttonRect );
+//	graphics.DrawImage( settingsButton.curButtonImage, settingsButton.buttonRect );
+//	graphics.DrawImage( backToMenuButton.curButtonImage, backToMenuButton.buttonRect );
+//
+//	SetBkMode( newHdc, TRANSPARENT );
+//	SelectObject( newHdc, openSans );
+//	TextOut( newHdc, 222, 263, startGameButton.buttonName, 8 );
+//	TextOut( newHdc, 215, 333, settingsButton.buttonName, 10 );
+//	TextOut( newHdc, 220, 403, backToMenuButton.buttonName, 9 );
+//	::BitBlt( hdc, 0, 0, rect.right, rect.bottom, newHdc, 0, 0, SRCCOPY );
+//
+//	::SelectObject( newHdc, oldbitmap );
+//	::DeleteObject( bitmap );
+//	::DeleteObject( openSans );
+//
+//	::DeleteDC( hdc );
+//	::DeleteDC( newHdc );
+//
+//	::EndPaint( handle, &ps );
+//}
+//
+//void UI::CMapSettingsWindow::OnLButtonDown( int xMousePos, int yMousePos )
+//{
+//	if( startGameButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
+//		startGameButton.curButtonImage = pressedButtonImage;
+//		::InvalidateRect( handle, NULL, FALSE );
+//		::UpdateWindow( handle );
+//	}
+//	else if( settingsButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
+//		settingsButton.curButtonImage = pressedButtonImage;
+//		::InvalidateRect( handle, NULL, FALSE );
+//		::UpdateWindow( handle );
+//	}
+//	else if( backToMenuButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
+//		backToMenuButton.curButtonImage = pressedButtonImage;
+//		::InvalidateRect( handle, NULL, FALSE );
+//		::UpdateWindow( handle );
+//	}
+//}
+//
+//void UI::CMapSettingsWindow::OnLButtonUp( int xMousePos, int yMousePos )
+//{
+//	if( startGameButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
+//		startGameButton.curButtonImage = defButtonImage;
+//		::InvalidateRect( handle, NULL, FALSE );
+//		::UpdateWindow( handle );
+//		StartGame();
+//	}
+//	else if( settingsButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
+//		settingsButton.curButtonImage = defButtonImage;
+//		::InvalidateRect( handle, NULL, FALSE );
+//		::UpdateWindow( handle );
+//		ChangeSettings();
+//	}
+//	else if( backToMenuButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
+//		backToMenuButton.curButtonImage = defButtonImage;
+//		::InvalidateRect( handle, NULL, FALSE );
+//		::UpdateWindow( handle );
+//		BackToMenu();
+//	}
+//}
+//
+//void UI::CMapSettingsWindow::OnMouseMove( int xMousePos, int yMousePos )
+//{
+//	if( startGameButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
+//		startGameButton.curButtonImage = hoverButtonImage;
+//	}
+//	else {
+//		startGameButton.curButtonImage = defButtonImage;
+//	}
+//	if( settingsButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
+//		settingsButton.curButtonImage = hoverButtonImage;
+//	}
+//	else {
+//		settingsButton.curButtonImage = defButtonImage;
+//	}
+//	if( backToMenuButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
+//		backToMenuButton.curButtonImage = hoverButtonImage;
+//	}
+//	else {
+//		backToMenuButton.curButtonImage = defButtonImage;
+//	}
+//	::InvalidateRect( handle, NULL, FALSE );
+//	::UpdateWindow( handle );
+//}
+
 LRESULT UI::CMapSettingsWindow::windowProc( HWND handle, UINT message, WPARAM wParam, LPARAM lParam )
 {
 	CMapSettingsWindow* wnd;
@@ -228,7 +370,29 @@ LRESULT UI::CMapSettingsWindow::windowProc( HWND handle, UINT message, WPARAM wP
 				wnd->ChangeSettings();
 			}
 			return 0;
-	}
+		case WM_CTLCOLORSTATIC:
+			auto hdc = (HDC)wParam;
+			SetTextColor( hdc, RGB( 0, 0, 0 ) );
+			SetBkMode( hdc, TRANSPARENT );
+
+			return (LRESULT)GetStockObject( NULL_BRUSH );
+		/*case WM_CREATE:
+			wnd->OnCreate();
+			return 0;
+		case WM_PAINT:
+			wnd->OnPaint();
+		case WM_LBUTTONDOWN:
+			wnd->OnLButtonDown( GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
+			return 0;
+		case WM_LBUTTONUP:
+			wnd->OnLButtonUp( GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
+			return 0;
+		case WM_MOUSEMOVE:
+			wnd->OnMouseMove( GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
+			return 0;
+		case WM_ERASEBKGND:
+			return 1;
+	*/}
 
 	return ::DefWindowProc( handle, message, wParam, lParam );
 }

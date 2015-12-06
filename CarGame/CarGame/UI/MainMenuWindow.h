@@ -1,10 +1,14 @@
 ﻿#pragma once
 
 #include <Windows.h>
+#include <gdiplus.h>
+#include <GdiUtils.h>
 
 namespace UI {
+
 	class CMapSettingsWindow;
 	class CGameResultWindow;
+
 
 	class CMainMenuWindow {
 	public:
@@ -23,17 +27,23 @@ namespace UI {
 
 	protected:
 		void OnMapEditorExe();
+		void OnCreate();
+		void OnPaint();
+		void OnLButtonDown( int xMousePos, int yMousePos );
+		void OnLButtonUp( int xMousePos, int yMousePos );
+		void OnMouseMove( int xMousePos, int yMousePos );
 	private:
 		HWND handle;
-		HWND newGameButton;
-		HWND mapEditorButton;
-		HWND exitGameButton;
+		HBRUSH bkgrdBrush;
+
+		ButtonInfo newGameButton;
+		ButtonInfo mapEditorButton;
+		ButtonInfo exitGameButton;
+		Gdiplus::Image* defButtonImage;
+		Gdiplus::Image* hoverButtonImage;
+		Gdiplus::Image* pressedButtonImage;
 
 		CUIManager manager;
-
-		const int BUTTON_NEW_GAME = 1;
-		const int BUTTON_EXIT = 2;
-		const int BUTTON_MAP_EDITOR = 3;
 
 		static const wchar_t* const className;
 		
