@@ -47,11 +47,15 @@ public:
 	std::vector< int > &operator[](int i);
 	const std::vector< int > &operator[](int i) const;
     
-    bool canPlayerStayOnCell(int x, int y) const;
+	void AddBarrier( std::pair<int, int>& barrier );
+	void DeleteBarrier( std::pair<int, int>& barrier );
+
+	bool canPlayerStayOnCell( int x, int y ) const;
     bool hasBarrierOnPath(int xFirst, int yFirst, int xSecond, int ySecond) const;
     bool canPlayerStayOnCellLookOnOtherPlayers(int x, int y, int playerID, const std::vector< IPlayerState > &players) const;
 	bool intersectFinishLine( int xFirst, int yFirst, int xSecond, int ySecond ) const;
 	bool IsOnTheFinishLine( int y1, int x1, int y2, int x2 );
+	bool IsOnRightSideOfFinishLine( int x, int y );
 	bool wrongFinishLineIntersection( int xFirst, int yFirst, int xSecond, int ySecond ) const;
 
 	const std::pair< int, int >& GetLeftFinishPoint() const;

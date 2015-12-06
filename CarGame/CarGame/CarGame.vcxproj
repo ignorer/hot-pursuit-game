@@ -172,10 +172,13 @@
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AI\IPlayerState.h" />
+    <ClInclude Include="AI\IStrategy.h" />
     <ClInclude Include="Core\Game.h" />
     <ClInclude Include="Core\GameMode.h" />
     <ClInclude Include="Core\Map.h" />
     <ClInclude Include="Core\Player.h" />
+    <ClInclude Include="Core\Powerup.h" />
     <ClInclude Include="Core\PowerupManager.h" />
     <ClInclude Include="Core\Reader.h" />
     <ClInclude Include="GdiUtils.h" />

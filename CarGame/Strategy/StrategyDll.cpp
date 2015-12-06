@@ -34,8 +34,8 @@ Map PutPlayersOnMap(const Map &_map, const std::vector< std::shared_ptr<IPlayerS
 	return res;
 }
 
-IPlayerState* GetPlayerState(int x, int y, int xVelocity, int yVelocity) {
-	return new PlayerState(x, y, xVelocity, yVelocity);
+IPlayerState* GetPlayerState( int x, int y, int xVelocity, int yVelocity, int curLap ) {
+	return new PlayerState( x, y, xVelocity, yVelocity, curLap );
 }
 
 IStrategy* GetNewStrategy(

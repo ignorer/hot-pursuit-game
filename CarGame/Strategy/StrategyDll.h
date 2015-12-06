@@ -18,4 +18,4 @@ extern "C" RACE_AI_API IStrategy* GetNewStrategy(
 	std::shared_ptr<IPlayerState> playerState );
 
 // Factories to export PlayerState and Map classes
-extern "C" RACE_AI_API IPlayerState* GetPlayerState( int x, int y, int xVelocity, int yVelocity );
+extern "C" RACE_AI_API IPlayerState* GetPlayerState( int x, int y, int xVelocity, int yVelocity, int curLap );
