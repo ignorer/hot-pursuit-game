@@ -9,7 +9,7 @@
 #include "UI/Drawing.h"
 #include "Utils.h"
 
-#pragma comment (lib, "Gdiplus.lib")
+#pragma comment(lib, "Gdiplus.lib")
 
 const wchar_t* const UI::CMainMenuWindow::className = L"CMainWindow";
 
@@ -42,11 +42,6 @@ bool UI::CMainMenuWindow::Create()
 {
 	handle = CreateWindow( className, L"Main menu - Rock'n'Roll racing", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		100, 100, 535, 515, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
-	/*
-	::AddFontResource( (RESOURCE_DIRECTORY_W + L"OpenSans-CondBold.ttf").c_str() );
-	::SendMessage( HWND_BROADCAST, WM_FONTCHANGE, 0, 0 );
-	auto openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
-	*/
 	return handle != nullptr;
 }
 
@@ -93,12 +88,12 @@ void UI::CMainMenuWindow::OnCreate()
 	hoverButtonImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\hover.png").c_str() );
 	pressedButtonImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\pressed.png").c_str() );
 	newGameButton.buttonRect = { 160, 240, 204, 61 };
-	newGameButton.buttonName = L"Новая игра";
+	newGameButton.buttonName = L"NEW GAME";
 	newGameButton.buttonNameRect = { 165, 245, 200, 60 };
-	mapEditorButton.buttonName = L"Редактор карт";
+	mapEditorButton.buttonName = L"MAP EDITOR";
 	mapEditorButton.curButtonImage = defButtonImage;
 	mapEditorButton.buttonRect = { 160, 310, 204, 61 };
-	exitGameButton.buttonName = L"Выход из игры";
+	exitGameButton.buttonName = L"EXIT GAME";
 	exitGameButton.curButtonImage = defButtonImage;
 	exitGameButton.buttonRect = { 160, 380, 204, 61 };
 }
@@ -110,7 +105,8 @@ void UI::CMainMenuWindow::OnPaint()
 	HDC newHdc = ::CreateCompatibleDC( hdc );
 	RECT rect;
 	::GetClientRect( handle, &rect );
-
+	HFONT openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
 	HBITMAP bitmap = ::CreateCompatibleBitmap( hdc, rect.right - rect.left, rect.bottom - rect.top );
 	HGDIOBJ oldbitmap = ::SelectObject( newHdc, bitmap );
 	FillRect( newHdc, &ps.rcPaint, bkgrdBrush );
@@ -122,11 +118,15 @@ void UI::CMainMenuWindow::OnPaint()
 	graphics.DrawImage( exitGameButton.curButtonImage, exitGameButton.buttonRect );
 
 	SetBkMode( newHdc, TRANSPARENT );
-	DrawText( newHdc, newGameButton.buttonName, -1, &newGameButton.buttonNameRect, DT_SINGLELINE | DT_NOCLIP );
+	SelectObject( newHdc, openSans );
+	TextOut( newHdc, 222, 263, newGameButton.buttonName, 8 );
+	TextOut( newHdc, 215, 333, mapEditorButton.buttonName, 10 );
+	TextOut( newHdc, 220, 403, exitGameButton.buttonName, 9 );
 	::BitBlt( hdc, 0, 0, rect.right, rect.bottom, newHdc, 0, 0, SRCCOPY );
 
 	::SelectObject( newHdc, oldbitmap );
 	::DeleteObject( bitmap );
+	::DeleteObject( openSans );
 
 	::DeleteDC( hdc );
 	::DeleteDC( newHdc );
@@ -225,9 +225,8 @@ LRESULT UI::CMainMenuWindow::windowProc( HWND handle, UINT message, WPARAM wPara
 		case WM_LBUTTONUP:
 			wnd->OnLButtonUp( GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
 			return 0;
-		case  WM_MOUSEMOVE:
+		case WM_MOUSEMOVE:
 			wnd->OnMouseMove( GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
-			
 			return 0;
 		case WM_ERASEBKGND:
 			return 1;

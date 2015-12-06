@@ -2,18 +2,13 @@
 
 #include <Windows.h>
 #include <gdiplus.h>
+#include <GdiUtils.h>
 
 namespace UI {
-	struct ButtonInfo
-	{
-		Gdiplus::Image* curButtonImage;
-		Gdiplus::Rect	buttonRect;
-		const wchar_t* buttonName;
-		RECT buttonNameRect;
-	};
 
 	class CMapSettingsWindow;
 	class CGameResultWindow;
+
 
 	class CMainMenuWindow {
 	public:
