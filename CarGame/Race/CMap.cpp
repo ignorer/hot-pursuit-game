@@ -213,7 +213,15 @@ void CMap::LoadMapFromFile( std::ifstream& fin )
     for( int i = 0; i < sizeY; i++ ) {
         numbers[i].resize( sizeX );
         for( int j = 0; j < sizeX; j++ ) {
-            fin >> numbers[i][j];
+			int cell;
+			fin >> cell;
+			if( cell == 0 ) {
+				numbers[i][j] = 1;
+			} else if( cell == 1 ) {
+				numbers[i][j] = 0;
+			} else {
+				numbers[i][j] = cell;
+			}
         }
     }
 	fin >> finishFirstCoord.first >> finishFirstCoord.second >> finishSecondCoord.first >> finishSecondCoord.second;

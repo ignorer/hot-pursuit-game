@@ -267,9 +267,9 @@ void CWindow::LoadFile()
     OPENFILENAME ofn = { 0 };
     ofn.lStructSize = sizeof( OPENFILENAME );
     ofn.hwndOwner = GetHandle();
-    ofn.lpstrFilter = L"Race map files (*.rcmap)\0*.rcmap\0All files (*.*)\0*.*\0";
+    ofn.lpstrFilter = L"Race map files (*.txt)\0*.txt\0All files (*.*)\0*.*\0";
     ofn.lpstrFile = szFilePathName;
-    ofn.lpstrDefExt = L"rcmap";
+    ofn.lpstrDefExt = L"txt";
     ofn.nMaxFile = _MAX_PATH;
     ofn.lpstrTitle = L"Load Map";
     ofn.Flags = OFN_FILEMUSTEXIST;
