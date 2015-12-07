@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "resource.h"
 #include "CWindow.h"
 
 CComModule _Module;

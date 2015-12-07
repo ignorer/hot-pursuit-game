@@ -3,6 +3,7 @@
 #include "Ribbon.h"
 #include "CWindow.h"
 #include "CCommandHandler.h"
+#include "resource.h"
 
 static LPCWSTR szWindowClass = L"CWindow";
 
@@ -44,27 +45,37 @@ void CWindow::SetHandle( HWND newHandle )
 bool CWindow::Create()
 {
     handle = ::CreateWindow( szWindowClass, L"Редактор карт", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_EX_LAYERED | WS_THICKFRAME,
-        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, ::GetModuleHandle( 0 ), this );
+        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, ::GetModuleHandle( nullptr ), this );
     InitRibbon( handle );
     ::UpdateWindow( handle );
     map.RestartMap();
     UpdateState();
 	coordsRMouseButMoveFinish = std::pair<int, int>( 0, 0 );
 	coordsRMouseButMoveStart = std::pair<int, int>( 0, 0 );
-	return ( handle != 0 );
+	return ( handle != nullptr );
 }
 
-CWindow::CWindow():
-    brush( BNone ), m_cRef( 1 ), m_pCommandHandler( NULL ), lButtonPressed( false ),rButtonPressed(false), drawFirstTime(true),
-    backgroundBrush( ::CreateSolidBrush( RGB( 0xFF, 0xFF, 0xFF ) ) ), currentZoom(1)
+CApplicationInterface::~CApplicationInterface()
+{}
+
+CWindow::CWindow() :
+	handle( nullptr ),
+	backgroundBrush( ::CreateSolidBrush( RGB( 0xFF, 0xFF, 0xFF ) ) ),
+	m_cRef( 1 ),
+	m_pCommandHandler( nullptr ),
+	brush( BNone ),
+	lButtonPressed( false ),
+	rButtonPressed( false ),
+	drawFirstTime( true ),
+	currentZoom( 1 )
 {
-    HINSTANCE hInst = ::GetModuleHandle( 0 );
-    HBITMAP forest = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_FOREST ) );
-    brushes.push_back( ::CreatePatternBrush( forest ) );
-    HBITMAP road = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_ROAD ) );
-    brushes.push_back( ::CreatePatternBrush( road ) );
-    HBITMAP start = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_START ) );
-    brushes.push_back( ::CreatePatternBrush( start ) );
+	HINSTANCE hInst = ::GetModuleHandle( nullptr );
+	HBITMAP forest = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_FOREST ) );
+	brushes.push_back( ::CreatePatternBrush( forest ) );
+	HBITMAP road = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_ROAD ) );
+	brushes.push_back( ::CreatePatternBrush( road ) );
+	HBITMAP start = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_START ) );
+	brushes.push_back( ::CreatePatternBrush( start ) );
 	HBITMAP wall = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_WALL ) );
 	brushes.push_back( ::CreatePatternBrush( wall ) );
 	HBITMAP finish1 = ::LoadBitmap( hInst, MAKEINTRESOURCE( IDB_FINISH ) );
@@ -77,7 +88,7 @@ CWindow::~CWindow()
 {
     if( m_pCommandHandler ) {
         m_pCommandHandler->Release();
-        m_pCommandHandler = NULL;
+        m_pCommandHandler = nullptr;
     }
 
     for( size_t i = 0; i < brushes.size(); ++i ) {
@@ -96,10 +107,10 @@ bool CWindow::RegisterClass()
     wcex.lpfnWndProc = windowProc;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
-    HINSTANCE hInstance = ::GetModuleHandle( 0 );
+    HINSTANCE hInstance = ::GetModuleHandle( nullptr );
     wcex.hInstance = hInstance;
     wcex.hIcon = reinterpret_cast< HICON >( ::LoadImage( hInstance, MAKEINTRESOURCE( IDI_ICON1 ), IMAGE_ICON, 32, 32, 0 ) );
-    wcex.hCursor = ::LoadCursor( NULL, IDC_ARROW );
+    wcex.hCursor = ::LoadCursor( nullptr, IDC_ARROW );
     wcex.hbrBackground = reinterpret_cast< HBRUSH >( COLOR_WINDOW + 1 );
     wcex.lpszMenuName = reinterpret_cast< LPCWSTR >( MAKEINTRESOURCE( IDR_MENU1 ) );
     wcex.lpszClassName = szWindowClass;
@@ -139,7 +150,7 @@ void CWindow::OnSize()
 	currentZoom = 1;
 	cellSize = height / map.GetY();
     //подгоняем размеры поля под высоту клеток
-    ::SetWindowPos( handle, NULL, windowRect.left, windowRect.top, windowWidth, diffHeight + cellSize * map.GetY(), NULL );
+    ::SetWindowPos( handle, nullptr, windowRect.left, windowRect.top, windowWidth, diffHeight + cellSize * map.GetY(), NULL );
     ::InvalidateRect( handle, &rect, TRUE );
 
 
@@ -214,7 +225,7 @@ void CWindow::OnPaint()
 	if( fc.first != -1 && sc.first != -1 ) {
 		HPEN finishPen = ::CreatePen( PS_SOLID, cellSize / 2, RGB( 122, 122, 122 ) );
 		::SelectObject( backbuffDC, finishPen );
-		::MoveToEx( backbuffDC, (fc.second + 0.5) * cellSize + coordsOfCurrentView.first, coordsOfCurrentView.second + (fc.first + 0.5) * cellSize, NULL );
+		::MoveToEx( backbuffDC, (fc.second + 0.5) * cellSize + coordsOfCurrentView.first, coordsOfCurrentView.second + (fc.first + 0.5) * cellSize, nullptr );
 		::LineTo( backbuffDC, (sc.second + 0.5) * cellSize + coordsOfCurrentView.first, coordsOfCurrentView.second + (sc.first + 0.5) * cellSize );
 		::DeleteBrush( finishPen );
 	}
@@ -285,9 +296,9 @@ void CWindow::SaveFile()
     OPENFILENAME ofn = { 0 };
     ofn.lStructSize = sizeof( OPENFILENAME );
     ofn.hwndOwner = GetHandle();
-    ofn.lpstrFilter = L"Race map files (*.rcmap)\0*.rcmap\0All files (*.*)\0*.*\0";
+    ofn.lpstrFilter = L"Race map files (*.txt)\0*.txt\0All files (*.*)\0*.*\0";
     ofn.lpstrFile = szFilePathName;
-    ofn.lpstrDefExt = L"rcmap";
+    ofn.lpstrDefExt = L"txt";
     ofn.nMaxFile = _MAX_PATH;
     ofn.lpstrTitle = L"Save Map";
     ofn.Flags = OFN_OVERWRITEPROMPT;
@@ -321,7 +332,7 @@ void CWindow::OnCommand( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
                 OnClose();
                 break;
             case ID_NEWGAME:
-                ::CreateDialog( GetModuleHandle( 0 ), MAKEINTRESOURCE( IDD_DIALOG1 ), handle, dialogProc );
+                ::CreateDialog( GetModuleHandle( nullptr ), MAKEINTRESOURCE( IDD_DIALOG1 ), handle, dialogProc );
                 break;
             case ID_SAVE:
                 SaveFile();
@@ -343,8 +354,8 @@ void CWindow::OnCommand( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 
 void CWindow::onDialogOk()
 {
-    int newSizeY = ::GetDlgItemInt( handleDlg, IDC_EDIT_HEIGHT, NULL, false );
-    int newSizeX = ::GetDlgItemInt( handleDlg, IDC_EDIT_WIDTH, NULL, false );
+    int newSizeY = ::GetDlgItemInt( handleDlg, IDC_EDIT_HEIGHT, nullptr, false );
+    int newSizeX = ::GetDlgItemInt( handleDlg, IDC_EDIT_WIDTH, nullptr, false );
 
     switch( ::MessageBox( handle, L"Создать новую карту?", L"Новая карта", MB_YESNO | MB_ICONWARNING ) ) {
         case IDYES:
@@ -485,11 +496,11 @@ __checkReturn HRESULT CWindow::CreateInstance( __deref_out IUIApplication **ppAp
         return E_POINTER;
     }
 
-    *ppApplication = NULL;
+    *ppApplication = nullptr;
     HRESULT hr = S_OK;
     CWindow* pApplication = new CWindow();
 
-    if( pApplication != NULL ) {
+    if( pApplication != nullptr ) {
         *ppApplication = static_cast< IUIApplication * >( pApplication );
     } else {
         hr = E_OUTOFMEMORY;
@@ -521,7 +532,7 @@ STDMETHODIMP CWindow::QueryInterface( REFIID iid, void** ppv )
     } else if( iid == __uuidof( IUIApplication ) ) {
         *ppv = static_cast< IUIApplication* >( this );
     } else {
-        *ppv = NULL;
+        *ppv = nullptr;
         return E_NOINTERFACE;
     }
 
@@ -572,7 +583,7 @@ STDMETHODIMP CWindow::OnViewChanged(
                 // call GetHeight to determine the height of the ribbon.
             case UI_VIEWVERB_SIZE:
             {
-                IUIRibbon* pRibbon = NULL;
+                IUIRibbon* pRibbon = nullptr;
                 UINT uRibbonHeight;
 
                 hr = pView->QueryInterface( IID_PPV_ARGS( &pRibbon ) );

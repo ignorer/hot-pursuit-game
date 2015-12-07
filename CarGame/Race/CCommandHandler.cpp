@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CCommandHandler.h"
 #include "toolbar.h"
+#include "resource.h"
 #include "Ribbon.h"
 #include "CWindow.h"
 #include <Commdlg.h>
@@ -14,12 +15,12 @@ __checkReturn HRESULT CCommandHandler::CreateInstance( __deref_out IUICommandHan
 		return E_POINTER;
 	}
 
-	*ppCommandHandler = NULL;
+	*ppCommandHandler = nullptr;
 	HRESULT hr = S_OK;
 
 	CCommandHandler* pCommandHandler = new CCommandHandler();
 
-	if ( pCommandHandler != NULL ) {
+	if ( pCommandHandler != nullptr ) {
 		*ppCommandHandler = static_cast<IUICommandHandler*>( pCommandHandler );
 	} else {
 		hr = E_OUTOFMEMORY;
@@ -51,7 +52,7 @@ STDMETHODIMP CCommandHandler::QueryInterface( REFIID iid, void** ppv )
 	} else if ( iid == __uuidof( IUICommandHandler ) ) {
 		*ppv = static_cast<IUICommandHandler*>( this );
 	} else {
-		*ppv = NULL;
+		*ppv = nullptr;
 		return E_NOINTERFACE;
 	}
 
@@ -90,7 +91,7 @@ STDMETHODIMP CCommandHandler::Execute(
 
 	switch ( nCmdID ) {
 	case cmdNewMap:
-		::CreateDialog( GetModuleHandle( 0 ), MAKEINTRESOURCE( IDD_DIALOG1 ), MainWindow.GetHandle(), CWindow::dialogProc );
+		::CreateDialog( GetModuleHandle( nullptr ), MAKEINTRESOURCE( IDD_DIALOG1 ), MainWindow.GetHandle(), CWindow::dialogProc );
 		break;
 	case cmdLoadMap:
 		MainWindow.LoadFile();
