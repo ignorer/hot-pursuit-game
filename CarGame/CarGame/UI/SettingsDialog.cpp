@@ -195,19 +195,19 @@ void  UI::CSettingsDialog::OnLButtonDown( HWND hwndDlg, int xMousePos, int yMous
 	}
 }
 
-void  UI::CSettingsDialog::OnLButtonUp( HWND hwndDlg, int xMousePos, int yMousePos )
+void  UI::CSettingsDialog::OnLButtonUp( HWND hwndDlg, int xMousePos, int yMousePos, WPARAM wParam )
 {
 	if (okButton->buttonRect.Contains( xMousePos, yMousePos )) {
 		okButton->curButtonImage = buttonImages->defButtonImage;
 		::InvalidateRect( hwndDlg, NULL, FALSE );
 		::UpdateWindow( hwndDlg );
-		//OnDialogOk( hwndDlg, );
+		OnDialogOk( hwndDlg, wParam );
 	}
 	else if (cancelButton->buttonRect.Contains( xMousePos, yMousePos )) {
 		cancelButton->curButtonImage = buttonImages->defButtonImage;
 		::InvalidateRect( hwndDlg, NULL, FALSE );
 		::UpdateWindow( hwndDlg );
-		//OnDialogCancel( hwndDlg, )
+		OnDialogCancel( hwndDlg, wParam );
 	}
 }
 
@@ -338,7 +338,7 @@ BOOL CALLBACK UI::CSettingsDialog::DialogSettingsProc( HWND hwndDlg, UINT messag
 			CSettingsDialog::OnLButtonDown( hwndDlg, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
 			return 0;
 		case WM_LBUTTONUP:
-			CSettingsDialog::OnLButtonUp( hwndDlg, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
+			CSettingsDialog::OnLButtonUp( hwndDlg, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ), wParam );
 			return 0;
 		case WM_MOUSEMOVE:
 			CSettingsDialog::OnMouseMove( hwndDlg, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );

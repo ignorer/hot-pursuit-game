@@ -24,7 +24,7 @@ namespace UI {
 		static void OnDialogVscroll( HWND hwndDlg );
 		static void OnPaint( HWND hwndDlg );
 		static void OnLButtonDown( HWND hwndDlg, int xMousePos, int yMousePos );
-		static void OnLButtonUp( HWND hwndDlg, int xMousePos, int yMousePos );
+		static void OnLButtonUp( HWND hwndDlg, int xMousePos, int yMousePos, WPARAM wParam );
 		static void OnMouseMove( HWND hwndDlg, int xMousePos, int yMousePos );
 		static void changeHoveredButton( HWND hwndDlg, ButtonInfo* button, int xMousePos, int yMousePos );
 		static int GetLapsNumber( HWND hwndDlg, int editId );
