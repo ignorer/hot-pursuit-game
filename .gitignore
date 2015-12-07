@@ -11,3 +11,4 @@ x64/
 CarGameCore/CarGameCore/testplayer
 CarGameCore/CarGameCore/testplayer.cpp
 *Makefile*
+*.orig

@@ -3,7 +3,6 @@
 #include <Windows.h> 
 #include <gdiplus.h>
 
-
 namespace UI {
 	class ButtonInfo
 	{

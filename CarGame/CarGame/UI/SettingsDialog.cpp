@@ -65,9 +65,9 @@ void UI::CSettingsDialog::Init( HWND hwndDlg ) {
 	buttonImages->hoverButtonImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\hover.png").c_str() );
 	buttonImages->pressedButtonImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\pressed.png").c_str() );
 	okButton->curButtonImage = buttonImages->defButtonImage;
-	okButton->buttonRect = { 200, 200, 204, 61 };
+	okButton->buttonRect = { 295, 350, 104, 61 };
 	cancelButton->curButtonImage = buttonImages->defButtonImage;
-	cancelButton->buttonRect = { 200, 300, 204, 61 };
+	cancelButton->buttonRect = { 410, 350, 104, 61 };
 }
 
 void UI::CSettingsDialog::OnDialogOk( HWND hwndDlg, WPARAM wParam )
@@ -167,7 +167,8 @@ void UI::CSettingsDialog::OnPaint( HWND hwndDlg )
 	SetBkMode( newHdc, TRANSPARENT );
 	SetTextColor( newHdc, RGB( 255, 255, 255 ) );
 	SelectObject( newHdc, openSans );
-	//TextOut
+	TextOut( newHdc, 337, 373, L"OK", 2 );
+	TextOut( newHdc, 433, 373, L"CANCEL", 6 );
 	::BitBlt( hdc, 0, 0, rect.right, rect.bottom, newHdc, 0, 0, SRCCOPY );
 
 	::SelectObject( newHdc, oldbitmap );
@@ -200,11 +201,13 @@ void  UI::CSettingsDialog::OnLButtonUp( HWND hwndDlg, int xMousePos, int yMouseP
 		okButton->curButtonImage = buttonImages->defButtonImage;
 		::InvalidateRect( hwndDlg, NULL, FALSE );
 		::UpdateWindow( hwndDlg );
+		//OnDialogOk( hwndDlg, );
 	}
 	else if (cancelButton->buttonRect.Contains( xMousePos, yMousePos )) {
 		cancelButton->curButtonImage = buttonImages->defButtonImage;
 		::InvalidateRect( hwndDlg, NULL, FALSE );
 		::UpdateWindow( hwndDlg );
+		//OnDialogCancel( hwndDlg, )
 	}
 }
 

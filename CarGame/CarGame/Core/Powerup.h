@@ -9,7 +9,7 @@ struct Powerup {
 	PowerupType type;
 	std::pair<int, int> coordinate;
 
-	Powerup( PowerupType _type, std::pair<int, int>& coord ) :
+	Powerup( PowerupType _type, const std::pair<int, int>& coord ) :
 		type( _type ),
 		coordinate( coord )
 	{}

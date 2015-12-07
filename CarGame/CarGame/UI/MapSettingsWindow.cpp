@@ -4,7 +4,6 @@
 #include <memory>
 #include <Windowsx.h>
 
-
 #include "Resources/resource.h"
 
 #include "UIManager.h"
@@ -15,6 +14,7 @@
 #include "UI/Drawing.h"
 #include "UI/SettingsDialog.h"
 #include "UI/ButtonUtils.h"
+#include "UI/ComboBox.h"
 
 const wchar_t* const UI::CMapSettingsWindow::className = L"CMapSettingsWindow";
 bool UI::CSettingsDialog::sent = 0;
@@ -44,8 +44,8 @@ UI::CMapSettingsWindow::CMapSettingsWindow( CUIManager* _manager ) :
 	backToMenuButton( nullptr ),
 	settingsButton( nullptr ), 
 	mapNameControl( nullptr ),
-	positionOwnerControls( std::vector<HWND>( 12, nullptr ) ),
-	nameControls( std::vector<HWND> (12, nullptr) ),
+	positionOwnerControls( std::vector<HWND>( 8, nullptr ) ),
+	nameControls( std::vector<HWND> (8, nullptr) ),
 	manager( _manager )
 {}
 
@@ -64,17 +64,17 @@ bool UI::CMapSettingsWindow::Create()
 		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 	auto playersText = CreateWindow( L"Static", L"CHOOSE PLAYERS", WS_VISIBLE | WS_CHILD | SS_LEFT, 23, 40, 200, 20,
 		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	auto typeText = CreateWindow( L"Static", L"Type:", WS_VISIBLE | WS_CHILD | SS_LEFT, 23, 80, 200, 20,
-		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	//auto typeText = CreateWindow( L"Static", L"Type:", WS_VISIBLE | WS_CHILD | SS_LEFT, 23, 80, 200, 20,
+	//	handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 	auto nameText = CreateWindow( L"Static", L"Name:", WS_VISIBLE | WS_CHILD | SS_LEFT, 135, 80, 200, 20,
 		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 
 	::SendMessage( mapText, WM_SETFONT, WPARAM( openSans ), TRUE );
 	::SendMessage( playersText, WM_SETFONT, WPARAM( openSans ), TRUE );
-	::SendMessage( typeText, WM_SETFONT, WPARAM( openSans ), TRUE );
+	//::SendMessage( typeText, WM_SETFONT, WPARAM( openSans ), TRUE );
 	::SendMessage( nameText, WM_SETFONT, WPARAM( openSans ), TRUE );
 
-	for( int i = 0; i < positionOwnerControls.size(); ++i ) {
+	/*for( int i = 0; i < positionOwnerControls.size(); ++i ) {
 		positionOwnerControls[i] = CreateWindow( L"COMBOBOX", (std::wstring( L"Position " ) + std::to_wstring( i + 1 )).c_str(),
 			CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 23, 100 + 30 * i, 107, 80,
 			handle, HMENU( FIRST_POSITION_OWNER + i ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
@@ -90,7 +90,28 @@ bool UI::CMapSettingsWindow::Create()
 		SetClassLong( nameControls[i], GCL_HCURSOR, LONG(cursor) );
 		::SendMessage( nameControls[i], WM_SETFONT, WPARAM( openSans ), TRUE );
 
+	}*/
+
+	CComboBox::clearBoxImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\box_clear.png").c_str() );
+	CComboBox::collapsedBoxImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\box.png").c_str() );
+	CComboBox::expandedBoxImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\box_choosed.png").c_str() );
+	for( int i = 0; i < positionOwnerControls.size(); ++i ) {
+		comboBoxes.push_back( new CComboBox( Gdiplus::Rect( 23, 
+			100 + (10 + CComboBox::clearBoxImage->GetHeight() ) * i, 
+			CComboBox::clearBoxImage->GetWidth( ),
+			CComboBox::clearBoxImage->GetHeight() ), { L"None", L"Player", L"AI" } ) );
 	}
+
+	/*startGameButton = CreateWindow( L"BUTTON", L"Start game", WS_VISIBLE | WS_CHILD, 310, 260, 200, 60,
+		handle, HMENU( BUTTON_START_GAME ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	settingsButton = CreateWindow( L"BUTTON", L"Settings", WS_VISIBLE | WS_CHILD, 310, 330, 200, 60,
+		handle, HMENU( BUTTON_SETTINGS ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	backToMenuButton = CreateWindow( L"BUTTON", L"Back to main menu", WS_VISIBLE | WS_CHILD, 310, 400, 200, 60,
+		handle, HMENU( BUTTON_BACK_TO_MENU ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+
+	::SendMessage( startGameButton, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( settingsButton, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( backToMenuButton, WM_SETFONT, WPARAM( openSans ), TRUE );*/
 
 	return handle != nullptr;
 }
@@ -182,7 +203,7 @@ std::vector<Core::CPlayer> UI::CMapSettingsWindow::GetPlayersInfo( const std::ve
 	std::vector<Core::CPlayer> result;
 	const size_t MAX_LENGTH = 1024;
 	std::shared_ptr<wchar_t> text = std::shared_ptr<wchar_t>( new wchar_t[MAX_LENGTH] );
-	for( int i = 0; i < min(12, coordinates.size()); ++i ) {
+	for( int i = 0; i < min(8, coordinates.size()); ++i ) {
 		::GetWindowText( positionOwnerControls[i], text.get(), MAX_LENGTH );
 		std::wstring textString( text.get() );
 		std::shared_ptr<wchar_t> name = std::shared_ptr<wchar_t>( new wchar_t[MAX_LENGTH] );
@@ -259,11 +280,25 @@ void UI::CMapSettingsWindow::OnPaint()
 	graphics.DrawImage( backToMenuButton->curButtonImage, backToMenuButton->buttonRect );
 
 	SetBkMode( newHdc, TRANSPARENT );
-	SetTextColor( newHdc, RGB( 255, 255, 255 ) );
 	SelectObject( newHdc, openSans );
+	TextOut( newHdc, 24, 78, L"Type:", 8 );
+
+	SetTextColor( newHdc, RGB( 255, 255, 255 ) );
 	TextOut( newHdc, 357, 278, startGameButton->buttonName, 10 );
 	TextOut( newHdc, 368, 348, settingsButton->buttonName, 8 );
 	TextOut( newHdc, 383, 418, backToMenuButton->buttonName, 4 );
+
+	for( CComboBox* comboBox : comboBoxes ) {
+		if( comboBox->IsCollapsed() ) {
+			comboBox->Draw( graphics );
+		}
+	}
+	for( CComboBox* comboBox : comboBoxes ) {
+		if( !comboBox->IsCollapsed() ) {
+			comboBox->Draw( graphics );
+		}
+	}
+
 	::BitBlt( hdc, 0, 0, rect.right, rect.bottom, newHdc, 0, 0, SRCCOPY );
 
 	::SelectObject( newHdc, oldbitmap );
@@ -278,22 +313,30 @@ void UI::CMapSettingsWindow::OnPaint()
 
 void UI::CMapSettingsWindow::OnLButtonDown( int xMousePos, int yMousePos )
 {
-	if( startGameButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
-		startGameButton->curButtonImage = buttonImages->pressedButtonImage;
+	for( CComboBox* comboBox : comboBoxes ) {
+		if( comboBox->OnClick( xMousePos, yMousePos ) ) {
 		::InvalidateRect( handle, NULL, FALSE );
 		::UpdateWindow( handle );
+			return;
+	}
+	}
+	// Если нажали не на комбобокс - сворачиваем их все
+	for( CComboBox* comboBox : comboBoxes ) {
+		comboBox->Collapse();
+	}
+
+	if( startGameButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
+		startGameButton->curButtonImage = buttonImages->pressedButtonImage;
 	}
 	else if( settingsButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
 		settingsButton->curButtonImage = buttonImages->pressedButtonImage;
-		::InvalidateRect( handle, NULL, FALSE );
-		::UpdateWindow( handle );
 	}
 	else if( backToMenuButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
 		backToMenuButton->curButtonImage = buttonImages->pressedButtonImage;
+	}
 		::InvalidateRect( handle, NULL, FALSE );
 		::UpdateWindow( handle );
 	}
-}
 
 void UI::CMapSettingsWindow::OnLButtonUp( int xMousePos, int yMousePos )
 {
@@ -377,6 +420,7 @@ LRESULT UI::CMapSettingsWindow::windowProc( HWND handle, UINT message, WPARAM wP
 			return 0;
 		case WM_PAINT:
 			wnd->OnPaint();
+			return 0;
 		case WM_LBUTTONDOWN:
 			wnd->OnLButtonDown( GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
 			return 0;
