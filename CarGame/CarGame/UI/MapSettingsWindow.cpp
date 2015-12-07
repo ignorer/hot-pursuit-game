@@ -76,6 +76,7 @@ bool UI::CMapSettingsWindow::Create()
 		::SetClassLong( nameControls[i], GCL_HCURSOR, LONG( cursor ) );
 		::SendMessage( nameControls[i], WM_SETFONT, WPARAM( openSans ), TRUE );
 	}
+	comboBoxes[0]->SetChoosedPosition( 1 );
 
 	CreateMapNameControl();
 
@@ -287,6 +288,25 @@ void UI::CMapSettingsWindow::OnPaint()
 
 void UI::CMapSettingsWindow::OnLButtonDown( int xMousePos, int yMousePos )
 {
+	if( startGameButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
+		startGameButton->curButtonImage = buttonImages->pressedButtonImage;
+		::InvalidateRect( handle, NULL, FALSE );
+		::UpdateWindow( handle );
+	}
+	else if( settingsButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
+		settingsButton->curButtonImage = buttonImages->pressedButtonImage;
+		::InvalidateRect( handle, NULL, FALSE );
+		::UpdateWindow( handle );
+	}
+	else if( backToMenuButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
+		backToMenuButton->curButtonImage = buttonImages->pressedButtonImage;
+		::InvalidateRect( handle, NULL, FALSE );
+		::UpdateWindow( handle );
+	}
+}
+
+void UI::CMapSettingsWindow::OnLButtonUp( int xMousePos, int yMousePos )
+{
 	for( CComboBox* comboBox : comboBoxes ) {
 		if( comboBox->OnClick( xMousePos, yMousePos ) ) {
 			::InvalidateRect( handle, NULL, FALSE );
@@ -306,38 +326,19 @@ void UI::CMapSettingsWindow::OnLButtonDown( int xMousePos, int yMousePos )
 	chooseMapComboBox->Collapse();
 
 	if( startGameButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
-		startGameButton->curButtonImage = buttonImages->pressedButtonImage;
-	}
-	else if( settingsButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
-		settingsButton->curButtonImage = buttonImages->pressedButtonImage;
-	}
-	else if( backToMenuButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
-		backToMenuButton->curButtonImage = buttonImages->pressedButtonImage;
-	}
-	::InvalidateRect( handle, NULL, FALSE );
-	::UpdateWindow( handle );
-}
-
-void UI::CMapSettingsWindow::OnLButtonUp( int xMousePos, int yMousePos )
-{
-	if( startGameButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
 		startGameButton->curButtonImage = buttonImages->defButtonImage;
-		::InvalidateRect( handle, NULL, FALSE );
-		::UpdateWindow( handle );
 		StartGame();
 	}
 	else if( settingsButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
 		settingsButton->curButtonImage = buttonImages->defButtonImage;
-		::InvalidateRect( handle, NULL, FALSE );
-		::UpdateWindow( handle );
 		ChangeSettings();
 	}
 	else if( backToMenuButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
 		backToMenuButton->curButtonImage = buttonImages->defButtonImage;
-		::InvalidateRect( handle, NULL, FALSE );
-		::UpdateWindow( handle );
 		BackToMenu();
 	}
+	::InvalidateRect( handle, NULL, FALSE );
+	::UpdateWindow( handle );
 }
 
 void UI::CMapSettingsWindow::OnMouseMove( int xMousePos, int yMousePos )

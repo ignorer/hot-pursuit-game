@@ -20,6 +20,8 @@ namespace UI {
 
 		const wchar_t* GetChoosedName() const;
 
+		void SetChoosedPosition( int position );
+
 		static Gdiplus::Image* clearBoxImage;
 		static Gdiplus::Image* collapsedBoxImage;
 		static Gdiplus::Image* expandedBoxImage;

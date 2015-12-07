@@ -77,3 +77,8 @@ const wchar_t* UI::CComboBox::GetChoosedName() const
 {
 	return names[pos].c_str();
 }
+
+void UI::CComboBox::SetChoosedPosition( int position )
+{
+	pos = position;
+}
