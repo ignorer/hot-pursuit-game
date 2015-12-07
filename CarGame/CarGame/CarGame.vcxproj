@@ -217,6 +217,9 @@
     <Image Include="..\..\Resources\Images\shieldToPickUp.png" />
     <Image Include="..\..\Resources\Images\wall.png" />
     <Image Include="..\..\Resources\Images\wallCell.png" />
+    <Image Include="bg_3.bmp" />
+    <Image Include="Resources\bg_3.bmp" />
+    <Image Include="Resources\bitmap4.bmp" />
     <Image Include="Resources\default_main.bmp" />
     <Image Include="Resources\default_result.bmp" />
     <Image Include="Resources\default_settings.bmp" />

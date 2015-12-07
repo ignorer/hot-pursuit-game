@@ -20,7 +20,7 @@ void UI::CSettingsDialog::Init( HWND hwndDlg ) {
 	HWND hSpin = ::GetDlgItem( hwndDlg, IDC_SPIN3 ); //Получаем дескрипторы окон
 	HWND dialogEditCtrl = ::GetDlgItem( hwndDlg, IDC_EDIT2 );
 
-	bkgrdBrush = CreatePatternBrush( LoadBitmap( HINSTANCE( GetWindowLong( hwndDlg, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDB_BITMAP3 ) ) );
+	bkgrdBrush = CreatePatternBrush( LoadBitmap( HINSTANCE( GetWindowLong( hwndDlg, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDB_BITMAP4 ) ) );
 	auto openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
 	
 	//Задаем вид курсора
