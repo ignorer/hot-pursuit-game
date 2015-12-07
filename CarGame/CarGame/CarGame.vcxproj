@@ -162,6 +162,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UI\Car.cpp" />
+    <ClCompile Include="UI\ComboBox.cpp" />
     <ClCompile Include="UI\Drawing.cpp" />
     <ClCompile Include="UI\MainMenuWindow.cpp" />
     <ClCompile Include="UI\Map.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="Core\Reader.h" />
     <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="UI\ButtonUtils.h" />
+    <ClInclude Include="UI\ComboBox.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="IMap.h" />
     <ClInclude Include="IPlayerState.h" />

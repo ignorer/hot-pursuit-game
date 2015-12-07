@@ -87,6 +87,9 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\ComboBox.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Reader.h">
@@ -157,6 +160,9 @@
     </ClInclude>
     <ClInclude Include="Core\Powerup.h">
       <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ComboBox.h">
+      <Filter>Source Files\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

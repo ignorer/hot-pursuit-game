@@ -11,6 +11,7 @@ class CUIManager;
 namespace UI {
 	class ButtonInfo;
 	class ButtonImages;
+	class CComboBox;
 
 	class CMapSettingsWindow {
 	public:
@@ -45,6 +46,7 @@ namespace UI {
 		HWND mapNameControl;
 		std::vector<HWND> positionOwnerControls;
 		std::vector<HWND> nameControls;
+		std::vector<CComboBox*> comboBoxes;
 
 		HBRUSH bkgrdBrush;
 
