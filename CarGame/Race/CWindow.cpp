@@ -132,7 +132,6 @@ void CWindow::OnDestroy()
 
 
 
-
 void CWindow::OnSize()
 {
     RECT rect;

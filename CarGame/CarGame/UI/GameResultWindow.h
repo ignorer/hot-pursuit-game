@@ -22,11 +22,11 @@ namespace UI {
 		void MakeInvisible() const;
 		void SetWinners( const std::vector<Core::CPlayer>& winners ) const;
 	protected:
-		void OnCreate();
-		void OnPaint();
-		void OnLButtonDown( int xMousePos, int yMousePos );
-		void OnLButtonUp( int xMousePos, int yMousePos );
-		void OnMouseMove( int xMousePos, int yMousePos );
+		void OnCreate() const;
+		void OnPaint() const;
+		void OnLButtonDown( int xMousePos, int yMousePos ) const;
+		void OnLButtonUp( int xMousePos, int yMousePos ) const;
+		void OnMouseMove( int xMousePos, int yMousePos ) const;
 	private:
 		HWND handle;
 		/*HWND toMainMenuButton;

@@ -32,6 +32,7 @@ bool UI::CGameResultWindow::RegisterClass( HINSTANCE hInst )
 UI::CGameResultWindow::CGameResultWindow( CUIManager* _manager ) :
 	handle( nullptr ),
 	resultMessage( nullptr ),
+	bkgrdBrush( nullptr ),
 	manager( _manager )
 {}
 
@@ -44,25 +45,7 @@ bool UI::CGameResultWindow::Create()
 	bkgrdBrush = HBRUSH( CreatePatternBrush( LoadBitmap( ::GetModuleHandle( nullptr ), MAKEINTRESOURCE( IDB_BITMAP5 ) ) ) );
 	resultMessage = CreateWindow( L"Static", L"", WS_VISIBLE | WS_CHILD | SS_CENTER, 110, 110, 180, 180,
 		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	SetClassLong( resultMessage, GCL_HCURSOR, (LONG)cursor );
-
-	/*toSettingsButton = CreateWindow( L"BUTTON", L"Play again", WS_VISIBLE | WS_CHILD, 75, 130, 150, 30,
-		handle, HMENU( BUTTON_SETTINGS ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	SetClassLong( toSettingsButton, GCL_HCURSOR, (LONG)cursor );
-
-	toMainMenuButton = CreateWindow( L"BUTTON", L"To main menu", WS_VISIBLE | WS_CHILD, 75, 180, 150, 30,
-		handle, HMENU( BUTTON_MAIN_MENU ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	SetClassLong( toMainMenuButton, GCL_HCURSOR, (LONG)cursor );
-
-	exitButton = CreateWindow( L"BUTTON", L"Exit", WS_VISIBLE | WS_CHILD, 75, 230, 150, 30,
-		handle, HMENU( BUTTON_EXIT ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	SetClassLong( exitButton, GCL_HCURSOR, (LONG)cursor );
-
-	auto openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
-	::SendMessage( toSettingsButton, WM_SETFONT, WPARAM( openSans ), TRUE );
-	::SendMessage( toMainMenuButton, WM_SETFONT, WPARAM( openSans ), TRUE );
-	::SendMessage( exitButton, WM_SETFONT, WPARAM( openSans ), TRUE );
-	::SendMessage( resultMessage, WM_SETFONT, WPARAM( openSans ), TRUE );*/
+	SetClassLong( resultMessage, GCL_HCURSOR, LONG(cursor) );
 
 	return handle != nullptr;
 }
@@ -77,7 +60,6 @@ void UI::CGameResultWindow::Destroy() const
 void UI::CGameResultWindow::MakeVisible() const
 {
 	::ShowWindow( handle, SW_SHOW );
-	//::SetForegroundWindow( handle );
 }
 
 void UI::CGameResultWindow::MakeInvisible() const
@@ -85,12 +67,11 @@ void UI::CGameResultWindow::MakeInvisible() const
 	::ShowWindow( handle, SW_HIDE );
 }
 
-void UI::CGameResultWindow::OnCreate()
+void UI::CGameResultWindow::OnCreate() const
 {
-
 }
 
-void UI::CGameResultWindow::OnPaint()
+void UI::CGameResultWindow::OnPaint() const
 {
 	PAINTSTRUCT ps;
 	HDC hdc = ::BeginPaint( handle, &ps );
@@ -124,19 +105,18 @@ void UI::CGameResultWindow::OnPaint()
 	::EndPaint( handle, &ps );
 }
 
-void UI::CGameResultWindow::OnLButtonDown( int xMousePos, int yMousePos )
+void UI::CGameResultWindow::OnLButtonDown( int xMousePos, int yMousePos ) const
 {
-	
 }
 
-void UI::CGameResultWindow::OnLButtonUp( int xMousePos, int yMousePos )
+void UI::CGameResultWindow::OnLButtonUp( int xMousePos, int yMousePos ) const
 {
 	if (xMousePos > 100 && xMousePos < 300) {
 		if (yMousePos > 205 && yMousePos < 260) {
-			manager->SwitchToMainMenu();
+			manager->SwitchToSettings();
 		}
 		else if (yMousePos > 280 && yMousePos < 330) {
-			manager->SwitchToSettings();
+			manager->SwitchToMainMenu();
 		}
 		else if (yMousePos > 350 && yMousePos < 400) {
 			Destroy();
@@ -144,9 +124,8 @@ void UI::CGameResultWindow::OnLButtonUp( int xMousePos, int yMousePos )
 	}
 }
 
-void UI::CGameResultWindow::OnMouseMove( int xMousePos, int yMousePos )
+void UI::CGameResultWindow::OnMouseMove( int xMousePos, int yMousePos ) const
 {
-	
 }
 
 
@@ -198,11 +177,11 @@ LRESULT UI::CGameResultWindow::windowProc( HWND handle, UINT message, WPARAM wPa
 		case WM_COMMAND:
 			return 0;
 		case WM_CTLCOLORSTATIC:
-			auto hdc = (HDC)wParam;
+			auto hdc = HDC(wParam);
 			SetTextColor( hdc, RGB( 0, 0, 0 ) );
 			SetBkMode( hdc, TRANSPARENT );
 
-			return (LRESULT)GetStockObject( NULL_BRUSH );
+			return LRESULT(GetStockObject( NULL_BRUSH ));
 	}
 
 	return ::DefWindowProc( handle, message, wParam, lParam );
