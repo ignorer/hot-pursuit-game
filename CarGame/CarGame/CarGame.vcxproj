@@ -90,7 +90,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>freeglut.lib;soil.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut.lib;soil.lib;comctl32.lib;Gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
       <SubSystem>Windows</SubSystem>
@@ -128,7 +128,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EntryPointSymbol>
       </EntryPointSymbol>
-      <AdditionalDependencies>freeglut.lib;soil.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut.lib;soil.lib;comctl32.lib;Gdiplus.lib;Gdiplus.lib%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -181,8 +181,8 @@
     <ClInclude Include="Core\Powerup.h" />
     <ClInclude Include="Core\PowerupManager.h" />
     <ClInclude Include="Core\Reader.h" />
-    <ClInclude Include="GdiUtils.h" />
     <ClInclude Include="Resources\resource.h" />
+    <ClInclude Include="UI\ButtonUtils.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="IMap.h" />
     <ClInclude Include="IPlayerState.h" />

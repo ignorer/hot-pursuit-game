@@ -168,8 +168,14 @@ namespace Core {
 		int yVelocity = currentPosition.y - previuosPosition.y;
 
 		std::shared_ptr<IPlayerState> playerStatePtr( GetPlayerStateFunc( currentPosition.x, currentPosition.y, xVelocity, yVelocity, 0 ) );
-		AIStrategies[player->GetNumber()] = std::shared_ptr<IStrategy>( StrategyBuilderFunc( mapForAI, std::make_pair( firstFinishPoint.x, firstFinishPoint.y ),
-			std::make_pair( secondFinishPoint.x, secondFinishPoint.y ), CGameMode::GetLapCount(), playerStatePtr ) );
+		AIStrategies[player->GetNumber()] = std::shared_ptr<IStrategy>( StrategyBuilderFunc( 
+			mapForAI, 
+			std::make_pair( firstFinishPoint.x, firstFinishPoint.y ),
+			std::make_pair( secondFinishPoint.x, secondFinishPoint.y ), 
+			CGameMode::GetLapCount(), 
+			playerStatePtr,
+			CGameMode::GetMovementMode() == CGameMode::SEQUENTIAL ) 
+			);
 	}
 
 	int CGame::turnOfAI( CPlayer& player )

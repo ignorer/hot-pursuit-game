@@ -1,14 +1,20 @@
 ﻿#pragma once
 
+//#define ULONG_PTR ULONG
+//#define WIN32_LEAN_AND_MEAN 
+//#include <Unknwn.h> 
 #include <Windows.h>
-#include <gdiplus.h>
-#include <GdiUtils.h>
+//#include <objidl.h>
+//#include <gdiplus.h>
+//using namespace Gdiplus;
+//#pragma comment (lib,"Gdiplus.lib")
+
+#include "UI/ButtonUtils.h"
 
 namespace UI {
 
 	class CMapSettingsWindow;
 	class CGameResultWindow;
-
 
 	class CMainMenuWindow {
 	public:

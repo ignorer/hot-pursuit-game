@@ -15,7 +15,8 @@ extern "C" RACE_AI_API IStrategy* GetNewStrategy(
 	const std::pair< int, int > &_leftFinishPoint,
 	const std::pair< int, int > &_rightFinishPoint,
 	int lapsCount,
-	std::shared_ptr<IPlayerState> playerState );
+	std::shared_ptr<IPlayerState> playerState,
+	bool isSequential);
 
 // Factories to export PlayerState and Map classes
 extern "C" RACE_AI_API IPlayerState* GetPlayerState( int x, int y, int xVelocity, int yVelocity, int curLap );

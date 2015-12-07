@@ -146,7 +146,7 @@
     <ClInclude Include="Resources\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GdiUtils.h">
+    <ClInclude Include="UI\ButtonUtils.h">
       <Filter>Source Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="AI\IPlayerState.h">

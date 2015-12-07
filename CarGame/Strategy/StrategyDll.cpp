@@ -43,10 +43,11 @@ IStrategy* GetNewStrategy(
 	const std::pair< int, int > &_leftFinishPoint,
 	const std::pair< int, int > &_rightFinishPoint,
 	int lapsCount,
-	std::shared_ptr<IPlayerState> playerState )
+	std::shared_ptr<IPlayerState> playerState,
+	bool isSequential )
 {
 	Map map( inputCells, _leftFinishPoint, _rightFinishPoint );
 	const PlayerState currentPlayer = *(std::dynamic_pointer_cast<PlayerState>(playerState));
 
-	return new CAStarStrategy( map, currentPlayer, lapsCount );
+	return new CAStarStrategy( map, currentPlayer, lapsCount, isSequential );
 }

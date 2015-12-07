@@ -9,6 +9,7 @@
 #include "UI/MapSettingsWindow.h"
 #include "UI/GameResultWindow.h"
 
+
 namespace Core {
 	struct CCoordinates;
 	class CPlayer;

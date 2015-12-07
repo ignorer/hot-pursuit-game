@@ -1,13 +1,16 @@
 ﻿#pragma once
 
 #include <Windows.h>
-#include <Core/Player.h>
+//#include <gdiplus.h>
+#include "Core/Player.h"
 #include "Core/GameMode.h"
-//#include <GdiUtils.h>
+#include <utility>
+//#include "UI/ButtonUtils.h"
 
 class CUIManager;
-
 namespace UI {
+	class ButtonInfo;
+	class ButtonImages;
 
 	class CMapSettingsWindow {
 	public:
@@ -39,21 +42,20 @@ namespace UI {
 		
 	private:
 		HWND handle;
-		HWND startGameButton;
+		/*HWND startGameButton;
 		HWND backToMenuButton;
-		HWND settingsButton;
+		HWND settingsButton;*/
 		HWND mapNameControl;
 		std::vector<HWND> positionOwnerControls;
 		std::vector<HWND> nameControls;
 
 		HBRUSH bkgrdBrush;
 
-		/*ButtonInfo startGameButton;
-		ButtonInfo settingsButton;
-		ButtonInfo backToMenuButton;
-		Gdiplus::Image* defButtonImage;
-		Gdiplus::Image* hoverButtonImage;
-		Gdiplus::Image* pressedButtonImage;*/
+		ButtonInfo* startGameButton;
+		ButtonInfo* settingsButton;
+		ButtonInfo* backToMenuButton;
+		ButtonImages* buttonImages;
+		ButtonImages* b;
 
 		CUIManager* manager;
 
