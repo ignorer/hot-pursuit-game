@@ -4,7 +4,11 @@
 
 class CUIManager;
 
+
 namespace UI {
+	//class ButtonInfo;
+	//class ButtonImages;
+
 	class CGameResultWindow {
 	public:
 		static bool RegisterClass( HINSTANCE hInst );
@@ -17,7 +21,12 @@ namespace UI {
 		void MakeVisible() const;
 		void MakeInvisible() const;
 		void SetWinners( const std::vector<Core::CPlayer>& winners ) const;
-
+	protected:
+		/*void OnCreate();
+		void OnPaint();
+		void OnLButtonDown( int xMousePos, int yMousePos );
+		void OnLButtonUp( int xMousePos, int yMousePos );
+		void OnMouseMove( int xMousePos, int yMousePos );*/
 	private:
 		HWND handle;
 		HWND toMainMenuButton;

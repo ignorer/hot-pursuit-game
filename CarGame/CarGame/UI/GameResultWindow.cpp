@@ -1,10 +1,12 @@
 ﻿#include <GL/glut.h>
+#include <Windowsx.h>
 
 #include "Resources/resource.h"
 
 #include "UIManager.h"
 #include "UI/GameResultWindow.h"
 #include "UI/Drawing.h"
+
 
 const wchar_t* const UI::CGameResultWindow::className = L"CGameResultWindow";
 
@@ -39,7 +41,7 @@ UI::CGameResultWindow::CGameResultWindow( CUIManager* _manager ) :
 bool UI::CGameResultWindow::Create()
 {
 	handle = CreateWindow( className, L"Game result - Rock'n'Roll racing", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-		200, 200, 300, 300, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
+		200, 200, 400, 450, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
 
 	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
 	resultMessage = CreateWindow( L"Static", L"", WS_VISIBLE | WS_CHILD | SS_CENTER, 50, 50, 200, 50,
@@ -84,6 +86,32 @@ void UI::CGameResultWindow::MakeInvisible() const
 {
 	::ShowWindow( handle, SW_HIDE );
 }
+/*
+void UI::CGameResultWindow::OnCreate()
+{
+
+}
+
+void UI::CGameResultWindow::OnPaint()
+{
+
+}
+
+void UI::CGameResultWindow::OnLButtonDown( int xMousePos, int yMousePos )
+{
+
+}
+
+void UI::CGameResultWindow::OnLButtonUp( int xMousePos, int yMousePos )
+{
+
+}
+
+void UI::CGameResultWindow::OnMouseMove( int xMousePos, int yMousePos )
+{
+
+}*/
+
 
 void UI::CGameResultWindow::SetWinners( const std::vector<Core::CPlayer>& winners ) const
 {
@@ -116,7 +144,20 @@ LRESULT UI::CGameResultWindow::windowProc( HWND handle, UINT message, WPARAM wPa
 		case WM_DESTROY:
 			wnd->Destroy();
 			return 0;
-
+		/*case WM_CREATE:
+			wnd->OnCreate();
+			return 0;
+		case WM_PAINT:
+			wnd->OnPaint();
+		case WM_LBUTTONDOWN:
+			wnd->OnLButtonDown( GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
+			return 0;
+		case WM_LBUTTONUP:
+			wnd->OnLButtonUp( GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
+			return 0;
+		case WM_MOUSEMOVE:
+			wnd->OnMouseMove( GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
+			return 0;*/
 		case WM_COMMAND:
 			if( LOWORD( wParam ) == wnd->BUTTON_MAIN_MENU ) {
 				wnd->manager->SwitchToMainMenu();
