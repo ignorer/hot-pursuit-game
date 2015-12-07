@@ -9,7 +9,7 @@
 #include "UI/Drawing.h"
 #include "Utils.h"
 
-#pragma comment(lib, "Gdiplus.lib")
+//#pragma comment(lib, "Gdiplus.lib")
 
 const wchar_t* const UI::CMainMenuWindow::className = L"CMainWindow";
 
