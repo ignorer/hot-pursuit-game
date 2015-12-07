@@ -368,8 +368,10 @@ LRESULT UI::CMapSettingsWindow::windowProc( HWND handle, UINT message, WPARAM wP
 			hdc = (HDC)wParam;
 			SetTextColor( hdc, RGB( 0, 0, 0 ) );
 			SetBkMode( hdc, TRANSPARENT );
-
 			return (LRESULT)GetStockObject( NULL_BRUSH );
+		case WM_CTLCOLOREDIT:
+			::SetBkColor( reinterpret_cast<HDC>( wParam ), RGB( 232, 206, 180 ) );
+			return INT_PTR( CreateSolidBrush( RGB( 232, 206, 180 ) ) );
 		case WM_CREATE:
 			wnd->OnCreate();
 			return 0;
