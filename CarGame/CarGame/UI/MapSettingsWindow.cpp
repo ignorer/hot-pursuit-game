@@ -92,17 +92,6 @@ bool UI::CMapSettingsWindow::Create()
 
 	}
 
-	/*startGameButton = CreateWindow( L"BUTTON", L"Start game", WS_VISIBLE | WS_CHILD, 310, 260, 200, 60,
-		handle, HMENU( BUTTON_START_GAME ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	settingsButton = CreateWindow( L"BUTTON", L"Settings", WS_VISIBLE | WS_CHILD, 310, 330, 200, 60,
-		handle, HMENU( BUTTON_SETTINGS ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	backToMenuButton = CreateWindow( L"BUTTON", L"Back to main menu", WS_VISIBLE | WS_CHILD, 310, 400, 200, 60,
-		handle, HMENU( BUTTON_BACK_TO_MENU ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-
-	::SendMessage( startGameButton, WM_SETFONT, WPARAM( openSans ), TRUE );
-	::SendMessage( settingsButton, WM_SETFONT, WPARAM( openSans ), TRUE );
-	::SendMessage( backToMenuButton, WM_SETFONT, WPARAM( openSans ), TRUE );*/
-
 	return handle != nullptr;
 }
 
@@ -329,26 +318,25 @@ void UI::CMapSettingsWindow::OnLButtonUp( int xMousePos, int yMousePos )
 
 void UI::CMapSettingsWindow::OnMouseMove( int xMousePos, int yMousePos )
 {
-	if( startGameButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
-		startGameButton->curButtonImage = buttonImages->hoverButtonImage;
-	}
-	else {
-		startGameButton->curButtonImage = buttonImages->defButtonImage;
-	}
-	if( settingsButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
-		settingsButton->curButtonImage = buttonImages->hoverButtonImage;
-	}
-	else {
-		settingsButton->curButtonImage = buttonImages->defButtonImage;
-	}
-	if( backToMenuButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
-		backToMenuButton->curButtonImage = buttonImages->hoverButtonImage;
-	}
-	else {
-		backToMenuButton->curButtonImage = buttonImages->defButtonImage;
-	}
-	::InvalidateRect( handle, NULL, FALSE );
+	changeHoveredButton( startGameButton, xMousePos, yMousePos );
+	changeHoveredButton( settingsButton, xMousePos, yMousePos );
+	changeHoveredButton( backToMenuButton, xMousePos, yMousePos );
 	::UpdateWindow( handle );
+}
+
+void UI::CMapSettingsWindow::changeHoveredButton( ButtonInfo* button, int xMousePos, int yMousePos ) {
+	RECT rectToChange;
+	if (button->buttonRect.Contains( xMousePos, yMousePos )) {
+		button->curButtonImage = buttonImages->hoverButtonImage;
+	}
+	else {
+		button->curButtonImage = buttonImages->defButtonImage;
+	}
+	rectToChange.bottom = button->buttonRect.GetBottom();
+	rectToChange.left = button->buttonRect.GetLeft();
+	rectToChange.top = button->buttonRect.GetTop();
+	rectToChange.right = button->buttonRect.GetRight();
+	::InvalidateRect( handle, &rectToChange, FALSE );
 }
 
 LRESULT UI::CMapSettingsWindow::windowProc( HWND handle, UINT message, WPARAM wParam, LPARAM lParam )

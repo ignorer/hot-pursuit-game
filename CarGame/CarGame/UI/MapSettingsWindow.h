@@ -42,9 +42,6 @@ namespace UI {
 		
 	private:
 		HWND handle;
-		/*HWND startGameButton;
-		HWND backToMenuButton;
-		HWND settingsButton;*/
 		HWND mapNameControl;
 		std::vector<HWND> positionOwnerControls;
 		std::vector<HWND> nameControls;
@@ -68,5 +65,6 @@ namespace UI {
 		static const wchar_t* const className;
 
 		static LRESULT __stdcall windowProc( HWND handle, UINT message, WPARAM wParam, LPARAM lParam );
+		void changeHoveredButton( ButtonInfo* button, int xMousePos, int yMousePos );
 	};
 }
