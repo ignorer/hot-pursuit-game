@@ -211,7 +211,7 @@ std::vector<Core::CPlayer> UI::CMapSettingsWindow::GetPlayersInfo( const std::ve
 		if ( textString != L"None" ) {
 			std::wstring nameString;
 			if (symbCount == 0) {
-				throw std::invalid_argument( "Empty Player Name" );
+				//throw std::invalid_argument( "Empty Player Name" );
 			}
 			else {
 				nameString = name.get();
@@ -334,9 +334,9 @@ void UI::CMapSettingsWindow::OnLButtonDown( int xMousePos, int yMousePos )
 	else if( backToMenuButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
 		backToMenuButton->curButtonImage = buttonImages->pressedButtonImage;
 	}
-		::InvalidateRect( handle, NULL, FALSE );
-		::UpdateWindow( handle );
-	}
+	::InvalidateRect( handle, NULL, FALSE );
+	::UpdateWindow( handle );
+}
 
 void UI::CMapSettingsWindow::OnLButtonUp( int xMousePos, int yMousePos )
 {

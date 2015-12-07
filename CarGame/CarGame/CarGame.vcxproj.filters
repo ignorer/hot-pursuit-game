@@ -244,6 +244,12 @@
     <Image Include="Resources\bg_3.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="simple_result.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\simple_result.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\Resources\Maps\map1.txt">
