@@ -123,9 +123,8 @@ namespace Core {
 
 	void CGame::findWinners( std::vector<CPlayer>& winners ) const
 	{
-		int lapCount = CGameMode::GetLapCount();
-		for( auto player : players ) {
-			if( player.GetLaps() >= lapCount ) {
+		for( auto& player : players ) {
+			if( player.GetLaps() >= CGameMode::GetLapCount() ) {
 				winners.push_back( player );
 			}
 		}
@@ -316,8 +315,8 @@ namespace Core {
 					players[i].DecreaseShield();
 					manager->UpdatePlayersInfo( players );
 					handleFinishLineIntersectionsForPlayer( i );
-					findWinners( winners );
 				}
+				findWinners( winners );
 			}
 		} while( winners.size() == 0 && deadPlayersCount < players.size() );
 

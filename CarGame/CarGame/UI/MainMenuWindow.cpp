@@ -35,6 +35,10 @@ bool UI::CMainMenuWindow::RegisterClass( HINSTANCE hInst )
 
 UI::CMainMenuWindow::CMainMenuWindow( HINSTANCE hInst ) :
 	handle( nullptr ),
+	bkgrdBrush( nullptr ),
+	defButtonImage( nullptr ),
+	hoverButtonImage( nullptr ),
+	pressedButtonImage( nullptr ),
 	manager( this, hInst )
 {}
 
@@ -82,7 +86,7 @@ void UI::CMainMenuWindow::OnMapEditorExe()
 
 void UI::CMainMenuWindow::OnCreate()
 {
-	HINSTANCE hInstance = (HINSTANCE)GetWindowLong( handle, GWL_HINSTANCE );
+	HINSTANCE hInstance = HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ));
 	bkgrdBrush = CreatePatternBrush( LoadBitmap( hInstance, MAKEINTRESOURCE( IDB_BITMAP1 ) ) );
 	newGameButton.curButtonImage = defButtonImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\default_button.png").c_str() );
 	hoverButtonImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\hover.png").c_str() );
@@ -140,17 +144,17 @@ void UI::CMainMenuWindow::OnLButtonDown( int xMousePos, int yMousePos )
 {
 	if ( newGameButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
 		newGameButton.curButtonImage = pressedButtonImage;
-		::InvalidateRect( handle, NULL, FALSE );
+		::InvalidateRect( handle, nullptr, FALSE );
 		::UpdateWindow( handle );
 	}
 	else if ( mapEditorButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
 		mapEditorButton.curButtonImage = pressedButtonImage;
-		::InvalidateRect( handle, NULL, FALSE );
+		::InvalidateRect( handle, nullptr, FALSE );
 		::UpdateWindow( handle );
 	}
 	else if ( exitGameButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
 		exitGameButton.curButtonImage = pressedButtonImage;
-		::InvalidateRect( handle, NULL, FALSE );
+		::InvalidateRect( handle, nullptr, FALSE );
 		::UpdateWindow( handle );
 	}
 }
@@ -159,19 +163,19 @@ void UI::CMainMenuWindow::OnLButtonUp( int xMousePos, int yMousePos )
 {
 	if ( newGameButton.buttonRect.Contains( xMousePos, yMousePos ) ) {
 		newGameButton.curButtonImage = defButtonImage;
-		::InvalidateRect( handle, NULL, FALSE );
+		::InvalidateRect( handle, nullptr, FALSE );
 		::UpdateWindow( handle );
 		Play();
 	}
 	else if (mapEditorButton.buttonRect.Contains( xMousePos, yMousePos )) {
 		mapEditorButton.curButtonImage = defButtonImage;
-		::InvalidateRect( handle, NULL, FALSE );
+		::InvalidateRect( handle, nullptr, FALSE );
 		::UpdateWindow( handle );
 		OnMapEditorExe();
 	}
 	else if (exitGameButton.buttonRect.Contains( xMousePos, yMousePos )) {
 		exitGameButton.curButtonImage = defButtonImage;
-		::InvalidateRect( handle, NULL, FALSE );
+		::InvalidateRect( handle, nullptr, FALSE );
 		::UpdateWindow( handle );
 		Destroy();
 	}
@@ -196,7 +200,7 @@ void UI::CMainMenuWindow::OnMouseMove( int xMousePos, int yMousePos )
 	else {
 		exitGameButton.curButtonImage = defButtonImage;
 	}
-	::InvalidateRect( handle, NULL, FALSE );
+	::InvalidateRect( handle, nullptr, FALSE );
 	::UpdateWindow( handle );
 }
 

@@ -1,8 +1,6 @@
 ﻿#pragma once
 
 #include "stdafx.h"
-#include "resource.h"
-#include "toolbar.h"
 #include "CCommandHandler.h"
 #include "CMap.h"
 
@@ -10,7 +8,9 @@
 class CApplicationInterface : public IUIApplication, public CComObjectRootEx<CComSingleThreadModel> {
 
 public:
-    BEGIN_COM_MAP( CApplicationInterface )
+	virtual ~CApplicationInterface();
+
+	BEGIN_COM_MAP( CApplicationInterface )
         COM_INTERFACE_ENTRY( IUIApplication )
     END_COM_MAP()
 
