@@ -108,7 +108,7 @@ bool UI::CMapSettingsWindow::Create()
 
 bool UI::CMapSettingsWindow::CreateMapNameControl()
 {
-	mapNameControl = CreateWindow( L"COMBOBOX", L"Map", CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 310, 190, 200, 160,
+	mapNameControl = CreateWindow( L"COMBOBOX", L"Map", CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 305, 190, 205, 160,
 		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 
 	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
@@ -239,15 +239,15 @@ void UI::CMapSettingsWindow::OnCreate()
 	startGameButton->curButtonImage = buttonImages->defButtonImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\default_button.png").c_str() );
 	buttonImages->hoverButtonImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\hover.png").c_str() );
 	buttonImages->pressedButtonImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\pressed.png").c_str() );
-	startGameButton->buttonRect = { 310, 260, 204, 61 };
+	startGameButton->buttonRect = { 305, 255, 204, 61 };
 	startGameButton->buttonName = L"START GAME";
-	startGameButton->buttonNameRect = { 310, 245, 200, 60 };
+	startGameButton->buttonNameRect = { 305, 240, 200, 60 };
 	settingsButton->buttonName = L"SETTINGS";
 	settingsButton->curButtonImage = buttonImages->defButtonImage;
-	settingsButton->buttonRect = { 310, 330, 204, 61 };
+	settingsButton->buttonRect = { 305, 325, 204, 61 };
 	backToMenuButton->buttonName = L"BACK";
 	backToMenuButton->curButtonImage = buttonImages->defButtonImage;
-	backToMenuButton->buttonRect = { 310, 400, 204, 61 };
+	backToMenuButton->buttonRect = { 305, 395, 204, 61 };
 }
 
 void UI::CMapSettingsWindow::OnPaint()
@@ -270,10 +270,11 @@ void UI::CMapSettingsWindow::OnPaint()
 	graphics.DrawImage( backToMenuButton->curButtonImage, backToMenuButton->buttonRect );
 
 	SetBkMode( newHdc, TRANSPARENT );
+	SetTextColor( newHdc, RGB( 255, 255, 255 ) );
 	SelectObject( newHdc, openSans );
-	//TextOut( newHdc, 222, 263, startGameButton->buttonName, 8 );
-	//TextOut( newHdc, 215, 333, settingsButton->buttonName, 10 );
-	//TextOut( newHdc, 220, 403, backToMenuButton->buttonName, 9 );
+	TextOut( newHdc, 357, 278, startGameButton->buttonName, 10 );
+	TextOut( newHdc, 368, 348, settingsButton->buttonName, 8 );
+	TextOut( newHdc, 383, 418, backToMenuButton->buttonName, 4 );
 	::BitBlt( hdc, 0, 0, rect.right, rect.bottom, newHdc, 0, 0, SRCCOPY );
 
 	::SelectObject( newHdc, oldbitmap );
