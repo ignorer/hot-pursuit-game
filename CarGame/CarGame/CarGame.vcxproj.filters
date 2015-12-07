@@ -244,10 +244,13 @@
     <Image Include="Resources\default_settings2.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Resources\default_settings2.bmp">
-      <Filter>Resource Files\BackGround</Filter>
-    </Image>
     <Image Include="Resources\default_settings.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="simple_result.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\simple_result.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

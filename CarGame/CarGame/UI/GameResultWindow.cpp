@@ -19,7 +19,7 @@ bool UI::CGameResultWindow::RegisterClass( HINSTANCE hInst )
 	tag.cbClsExtra = 0;
 	tag.cbWndExtra = 0;
 	tag.hCursor = LoadCursor( hInst, MAKEINTRESOURCE( IDC_CURSOR1 ) );
-	tag.hbrBackground = HBRUSH( CreatePatternBrush( LoadBitmap( hInst, MAKEINTRESOURCE( IDB_BITMAP2 ) ) ) );
+	tag.hbrBackground = HBRUSH( CreatePatternBrush( LoadBitmap( hInst, MAKEINTRESOURCE( IDB_BITMAP5 ) ) ) );
 	tag.lpszMenuName = nullptr;
 	tag.lpszClassName = className;
 	tag.hInstance = ::GetModuleHandle( nullptr );
@@ -31,9 +31,6 @@ bool UI::CGameResultWindow::RegisterClass( HINSTANCE hInst )
 
 UI::CGameResultWindow::CGameResultWindow( CUIManager* _manager ) :
 	handle( nullptr ),
-	toMainMenuButton( nullptr ),
-	toSettingsButton( nullptr ),
-	exitButton( nullptr ),
 	resultMessage( nullptr ),
 	manager( _manager )
 {}
@@ -41,14 +38,15 @@ UI::CGameResultWindow::CGameResultWindow( CUIManager* _manager ) :
 bool UI::CGameResultWindow::Create()
 {
 	handle = CreateWindow( className, L"Game result - Rock'n'Roll racing", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-		200, 200, 400, 450, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
+		200, 200, 400, 470, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
 
 	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
-	resultMessage = CreateWindow( L"Static", L"", WS_VISIBLE | WS_CHILD | SS_CENTER, 50, 50, 200, 50,
+	bkgrdBrush = HBRUSH( CreatePatternBrush( LoadBitmap( ::GetModuleHandle( nullptr ), MAKEINTRESOURCE( IDB_BITMAP5 ) ) ) );
+	resultMessage = CreateWindow( L"Static", L"", WS_VISIBLE | WS_CHILD | SS_CENTER, 110, 110, 180, 180,
 		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 	SetClassLong( resultMessage, GCL_HCURSOR, (LONG)cursor );
 
-	toSettingsButton = CreateWindow( L"BUTTON", L"Play again", WS_VISIBLE | WS_CHILD, 75, 130, 150, 30,
+	/*toSettingsButton = CreateWindow( L"BUTTON", L"Play again", WS_VISIBLE | WS_CHILD, 75, 130, 150, 30,
 		handle, HMENU( BUTTON_SETTINGS ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 	SetClassLong( toSettingsButton, GCL_HCURSOR, (LONG)cursor );
 
@@ -64,7 +62,7 @@ bool UI::CGameResultWindow::Create()
 	::SendMessage( toSettingsButton, WM_SETFONT, WPARAM( openSans ), TRUE );
 	::SendMessage( toMainMenuButton, WM_SETFONT, WPARAM( openSans ), TRUE );
 	::SendMessage( exitButton, WM_SETFONT, WPARAM( openSans ), TRUE );
-	::SendMessage( resultMessage, WM_SETFONT, WPARAM( openSans ), TRUE );
+	::SendMessage( resultMessage, WM_SETFONT, WPARAM( openSans ), TRUE );*/
 
 	return handle != nullptr;
 }
@@ -86,7 +84,7 @@ void UI::CGameResultWindow::MakeInvisible() const
 {
 	::ShowWindow( handle, SW_HIDE );
 }
-/*
+
 void UI::CGameResultWindow::OnCreate()
 {
 
@@ -94,23 +92,62 @@ void UI::CGameResultWindow::OnCreate()
 
 void UI::CGameResultWindow::OnPaint()
 {
+	PAINTSTRUCT ps;
+	HDC hdc = ::BeginPaint( handle, &ps );
+	HDC newHdc = ::CreateCompatibleDC( hdc );
+	RECT rect;
+	::GetClientRect( handle, &rect );
+	HFONT openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
+	HBITMAP bitmap = ::CreateCompatibleBitmap( hdc, rect.right - rect.left, rect.bottom - rect.top );
+	HGDIOBJ oldbitmap = ::SelectObject( newHdc, bitmap );
+	FillRect( newHdc, &ps.rcPaint, bkgrdBrush );
 
+	SetBkMode( newHdc, TRANSPARENT );
+	SelectObject( newHdc, openSans );
+
+	SetTextColor( newHdc, RGB( 255, 255, 255 ) );
+	TextOut( newHdc, 160, 230, L"PLAY AGAIN", 10 );
+	TextOut( newHdc, 145, 305, L"TO MAIN MENU", 12 );
+	TextOut( newHdc, 180, 380, L"EXIT", 4 );
+
+
+	::BitBlt( hdc, 0, 0, rect.right, rect.bottom, newHdc, 0, 0, SRCCOPY );
+
+	::SelectObject( newHdc, oldbitmap );
+	::DeleteObject( bitmap );
+	::DeleteObject( openSans );
+
+	::DeleteDC( hdc );
+	::DeleteDC( newHdc );
+
+	::EndPaint( handle, &ps );
 }
 
 void UI::CGameResultWindow::OnLButtonDown( int xMousePos, int yMousePos )
 {
-
+	
 }
 
 void UI::CGameResultWindow::OnLButtonUp( int xMousePos, int yMousePos )
 {
-
+	if (xMousePos > 100 && xMousePos < 300) {
+		if (yMousePos > 205 && yMousePos < 260) {
+			manager->SwitchToMainMenu();
+		}
+		else if (yMousePos > 280 && yMousePos < 330) {
+			manager->SwitchToSettings();
+		}
+		else if (yMousePos > 350 && yMousePos < 400) {
+			Destroy();
+		}
+	}
 }
 
 void UI::CGameResultWindow::OnMouseMove( int xMousePos, int yMousePos )
 {
-
-}*/
+	
+}
 
 
 void UI::CGameResultWindow::SetWinners( const std::vector<Core::CPlayer>& winners ) const
@@ -144,7 +181,7 @@ LRESULT UI::CGameResultWindow::windowProc( HWND handle, UINT message, WPARAM wPa
 		case WM_DESTROY:
 			wnd->Destroy();
 			return 0;
-		/*case WM_CREATE:
+		case WM_CREATE:
 			wnd->OnCreate();
 			return 0;
 		case WM_PAINT:
@@ -157,15 +194,8 @@ LRESULT UI::CGameResultWindow::windowProc( HWND handle, UINT message, WPARAM wPa
 			return 0;
 		case WM_MOUSEMOVE:
 			wnd->OnMouseMove( GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
-			return 0;*/
+			return 0;
 		case WM_COMMAND:
-			if( LOWORD( wParam ) == wnd->BUTTON_MAIN_MENU ) {
-				wnd->manager->SwitchToMainMenu();
-			} else if( LOWORD( wParam ) == wnd->BUTTON_SETTINGS ) {
-				wnd->manager->SwitchToSettings();
-			} else if( LOWORD( wParam ) == wnd->BUTTON_EXIT ) {
-				::SendMessage( wnd->handle, WM_DESTROY, wParam, lParam );
-			}
 			return 0;
 		case WM_CTLCOLORSTATIC:
 			auto hdc = (HDC)wParam;

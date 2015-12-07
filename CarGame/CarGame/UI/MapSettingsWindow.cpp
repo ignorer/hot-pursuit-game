@@ -59,14 +59,6 @@ bool UI::CMapSettingsWindow::Create()
 		DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
 	::SendMessage( mapNameControl, WM_SETFONT, WPARAM( openSans ), TRUE );
 
-	//auto mapText = CreateWindow( L"Static", L"CHOOSE MAP", WS_VISIBLE | WS_CHILD | SS_LEFT, 310, 160, 200, 20,
-	//	handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	//auto nameText = CreateWindow( L"Static", L"Name:", WS_VISIBLE | WS_CHILD | SS_LEFT, 135, 80, 200, 20,
-	//	handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-
-	//::SendMessage( mapText, WM_SETFONT, WPARAM( openSans ), TRUE );
-	//::SendMessage( nameText, WM_SETFONT, WPARAM( openSans ), TRUE );
-
 	CComboBox::clearBoxImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\box_clear.png").c_str() );
 	CComboBox::collapsedBoxImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\box.png").c_str() );
 	CComboBox::expandedBoxImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\box_choosed.png").c_str() );
@@ -188,7 +180,7 @@ std::vector<Core::CPlayer> UI::CMapSettingsWindow::GetPlayersInfo( const std::ve
 		if ( textString != L"None" ) {
 			std::wstring nameString;
 			if (symbCount == 0) {
-				throw std::invalid_argument( "Empty Player Name" );
+				//throw std::invalid_argument( "Empty Player Name" );
 			}
 			else {
 				nameString = name.get();
@@ -322,9 +314,9 @@ void UI::CMapSettingsWindow::OnLButtonDown( int xMousePos, int yMousePos )
 	else if( backToMenuButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
 		backToMenuButton->curButtonImage = buttonImages->pressedButtonImage;
 	}
-		::InvalidateRect( handle, NULL, FALSE );
-		::UpdateWindow( handle );
-	}
+	::InvalidateRect( handle, NULL, FALSE );
+	::UpdateWindow( handle );
+}
 
 void UI::CMapSettingsWindow::OnLButtonUp( int xMousePos, int yMousePos )
 {
