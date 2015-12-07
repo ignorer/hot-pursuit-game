@@ -223,6 +223,8 @@
     <Image Include="Resources\default_main.bmp" />
     <Image Include="Resources\default_result.bmp" />
     <Image Include="Resources\default_settings.bmp" />
+    <Image Include="Resources\default_settings2.bmp" />
+    <Image Include="Resources\default_settings2.bmp" />
     <Image Include="Resources\logo_bg.bmp" />
     <Image Include="Resources\MainIcon.ico" />
   </ItemGroup>

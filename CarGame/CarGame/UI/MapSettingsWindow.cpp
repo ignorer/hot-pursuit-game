@@ -53,44 +53,19 @@ bool UI::CMapSettingsWindow::Create()
 {
 	handle = CreateWindow( className, L"Map settings - Rock'n'Roll racing", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
 		200, 200, 535, 515, nullptr, nullptr, ::GetModuleHandle( nullptr ), this );
-
-	CreateMapNameControl();
 	
 	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
-	auto openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
+	auto openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, 
+		DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
 	::SendMessage( mapNameControl, WM_SETFONT, WPARAM( openSans ), TRUE );
 
-	auto mapText = CreateWindow( L"Static", L"CHOOSE MAP", WS_VISIBLE | WS_CHILD | SS_LEFT, 310, 160, 200, 20,
-		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	auto playersText = CreateWindow( L"Static", L"CHOOSE PLAYERS", WS_VISIBLE | WS_CHILD | SS_LEFT, 23, 40, 200, 20,
-		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	//auto typeText = CreateWindow( L"Static", L"Type:", WS_VISIBLE | WS_CHILD | SS_LEFT, 23, 80, 200, 20,
+	//auto mapText = CreateWindow( L"Static", L"CHOOSE MAP", WS_VISIBLE | WS_CHILD | SS_LEFT, 310, 160, 200, 20,
 	//	handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-	auto nameText = CreateWindow( L"Static", L"Name:", WS_VISIBLE | WS_CHILD | SS_LEFT, 135, 80, 200, 20,
-		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+	//auto nameText = CreateWindow( L"Static", L"Name:", WS_VISIBLE | WS_CHILD | SS_LEFT, 135, 80, 200, 20,
+	//	handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
 
-	::SendMessage( mapText, WM_SETFONT, WPARAM( openSans ), TRUE );
-	::SendMessage( playersText, WM_SETFONT, WPARAM( openSans ), TRUE );
-	//::SendMessage( typeText, WM_SETFONT, WPARAM( openSans ), TRUE );
-	::SendMessage( nameText, WM_SETFONT, WPARAM( openSans ), TRUE );
-
-	/*for( int i = 0; i < positionOwnerControls.size(); ++i ) {
-		positionOwnerControls[i] = CreateWindow( L"COMBOBOX", (std::wstring( L"Position " ) + std::to_wstring( i + 1 )).c_str(),
-			CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 23, 100 + 30 * i, 107, 80,
-			handle, HMENU( FIRST_POSITION_OWNER + i ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-		SetClassLong( positionOwnerControls[i], GCL_HCURSOR, LONG(cursor) );
-		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"None" ) );
-		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"Player" ) );
-		::SendMessage( positionOwnerControls[i], CB_ADDSTRING, 0, LPARAM( L"AI" ) );
-		::SendMessage( positionOwnerControls[i], CB_SELECTSTRING, 0, i == 0? LPARAM( L"Player" ) : LPARAM( L"None" ) );
-		::SendMessage( positionOwnerControls[i], WM_SETFONT, WPARAM( openSans ), TRUE );
-		nameControls[i] = CreateWindow( L"EDIT", (std::wstring( L"Name " ) + std::to_wstring( i + 1 )).c_str(),
-		 WS_VISIBLE | WS_CHILD, 135, 100 + 30 * i, 133, 24,
-			handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-		SetClassLong( nameControls[i], GCL_HCURSOR, LONG(cursor) );
-		::SendMessage( nameControls[i], WM_SETFONT, WPARAM( openSans ), TRUE );
-
-	}*/
+	//::SendMessage( mapText, WM_SETFONT, WPARAM( openSans ), TRUE );
+	//::SendMessage( nameText, WM_SETFONT, WPARAM( openSans ), TRUE );
 
 	CComboBox::clearBoxImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\box_clear.png").c_str() );
 	CComboBox::collapsedBoxImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\box.png").c_str() );
@@ -100,7 +75,17 @@ bool UI::CMapSettingsWindow::Create()
 			100 + (10 + CComboBox::clearBoxImage->GetHeight() ) * i, 
 			CComboBox::clearBoxImage->GetWidth( ),
 			CComboBox::clearBoxImage->GetHeight() ), { L"None", L"Player", L"AI" } ) );
+
+		nameControls[i] = CreateWindow( L"EDIT", (std::wstring( L"Name " ) + std::to_wstring( i + 1 )).c_str(),
+			WS_VISIBLE | WS_CHILD | ES_MULTILINE, 135, 100 + CComboBox::clearBoxImage->GetHeight( ) / 4 +
+			(10 + CComboBox::clearBoxImage->GetHeight()) * i,
+			133, CComboBox::clearBoxImage->GetHeight() / 2,
+			handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
+		::SetClassLong( nameControls[i], GCL_HCURSOR, LONG( cursor ) );
+		::SendMessage( nameControls[i], WM_SETFONT, WPARAM( openSans ), TRUE );
 	}
+
+	CreateMapNameControl();
 
 	/*startGameButton = CreateWindow( L"BUTTON", L"Start game", WS_VISIBLE | WS_CHILD, 310, 260, 200, 60,
 		handle, HMENU( BUTTON_START_GAME ), HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
@@ -118,26 +103,20 @@ bool UI::CMapSettingsWindow::Create()
 
 bool UI::CMapSettingsWindow::CreateMapNameControl()
 {
-	mapNameControl = CreateWindow( L"COMBOBOX", L"Map", CBS_DROPDOWNLIST | WS_VISIBLE | WS_CHILD | WS_VSCROLL, 305, 190, 205, 160,
-		handle, nullptr, HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), this );
-
-	HCURSOR cursor = LoadCursor( HINSTANCE( GetWindowLong( handle, GWL_HINSTANCE ) ), MAKEINTRESOURCE( IDC_CURSOR1 ) );
-	SetClassLong( mapNameControl, GCL_HCURSOR, LONG(cursor) );
-
 	WIN32_FIND_DATA findFileData;
 	HANDLE mapFile = ::FindFirstFile( (RESOURCE_DIRECTORY_W + L"\\Maps\\*.txt").c_str(), &findFileData );
 	if( mapFile != INVALID_HANDLE_VALUE ) {
 		std::wstring mapFileName;
-		std::wstring mapName;
+		std::vector<std::wstring> mapNames;
 		do {
 			mapFileName = std::wstring( findFileData.cFileName );
-			mapName = mapFileName.substr( 0, mapFileName.size() - 4 );
-			::SendMessage( mapNameControl, CB_ADDSTRING, 0, LPARAM( mapName.c_str() ) );
+			mapNames.push_back( mapFileName.substr( 0, mapFileName.size( ) - 4 ) );
 		} while( ::FindNextFile( mapFile, &findFileData ) != 0 );
-		::SendMessage( mapNameControl, CB_SELECTSTRING, 0, LPARAM( mapName.c_str() ) );
+
+		chooseMapComboBox = new CComboBox( Gdiplus::Rect( 305, 190, 205, CComboBox::clearBoxImage->GetHeight() ), mapNames );
 		return ::FindClose( mapFile );
 	}
-	return mapNameControl != nullptr;
+	return false;
 }
 
 void UI::CMapSettingsWindow::Destroy() const
@@ -191,10 +170,9 @@ void UI::CMapSettingsWindow::ChangeSettings()
 std::string UI::CMapSettingsWindow::GetMapName() const
 {
 	const size_t MAX_LENGTH = 1024;
-	std::shared_ptr<wchar_t> text = std::shared_ptr<wchar_t>( new wchar_t[MAX_LENGTH] );
-	::GetWindowText( mapNameControl, text.get( ), MAX_LENGTH );
+	const wchar_t* text = chooseMapComboBox->GetChoosedName();
 	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> cv;
-	return cv.to_bytes( text.get( ) );
+	return cv.to_bytes( text );
 }
 
 std::vector<Core::CPlayer> UI::CMapSettingsWindow::GetPlayersInfo( const std::vector<Core::CCoordinates>& coordinates )
@@ -204,8 +182,7 @@ std::vector<Core::CPlayer> UI::CMapSettingsWindow::GetPlayersInfo( const std::ve
 	const size_t MAX_LENGTH = 1024;
 	std::shared_ptr<wchar_t> text = std::shared_ptr<wchar_t>( new wchar_t[MAX_LENGTH] );
 	for( int i = 0; i < min(8, coordinates.size()); ++i ) {
-		::GetWindowText( positionOwnerControls[i], text.get(), MAX_LENGTH );
-		std::wstring textString( text.get() );
+		std::wstring textString( comboBoxes[i]->GetChoosedName() );
 		std::shared_ptr<wchar_t> name = std::shared_ptr<wchar_t>( new wchar_t[MAX_LENGTH] );
 		int symbCount = ::GetWindowText( nameControls[i], name.get(), MAX_LENGTH );
 		if ( textString != L"None" ) {
@@ -281,7 +258,10 @@ void UI::CMapSettingsWindow::OnPaint()
 
 	SetBkMode( newHdc, TRANSPARENT );
 	SelectObject( newHdc, openSans );
-	TextOut( newHdc, 24, 78, L"Type:", 8 );
+	TextOut( newHdc, 310, 160, L"CHOOSE MAP", 10 );
+	TextOut( newHdc, 135, 78, L"Name:", 5 );
+	TextOut( newHdc, 23, 40, L"CHOOSE PLAYERS", 14 );
+	TextOut( newHdc, 24, 78, L"Type:", 5 );
 
 	SetTextColor( newHdc, RGB( 255, 255, 255 ) );
 	TextOut( newHdc, 357, 278, startGameButton->buttonName, 10 );
@@ -299,6 +279,8 @@ void UI::CMapSettingsWindow::OnPaint()
 		}
 	}
 
+	chooseMapComboBox->Draw( graphics );
+
 	::BitBlt( hdc, 0, 0, rect.right, rect.bottom, newHdc, 0, 0, SRCCOPY );
 
 	::SelectObject( newHdc, oldbitmap );
@@ -315,15 +297,21 @@ void UI::CMapSettingsWindow::OnLButtonDown( int xMousePos, int yMousePos )
 {
 	for( CComboBox* comboBox : comboBoxes ) {
 		if( comboBox->OnClick( xMousePos, yMousePos ) ) {
+			::InvalidateRect( handle, NULL, FALSE );
+			::UpdateWindow( handle );
+			return;
+		}
+	}
+	if( chooseMapComboBox->OnClick( xMousePos, yMousePos ) ) {
 		::InvalidateRect( handle, NULL, FALSE );
 		::UpdateWindow( handle );
-			return;
-	}
+		return;
 	}
 	// Если нажали не на комбобокс - сворачиваем их все
 	for( CComboBox* comboBox : comboBoxes ) {
 		comboBox->Collapse();
 	}
+	chooseMapComboBox->Collapse();
 
 	if( startGameButton->buttonRect.Contains( xMousePos, yMousePos ) ) {
 		startGameButton->curButtonImage = buttonImages->pressedButtonImage;
@@ -412,9 +400,9 @@ LRESULT UI::CMapSettingsWindow::windowProc( HWND handle, UINT message, WPARAM wP
 			SetTextColor( hdc, RGB( 0, 0, 0 ) );
 			SetBkMode( hdc, TRANSPARENT );
 			return (LRESULT)GetStockObject( NULL_BRUSH );
-		case WM_CTLCOLOREDIT:
-			::SetBkColor( reinterpret_cast<HDC>( wParam ), RGB( 232, 206, 180 ) );
-			return INT_PTR( CreateSolidBrush( RGB( 232, 206, 180 ) ) );
+		//case WM_CTLCOLOREDIT:
+		//	::SetBkColor( reinterpret_cast<HDC>( wParam ), RGB( 232, 206, 180 ) );
+		//	return INT_PTR( CreateSolidBrush( RGB( 232, 206, 180 ) ) );
 		case WM_CREATE:
 			wnd->OnCreate();
 			return 0;

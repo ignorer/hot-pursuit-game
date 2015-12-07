@@ -235,13 +235,19 @@
     <Image Include="Resources\default_result.bmp">
       <Filter>Resource Files\BackGround</Filter>
     </Image>
-    <Image Include="Resources\default_settings.bmp">
-      <Filter>Resource Files\BackGround</Filter>
-    </Image>
     <Image Include="Resources\logo_bg.bmp">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Resources\bg_3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\default_settings2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\default_settings2.bmp">
+      <Filter>Resource Files\BackGround</Filter>
+    </Image>
+    <Image Include="Resources\default_settings.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

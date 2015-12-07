@@ -4,7 +4,7 @@ Gdiplus::Image* UI::CComboBox::expandedBoxImage;
 Gdiplus::Image* UI::CComboBox::clearBoxImage;
 Gdiplus::Image* UI::CComboBox::collapsedBoxImage;
 
-UI::CComboBox::CComboBox( const Gdiplus::Rect& _rect, const std::vector<const wchar_t*>& _names ) :
+UI::CComboBox::CComboBox( const Gdiplus::Rect& _rect, const std::vector<std::wstring>& _names ) :
 	rect( _rect ),
 	names( _names ),
 	isCollapsed( true ),
@@ -21,7 +21,7 @@ void UI::CComboBox::Draw( Gdiplus::Graphics& graphics )
 		graphics.DrawImage( collapsedBoxImage, rect );
 
 		Gdiplus::PointF pointF( rect.X + 5, rect.Y + 8 );
-		graphics.DrawString( names[pos], -1, &font, pointF, &brush );
+		graphics.DrawString( names[pos].c_str( ), -1, &font, pointF, &brush );
 	} else {
 		Gdiplus::Rect imageRect(rect);
 		for( int i = 0; i < names.size(); ++i ) {
@@ -32,7 +32,7 @@ void UI::CComboBox::Draw( Gdiplus::Graphics& graphics )
 				graphics.DrawImage( expandedBoxImage, imageRect );
 			}
 			Gdiplus::PointF pointF( imageRect.X + 5, imageRect.Y + 8 );
-			graphics.DrawString( names[i], -1, &font, pointF, &brush );
+			graphics.DrawString( names[i].c_str(), -1, &font, pointF, &brush );
 		}
 	}
 }
@@ -68,7 +68,12 @@ bool UI::CComboBox::OnClick( int x, int y )
 	return false;
 }
 
-bool UI::CComboBox::IsCollapsed()
+bool UI::CComboBox::IsCollapsed() const
 {
 	return isCollapsed;
+}
+
+const wchar_t* UI::CComboBox::GetChoosedName() const
+{
+	return names[pos].c_str();
 }

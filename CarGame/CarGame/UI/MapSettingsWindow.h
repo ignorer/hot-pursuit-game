@@ -47,6 +47,7 @@ namespace UI {
 		std::vector<HWND> positionOwnerControls;
 		std::vector<HWND> nameControls;
 		std::vector<CComboBox*> comboBoxes;
+		CComboBox* chooseMapComboBox;
 
 		HBRUSH bkgrdBrush;
 
