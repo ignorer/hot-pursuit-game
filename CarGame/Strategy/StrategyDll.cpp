@@ -34,8 +34,8 @@ Map PutPlayersOnMap(const Map &_map, const std::vector< std::shared_ptr<IPlayerS
 	return res;
 }
 
-IPlayerState* GetPlayerState(int x, int y, int xVelocity, int yVelocity) {
-	return new PlayerState(x, y, xVelocity, yVelocity);
+IPlayerState* GetPlayerState( int x, int y, int xVelocity, int yVelocity, int curLap ) {
+	return new PlayerState( x, y, xVelocity, yVelocity, curLap );
 }
 
 IStrategy* GetNewStrategy(
@@ -43,10 +43,11 @@ IStrategy* GetNewStrategy(
 	const std::pair< int, int > &_leftFinishPoint,
 	const std::pair< int, int > &_rightFinishPoint,
 	int lapsCount,
-	std::shared_ptr<IPlayerState> playerState )
+	std::shared_ptr<IPlayerState> playerState,
+	bool isSequential )
 {
 	Map map( inputCells, _leftFinishPoint, _rightFinishPoint );
 	const PlayerState currentPlayer = *(std::dynamic_pointer_cast<PlayerState>(playerState));
 
-	return new CAStarStrategy( map, currentPlayer, lapsCount );
+	return new CAStarStrategy( map, currentPlayer, lapsCount, isSequential );
 }

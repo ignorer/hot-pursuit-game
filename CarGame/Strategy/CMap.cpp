@@ -109,7 +109,7 @@ bool Map::hasBarrierOnPath(int xFirst, int yFirst, int xSecond, int ySecond) con
 
 	for( int i = minX; i <= maxX; ++i ) {
 		for( int j = minY; j <= maxY; ++j ) {
-			if( cells[j][i] != 1 ) {
+			if( cells[j][i] == 0 ) {
 				continue;
 			}
 			std::pair<int, int> firstPoint( i * 10, j * 10 ),
@@ -131,69 +131,6 @@ bool Map::hasBarrierOnPath(int xFirst, int yFirst, int xSecond, int ySecond) con
 	}
 
 	return false;
-
-	//if (xFirst > xSecond) {
-	//	std::swap(xFirst, xSecond);
-	//	std::swap(yFirst, ySecond);
-	//}
-
-	//if (xFirst == xSecond) {
-	//	for (int j = yFirst + 1; j <= ySecond; ++j) {
-	//		if (cells[j][xFirst] == FILLED_CELL) {
-	//			return true;
-	//		}
-	//	}
-
-	//	if (wrongFinishLineIntersection(xFirst, yFirst, xSecond, ySecond)) {
-	//		return true;
-	//	}
-
-	//	return false;
-	//}
-
-	//int previousYInt = yFirst;
-
-	//for (int i = xFirst + 1; i < xSecond; ++i) {
-	//	double currentY = ((double)(i - xFirst - 0.5)) 
-	//		/ (xSecond - xFirst) * (ySecond - yFirst) + yFirst + 0.5;
-	//	double intPart, fractPart;
-
-	//	fractPart = modf(currentY, &intPart);
-	//	int currentYInt = (int)intPart;
-
-	//	if (fractPart < epsilon && yFirst > ySecond) {
-	//		--currentYInt;
-	//	}
-
-	//	if (fractPart > 1 - epsilon && yFirst < ySecond) {
-	//		++currentYInt;
-	//	}
-
-	//	for (int j = std::min(previousYInt, currentYInt);
-	//			j <= std::max(previousYInt, currentYInt); ++j) {
-	//		
-	//		if (cells[j][i] == FILLED_CELL) {
-	//			return true;
-	//		}
-	//	}
-
-	//	previousYInt = currentYInt;
-
-	//	if (fractPart < epsilon && yFirst > ySecond) {
-	//		++previousYInt;
-	//	}
-
-	//	if (fractPart > 1 - epsilon && yFirst < ySecond) {
-	//		--previousYInt;
-	//	}
-
-	//}
-
-	//if (wrongFinishLineIntersection(xFirst, yFirst, xSecond, ySecond)) {
-	//	return true;
-	//}
-
-	//return false;
 }
 
 void Map::fillMapWithDefaultData() {
@@ -242,7 +179,18 @@ const std::vector< int >& Map::operator[](int i)const {
 	return cells[i];
 }
 
-int Map::orientedArea(int ax, int ay, int bx, int by, int cx, int cy) const {
+void Map::AddBarrier( std::pair<int, int>& barrier )
+{
+	cells[barrier.second][barrier.first] = 1;
+}
+
+void Map::DeleteBarrier( std::pair<int, int>& barrier )
+{
+	cells[barrier.second][barrier.first] = 0;
+}
+
+int Map::orientedArea( int ax, int ay, int bx, int by, int cx, int cy ) const
+{
 	return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
 }
 
@@ -275,13 +223,37 @@ bool Map::IsOnTheFinishLine( int x1, int y1, int x2, int y2 ) {
 		&& leftFinishPoint.first <= x1 && x1 <= rightFinishPoint.first;
 }
 
+bool Map::IsOnRightSideOfFinishLine( int x, int y )
+{
+	return orientedArea( leftFinishPoint.first, leftFinishPoint.second,
+		rightFinishPoint.first, rightFinishPoint.second, x, y ) > 0;
+}
+
 bool Map::wrongFinishLineIntersection(int xFirst, int yFirst, int xSecond, int ySecond) const {
-	if (intersectFinishLine(xFirst, yFirst, xSecond, ySecond)) {
-		return (orientedArea( xSecond, ySecond, leftFinishPoint.first, leftFinishPoint.second,
-			rightFinishPoint.first, rightFinishPoint.second ) >= 0);
+	if( intersectFinishLine(xFirst, yFirst, xSecond, ySecond) ) {
+		int normalVectorCoordinatesX = rightFinishPoint.first - leftFinishPoint.first;
+		int normalVectorCoordinatesY = rightFinishPoint.second - leftFinishPoint.second;/*
+		if( area( map.GetFinishLine().first, playersCoordinates, map.GetFinishLine().second ) *
+			area( map.GetFinishLine().first, normalVectorCoordinates, map.GetFinishLine().second ) >= 0 &&
+			area( map.GetFinishLine().first, playersPreviousCoordinates, map.GetFinishLine().second ) *
+			area( map.GetFinishLine().first, normalVectorCoordinates, map.GetFinishLine().second ) < 0 )*/
+		return !( orientedArea( leftFinishPoint.first, leftFinishPoint.second, xSecond, 
+			ySecond, rightFinishPoint.first, rightFinishPoint.second )
+			* orientedArea( leftFinishPoint.first, leftFinishPoint.second, normalVectorCoordinatesX,
+			normalVectorCoordinatesY, rightFinishPoint.first, rightFinishPoint.second ) >= 0
+			&& orientedArea( leftFinishPoint.first, leftFinishPoint.second, xFirst,
+			yFirst, rightFinishPoint.first, rightFinishPoint.second )
+			* orientedArea( leftFinishPoint.first, leftFinishPoint.second, normalVectorCoordinatesX,
+			normalVectorCoordinatesY, rightFinishPoint.first, rightFinishPoint.second ) < 0);
 	}
 
 	return false;
+	//if( intersectFinishLine( xFirst, yFirst, xSecond, ySecond ) ) {
+	//	return orientedArea( xSecond, ySecond, leftFinishPoint.first, leftFinishPoint.second,
+	//		rightFinishPoint.first, rightFinishPoint.second ) >= 0;
+	//}
+
+	//return false;
 }
 
 const std::pair< int, int >& Map::GetLeftFinishPoint() const {

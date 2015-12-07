@@ -172,10 +172,13 @@
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AI\IPlayerState.h" />
+    <ClInclude Include="AI\IStrategy.h" />
     <ClInclude Include="Core\Game.h" />
     <ClInclude Include="Core\GameMode.h" />
     <ClInclude Include="Core\Map.h" />
     <ClInclude Include="Core\Player.h" />
+    <ClInclude Include="Core\Powerup.h" />
     <ClInclude Include="Core\PowerupManager.h" />
     <ClInclude Include="Core\Reader.h" />
     <ClInclude Include="Resources\resource.h" />
@@ -217,6 +220,7 @@
     <Image Include="Resources\default_main.bmp" />
     <Image Include="Resources\default_result.bmp" />
     <Image Include="Resources\default_settings.bmp" />
+    <Image Include="Resources\logo_bg.bmp" />
     <Image Include="Resources\MainIcon.ico" />
   </ItemGroup>
   <ItemGroup>

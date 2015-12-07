@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "Core/Powerup.h"
+
 const std::string RESOURCE_DIRECTORY = ".\\Resources\\";
 const std::wstring RESOURCE_DIRECTORY_W = L".\\Resources\\";
 
@@ -10,10 +12,6 @@ typedef std::pair<size_t, size_t> CSize;
 
 enum PlayersTypes {
 	USER = 1, AI = 2
-};
-
-enum PowerupType {
-	WALL, SAND, OIL, MINE, MINE_ACTIVE, LAZER, SHIELD, NONE
 };
 
 namespace Core {

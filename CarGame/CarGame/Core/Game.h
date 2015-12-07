@@ -17,9 +17,10 @@ namespace Core {
 		const std::pair< int, int > &_leftFinishPoint,
 		const std::pair< int, int > &_rightFinishPoint,
 		int lapsCount,
-		std::shared_ptr<IPlayerState> playerState );
+		std::shared_ptr<IPlayerState> playerState,
+		bool isSequential );
 
-	typedef IPlayerState*(__cdecl *PLAYER_STATE_FACTORY_PROC)(int x, int y, int xVelocity, int yVelocity);
+	typedef IPlayerState*(__cdecl *PLAYER_STATE_FACTORY_PROC)(int x, int y, int xVelocity, int yVelocity, int curLap);
 
 	class CGame {
 	public:
@@ -58,5 +59,6 @@ namespace Core {
 		void turnOfPlayer( CPlayer& player, std::set<CPlayer*>& crashedPlayers );
 		int turnOfUser(CPlayer& player) const;
 		void initAI( CPlayer* player );
+		int turnOfAI( CPlayer& player );
 	};
 }
