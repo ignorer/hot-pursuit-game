@@ -235,12 +235,6 @@
     <Image Include="Resources\logo_bg.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Resources\bitmap4.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bg_3.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="Resources\bg_3.bmp">
       <Filter>Resource Files</Filter>
     </Image>

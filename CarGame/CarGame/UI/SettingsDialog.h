@@ -5,12 +5,16 @@
 #include "Core\GameMode.h"
 #include <utility>
 
+
 struct colorStruct {
 	COLORREF color;
 	HBRUSH brush;
 };
 
 namespace UI {
+	class ButtonImages;
+	class ButtonInfo;
+
 	class CSettingsDialog {
 	public:
 		static void Init( HWND hwndDlg );
@@ -18,6 +22,11 @@ namespace UI {
 		static void OnDialogCancel( HWND hwndDlg, WPARAM wParam );
 		static void OnDialogLapsNumberEdit( HWND hwndDlg );
 		static void OnDialogVscroll( HWND hwndDlg );
+		static void OnPaint( HWND hwndDlg );
+		static void OnLButtonDown( HWND hwndDlg, int xMousePos, int yMousePos );
+		static void OnLButtonUp( HWND hwndDlg, int xMousePos, int yMousePos );
+		static void OnMouseMove( HWND hwndDlg, int xMousePos, int yMousePos );
+		static void changeHoveredButton( HWND hwndDlg, ButtonInfo* button, int xMousePos, int yMousePos );
 		static int GetLapsNumber( HWND hwndDlg, int editId );
 		static BOOL CALLBACK DialogSettingsProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam );
 		//специальный флаг, определяющий, посылается ли EN_CHANGE из UI-окна
@@ -25,6 +34,10 @@ namespace UI {
 		static std::pair<COLORREF, HBRUSH> staticBrush;
 		static std::pair<COLORREF, HBRUSH> editBrush;
 		static HBRUSH bkgrdBrush;
+		static ButtonImages* buttonImages;
+		static ButtonInfo* okButton;
+		static ButtonInfo* cancelButton;
+
 	};
 
 	class CModeToItemIdConverter {

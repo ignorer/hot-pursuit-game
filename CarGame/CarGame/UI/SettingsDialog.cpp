@@ -1,4 +1,5 @@
 ﻿#include <Windows.h>
+#include <Windowsx.h>
 
 #include <CommCtrl.h>
 #include <string>
@@ -7,6 +8,8 @@
 #include "SettingsDialog.h"
 #include "Core\GameMode.h"
 #include "Resources/resource.h"
+#include "UI\ButtonUtils.h"
+#include "Utils.h"
 
 std::pair<COLORREF, HBRUSH> UI::CSettingsDialog::staticBrush = 
 							std::make_pair( RGB( 25, 27, 78 ), CreateSolidBrush( RGB( 25, 27, 78 ) ) );
@@ -15,6 +18,9 @@ std::pair<COLORREF, HBRUSH> UI::CSettingsDialog::editBrush =
 							std::make_pair( RGB( 255, 255, 255 ), CreateSolidBrush( RGB( 255, 255, 255 ) ) );
 
 HBRUSH UI::CSettingsDialog::bkgrdBrush = HBRUSH( GetStockObject( WHITE_BRUSH ) );
+UI::ButtonInfo* UI::CSettingsDialog::okButton = nullptr;
+UI::ButtonInfo* UI::CSettingsDialog::cancelButton = nullptr;
+UI::ButtonImages* UI::CSettingsDialog::buttonImages = nullptr;
 
 void UI::CSettingsDialog::Init( HWND hwndDlg ) {
 	HWND hSpin = ::GetDlgItem( hwndDlg, IDC_SPIN3 ); //Получаем дескрипторы окон
@@ -51,6 +57,17 @@ void UI::CSettingsDialog::Init( HWND hwndDlg ) {
 	::CheckRadioButton( hwndDlg, IDC_DESTROY_CRASH, IDC_STOP_CRASH, CModeToItemIdConverter::getCrashItemId( initDeathPenalty ) );
 	::CheckRadioButton( hwndDlg, IDC_NO_BARRIERS, IDC_MANY_BARRIERS, CModeToItemIdConverter::getBarrierItemId( initBarrierRate ) );
 	::CheckRadioButton( hwndDlg, IDC_NO_CHANGE, IDC_RANDOM, CModeToItemIdConverter::getObjectChangeModelItemId(initObjectChangeModel ) );
+
+	okButton = new ButtonInfo();
+	cancelButton = new ButtonInfo();
+	buttonImages = new ButtonImages();
+	buttonImages->defButtonImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\default_button.png").c_str() );
+	buttonImages->hoverButtonImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\hover.png").c_str() );
+	buttonImages->pressedButtonImage = new Gdiplus::Image( (RESOURCE_DIRECTORY_W + L"\\Images\\pressed.png").c_str() );
+	okButton->curButtonImage = buttonImages->defButtonImage;
+	okButton->buttonRect = { 200, 200, 204, 61 };
+	cancelButton->curButtonImage = buttonImages->defButtonImage;
+	cancelButton->buttonRect = { 200, 300, 204, 61 };
 }
 
 void UI::CSettingsDialog::OnDialogOk( HWND hwndDlg, WPARAM wParam )
@@ -127,6 +144,89 @@ void UI::CSettingsDialog::OnDialogVscroll( HWND hwndDlg )
 	LRESULT curPos = ::SendMessage( hSpin, UDM_GETPOS, 0, 0 );
 	sent = 0;
 	::SetWindowText( dialogEditCtrl, std::to_wstring( LOWORD( curPos ) ).c_str() );
+}
+
+void UI::CSettingsDialog::OnPaint( HWND hwndDlg )
+{
+	PAINTSTRUCT ps;
+	HDC hdc = ::BeginPaint( hwndDlg, &ps );
+	HDC newHdc = ::CreateCompatibleDC( hdc );
+	RECT rect;
+	::GetClientRect( hwndDlg, &rect );
+	HFONT openSans = ::CreateFont( 18, 0, 0, 0, 1000, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, L"Open Sans" );
+	HBITMAP bitmap = ::CreateCompatibleBitmap( hdc, rect.right - rect.left, rect.bottom - rect.top );
+	HGDIOBJ oldbitmap = ::SelectObject( newHdc, bitmap );
+	FillRect( newHdc, &ps.rcPaint, bkgrdBrush );
+
+	Gdiplus::Graphics graphics( newHdc );
+
+	graphics.DrawImage( okButton->curButtonImage, okButton->buttonRect );
+	graphics.DrawImage( cancelButton->curButtonImage, cancelButton->buttonRect );
+
+	SetBkMode( newHdc, TRANSPARENT );
+	SetTextColor( newHdc, RGB( 255, 255, 255 ) );
+	SelectObject( newHdc, openSans );
+	//TextOut
+	::BitBlt( hdc, 0, 0, rect.right, rect.bottom, newHdc, 0, 0, SRCCOPY );
+
+	::SelectObject( newHdc, oldbitmap );
+	::DeleteObject( bitmap );
+	::DeleteObject( openSans );
+
+	::DeleteDC( hdc );
+	::DeleteDC( newHdc );
+
+	::EndPaint( hwndDlg, &ps );
+}
+
+void  UI::CSettingsDialog::OnLButtonDown( HWND hwndDlg, int xMousePos, int yMousePos )
+{
+	if (okButton->buttonRect.Contains( xMousePos, yMousePos )) {
+		okButton->curButtonImage = buttonImages->pressedButtonImage;
+		::InvalidateRect( hwndDlg, NULL, FALSE );
+		::UpdateWindow( hwndDlg );
+	}
+	else if ( cancelButton->buttonRect.Contains( xMousePos, yMousePos )) {
+		cancelButton->curButtonImage = buttonImages->pressedButtonImage;
+		::InvalidateRect( hwndDlg, NULL, FALSE );
+		::UpdateWindow( hwndDlg );
+	}
+}
+
+void  UI::CSettingsDialog::OnLButtonUp( HWND hwndDlg, int xMousePos, int yMousePos )
+{
+	if (okButton->buttonRect.Contains( xMousePos, yMousePos )) {
+		okButton->curButtonImage = buttonImages->defButtonImage;
+		::InvalidateRect( hwndDlg, NULL, FALSE );
+		::UpdateWindow( hwndDlg );
+	}
+	else if (cancelButton->buttonRect.Contains( xMousePos, yMousePos )) {
+		cancelButton->curButtonImage = buttonImages->defButtonImage;
+		::InvalidateRect( hwndDlg, NULL, FALSE );
+		::UpdateWindow( hwndDlg );
+	}
+}
+
+void  UI::CSettingsDialog::OnMouseMove( HWND hwndDlg, int xMousePos, int yMousePos )
+{
+	UI::CSettingsDialog::changeHoveredButton( hwndDlg, okButton, xMousePos, yMousePos );
+	UI::CSettingsDialog::changeHoveredButton( hwndDlg, cancelButton, xMousePos, yMousePos );
+	::UpdateWindow( hwndDlg );
+}
+void UI::CSettingsDialog::changeHoveredButton( HWND hwndDlg, ButtonInfo* button, int xMousePos, int yMousePos ) {
+	RECT rectToChange;
+	if (button->buttonRect.Contains( xMousePos, yMousePos )) {
+		button->curButtonImage = buttonImages->hoverButtonImage;
+	}
+	else {
+		button->curButtonImage = buttonImages->defButtonImage;
+	}
+	rectToChange.bottom = button->buttonRect.GetBottom();
+	rectToChange.left = button->buttonRect.GetLeft();
+	rectToChange.top = button->buttonRect.GetTop();
+	rectToChange.right = button->buttonRect.GetRight();
+	::InvalidateRect( hwndDlg, &rectToChange, FALSE );
 }
 
 int UI::CSettingsDialog::GetLapsNumber( HWND hwndDlg, int editId )
@@ -229,6 +329,16 @@ BOOL CALLBACK UI::CSettingsDialog::DialogSettingsProc( HWND hwndDlg, UINT messag
 			//SetBkMode( reinterpret_cast<HDC>( wParam ), TRANSPARENT );
 			//return (LRESULT)GetStockObject( NULL_BRUSH );
 			return (INT_PTR)bkgrdBrush;
+		case WM_PAINT:
+			CSettingsDialog::OnPaint( hwndDlg );
+		case WM_LBUTTONDOWN:
+			CSettingsDialog::OnLButtonDown( hwndDlg, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
+			return 0;
+		case WM_LBUTTONUP:
+			CSettingsDialog::OnLButtonUp( hwndDlg, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
+			return 0;
+		case WM_MOUSEMOVE:
+			CSettingsDialog::OnMouseMove( hwndDlg, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
 		case WM_COMMAND:
 			switch (LOWORD( wParam ))
 			{
